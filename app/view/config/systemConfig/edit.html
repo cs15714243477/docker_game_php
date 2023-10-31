@@ -1,0 +1,298 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+    .longspan260{
+        width: 260px;
+        text-align: left;
+    }
+    .longspan130{
+        width: 130px;
+        text-align: left;
+    }
+</style>
+<body class="pear-container">
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <form class="layui-form edit-form" lay-filter="editForm">
+                <div class="layui-tab layui-tab-brief" lay-filter="TabBrief">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">系统配置</li>
+                        <li>提现配置</li>
+                        <li>充值配置</li>
+                    </ul>
+                    <div class="layui-tab-content">
+                        <div class="layui-tab-item layui-show">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                    注册奖励金币
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="register_reward_score" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                    绑定手机号奖励金币
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="bind_mobile_reward_score" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                    单IP最多注册账号
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="ip_max_register_count" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                    账户最小留存金币
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="exchange_min_left_money" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                    代理返佣比例
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="promoter_rebate" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">%</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">是否绑定手机串号</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="bind_mobile_serial" value="1" title="绑定">
+                                    <input type="radio" name="bind_mobile_serial" value="0" title="不绑定">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">是否允许使用模拟器</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="anti_emulator" value="2" title="不允许模拟器登录和注册">
+                                    <input type="radio" name="anti_emulator" value="1" title="允许模拟器登录注册不送分">
+                                    <input type="radio" name="anti_emulator" value="0" title="允许模拟器登录注册送分">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                    旺旺下载地址
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="WW_DOWNLOAD_URL" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                    旺旺,俱乐部申请联系方式
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="APPLY_CLUB_WW" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                    QQ
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="APPLY_CLUB_QQ" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                    微信
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="APPLY_CLUB_WECHAT" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                    官网地址
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="OFFICIAL_WEBSITE" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="layui-tab-item">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan260">提现</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="enable_exchange" value="1" title="开启">
+                                    <input type="radio" name="enable_exchange" value="0" title="关闭">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan260">
+                                    每天最大提现次数
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="exchange_times_one_day" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan260">
+                                    提现手续费(千分之)
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="exchange_fee" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan260">
+                                    每次提现最小金额(网银)
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="exchange_min_money_one_times" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan260">
+                                    每次提现最大金额(网银)
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="exchange_max_money_one_times" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan260">
+                                    每次提现最小金额(alipay)
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="exchange_min_money_one_times_alipay" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan260">
+                                    每次提现最大金额(alipay)
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="exchange_max_money_one_times_alipay" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan260">
+                                    每次提现最小金额(USDT)
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="exchange_min_money_one_times_usdt" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan260">
+                                    每次提现最大金额(USDT)
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="exchange_max_money_one_times_usdt" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan260">代理转余额自动操作</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="promoter_auto_exchange" value="1" title="开启" disabled>
+                                    <input type="radio" name="promoter_auto_exchange" value="0" title="关闭" disabled>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan260">两次提交提现订单的最小时间间隔(分钟)</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="exchange_interval" value="0" title="不限">
+                                    <input type="radio" name="exchange_interval" value="15" title="15">
+                                    <input type="radio" name="exchange_interval" value="30" title="30">
+                                    <input type="radio" name="exchange_interval" value="60" title="60">
+                                    <input type="radio" name="exchange_interval" value="90" title="90">
+                                    <input type="radio" name="exchange_interval" value="120" title="120">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-tab-item">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" style="width: 100px; text-align: left;">充值</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="enable_recharge" value="1" title="开启" disabled>
+                                    <input type="radio" name="enable_recharge" value="0" title="关闭" disabled>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" style="width: 100px; text-align: left;">第三方配置</label>
+                                    <div class="layui-input-inline" style="width: 500px;">
+                                        <input type="text" name="USDT_RATE_URL" placeholder="请输入" autocomplete="off" class="layui-input layui-disabled" disabled>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" style="width: 100px; text-align: left;">生成代理URL</label>
+                                    <div class="layui-input-inline" style="width: 500px;">
+                                        <input type="text" name="REFRESH_PROMOTER_URL" placeholder="请输入" autocomplete="off" class="layui-input layui-disabled" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-input-block" style="min-height: 80px;">
+                    <input type="hidden" name="_id">
+                    <button type="submit" class="pear-btn pear-btn-primary" lay-submit lay-filter="save">保存</button>
+
+<!--                    <button type="reset" class="pear-btn">重置</button>-->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    josnData = '<?php echo $data; ?>';
+    formData= JSON.parse(josnData);
+    layui.use(['form','layer'], function () {
+        $ = layui.jquery;
+        let form = layui.form;
+        form.val('editForm', {
+            "register_reward_score": formData.register_reward_score
+            ,"bind_mobile_reward_score": formData.bind_mobile_reward_score
+            ,"ip_max_register_count": formData.ip_max_register_count
+            ,"exchange_min_left_money": formData.exchange_min_left_money
+            ,"bind_mobile_serial": formData.bind_mobile_serial
+            ,"anti_emulator": formData.anti_emulator
+            ,"enable_exchange": formData.enable_exchange
+            ,"exchange_times_one_day": formData.exchange_times_one_day
+            ,"exchange_fee": formData.exchange_fee
+            ,"exchange_min_money_one_times": formData.exchange_min_money_one_times
+            ,"exchange_max_money_one_times": formData.exchange_max_money_one_times
+            ,"exchange_min_money_one_times_alipay": formData.exchange_min_money_one_times_alipay
+            ,"exchange_max_money_one_times_alipay": formData.exchange_max_money_one_times_alipay
+            ,"exchange_min_money_one_times_usdt": formData.exchange_min_money_one_times_usdt
+            ,"exchange_max_money_one_times_usdt": formData.exchange_max_money_one_times_usdt
+            ,"promoter_auto_exchange": formData.promoter_auto_exchange
+            ,"exchange_interval": formData.exchange_interval
+            ,"enable_recharge": formData.enable_recharge
+            ,"USDT_RATE_URL": formData.USDT_RATE_URL
+            ,"REFRESH_PROMOTER_URL": formData.REFRESH_PROMOTER_URL
+            ,"APPLY_CLUB_QQ": formData.APPLY_CLUB_QQ
+            ,"WW_DOWNLOAD_URL": formData.WW_DOWNLOAD_URL
+            ,"APPLY_CLUB_WECHAT": formData.APPLY_CLUB_WECHAT
+            ,"APPLY_CLUB_WW": formData.APPLY_CLUB_WW
+            ,"OFFICIAL_WEBSITE": formData.OFFICIAL_WEBSITE
+            ,"promoter_rebate": formData.promoter_rebate
+            ,"_id": formData._id
+        });
+        //监听提交
+        form.on('submit(save)', function(data){
+            window.save({"submitUrl": '/config/systemConfig', "data": data.field});
+            return false;
+        });
+    });
+</script>

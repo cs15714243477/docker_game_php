@@ -1,0 +1,214 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+	.pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 580px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 0;
+		width: 100%;
+		height: 40px;
+		z-index: 1000;
+		background: white;
+    }
+
+</style>
+<body class="pear-container">
+<div class="layui-card">
+	<div class="layui-card-body">
+		<form class="layui-form" action="" lay-filter="queryForm">
+			<div class="layui-form-item layui-inline">
+				<div class="layui-input-inline">
+					<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-input-inline" style="width: 5px">-</div>
+				<div class="layui-input-inline">
+					<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item layui-inline">
+				<div class="layui-input-inline" style="width: 250px">
+					<input type="number" name="searchText" autocomplete="off" placeholder="请输入代理ID" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item layui-inline">
+				<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+					<i class="layui-icon layui-icon-search"></i>
+					查询
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="layui-card">
+	<div class="layui-card-body">
+		<div class="layui-row layui-col-space10">
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">今日新增汇总</div>
+					<div class="count pear-text" id="addSum"></div>
+				</div>
+			</div>
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">今日有效新增汇总</div>
+					<div class="count pear-text" id="effectAddSum"></div>
+				</div>
+			</div>
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">今日下级充值汇总</div>
+					<div class="count pear-text" id="downLevelSum"></div>
+				</div>
+			</div>
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">今日佣金汇总</div>
+					<div class="count pear-text" id="todayProfitSum"></div>
+				</div>
+			</div>
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">今日下注汇总</div>
+					<div class="count pear-text" id="todayBetSum"></div>
+				</div>
+			</div>
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">昨日下注汇总</div>
+					<div class="count pear-text" id="yesBetSum"></div>
+				</div>
+			</div>
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">累计总下注汇总</div>
+					<div class="count pear-text" id="totalAllBetSum"></div>
+				</div>
+			</div>
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">昨日下级充值汇总</div>
+					<div class="count pear-text" id="yesDownRechargeSum"></div>
+				</div>
+			</div>
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">昨日佣金汇总</div>
+					<div class="count pear-text" id="yesProfitSum"></div>
+				</div>
+			</div>
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">已领取佣金汇总</div>
+					<div class="count pear-text" id="getProfitSum"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="layui-card">
+	<div class="layui-card-body">
+		<table id="table1" lay-filter="listTable1"></table>
+	</div>
+</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script src="<?=$staticUrl ?>/static/recharge.js"></script>
+<script>
+	dateOption = {"date1": '', "date2": ''};
+	let tableUrl = '/agentAnalysisCon/getAgentAnalysis';
+	layui.use(['table','form','jquery','count'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		count = layui.count;
+		let form = layui.form;
+
+		let cols = [
+			[
+				{field:'channelId', title: '注册渠道',align:'center',width:100}
+				,{field:'promoterId', title:"代理(ID/名称)", align:'center',width:120,
+				templet: function (d) {
+					var startDate = $("#date1").val();
+					var endDate = $("#date2").val();
+					if(d.promoterId >= 10000000){
+						return  '<a onclick="openNewTab(this)" lay-text="代理名单" lay-href="/agent/agentList?startDate='+startDate+'&endDate='+endDate+'&searchType=1'+'&searchValue='+d.promoterId+'"style="color: red;font-weight: bold">'+d.promoterId+'</a><br/>' + d.promoterName;
+					}else{
+						return  d.promoterId + '<br/>' + d.promoterName;
+					}
+				}
+			}
+				,{field:'totalDirectPlayerCount_team', title: '人数(直属/团队)' ,width:130,align:'center',templet: function(d){
+						return d.totalDirectPlayerCount_team + "<br/>" + d.totalTeamPlayerCount_team;
+				}}
+				//,{field:'totalTeamPlayerCount_team', title: '团队人数' ,align:'center'}
+				,{field:'teamRegPeople', title: '今日(新增/有效新增)' ,width:150,align:'center',templet: function(d){
+					return d.teamRegPeople + "<br/>" + d.teamRegValidNewBetPeople;
+				}}
+				,{field:'teamRechargeAmount', title: '今日下级充值' ,align:'center'}
+				,{field:'teamProfit', title: '今日佣金' ,align:'center'}
+				,{field:'teamFlowAmount', title: '(今日/昨日)下注',width:130,align:'center',templet: function(d){
+					return d.teamFlowAmount + "<br/>" + d.teamFlowAmount_yes;
+				}}
+				,{field:'totalTeamFlowAmount', title: '累计总下注' ,align:'center'}
+
+
+				,{field:'teamRechargeAmount_yes', title: '昨日下级充值' ,align:'center'}
+				,{field:'teamProfit_yes', title: '昨日佣金' ,align:'center'}
+				,{field:'totalExchange', title: '已领取佣金' ,align:'center'}
+				,{field:'totalTeamAndroidValue',title: '安卓设备' ,align:'center',templet: function(d){
+					return d.totalTeamAndroidValue + '&nbsp;&nbsp;('+d.android_dvc_rate+')';
+				}}
+				,{field:'totalTeamIOSValue',title: '苹果设备' ,align:'center',templet: function(d){
+					return d.totalTeamIOSValue + '&nbsp;&nbsp;('+d.ios_dvc_rate+')';
+				}}
+				, {field:'promoterId',fixed: 'right', title: '操作', align: 'center', width: 80,templet:function (d){
+					let startDate = $("#date1").val();
+					let endDate = $("#date2").val();
+
+					return  '<a onclick="openNewTab(this)" lay-href="/userAnalysisCon/userAnalysis?startDate='+startDate+'&endDate='+endDate+'&promoterId='+d.promoterId+'" data-name="'+d.promoterId+'" lay-text="ID:'+d.promoterId+'" style="color: red;font-weight: bold">详情</a>';
+
+				}}
+			]
+		];
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl,
+			page: true ,
+			limit: 20
+			, limits: [10, 20, 30, 45, 60, 75, 90, 100],
+			cols: cols ,
+			totalRow: true,
+			skin: 'line',
+			height:630,
+			done: function(res, curr, count){
+				let queryFormData = form.val("queryForm");
+				window.tableSummary({"submitUrl": '/agentAnalysisCon/summary', "data": queryFormData, "selIds": 'addSum,effectAddSum,downLevelSum,todayProfitSum,todayBetSum,yesBetSum,totalAllBetSum,yesDownRechargeSum,yesProfitSum,getProfitSum'});
+			}
+		});
+
+		form.on('submit(query)', function(data){
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+	})
+</script>
+<script src="<?=$staticUrl ?>/static/laydateYmd.js"></script>

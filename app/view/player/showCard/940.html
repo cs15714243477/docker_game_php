@@ -1,0 +1,78 @@
+<?php
+    if($gameId==940) {
+        foreach($card as $key => $vo) {
+?>
+            <div class="layui-col-xs12 layui-col-sm12">
+                <div class="layui-status-img">
+                    <span class="thick">
+                        <?=$vo['title'] ?> &nbsp;
+                    </span>
+                    <?php
+                        if(isset($vo['mahjong1']) && $vo['mahjong1']) {
+                    ?>
+                        <a href="javascript:;">
+                            <img src="<?=$staticUrl ?>/cards/28/<?=$vo['mahjong1'] ?>.png" width="40px" height="50px">
+                        </a>&nbsp;
+                    <?php
+                        }
+                    ?>
+                    <?php
+                        if(isset($vo['mahjong2']) && $vo['mahjong2']) {
+                    ?>
+                    <a href="javascript:;">
+                        <img src="<?=$staticUrl ?>/cards/28/<?=$vo['mahjong2'] ?>.png" width="40px" height="50px">
+                    </a>&nbsp;
+                    <?php
+                        }
+                    ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                        <?php
+                            if(isset($vo['userId']) && $vo['userId']) {
+                                foreach($vo['userId'] as $k => $v) {
+                        ?>
+                                    <?php if($v != $bankerId){ ?>
+                                        <?php if($v == $currentUserId){  ?>
+                                            <?php
+                                                if($vo['res'] > 0){
+                                                    echo '<font color="red">赢</font>';
+                                                }else{
+                                                    echo '<font color="green">输</font>';
+                                                }
+                                            ?>
+                                            <span class="user_id" style=" color:#ff0000"><?=$v ?>(自己)</span>
+                                        <?php }else{ ?>
+                                            <span class="user_id"><?=$v ?></span>
+                                        <?php } ?>
+                                    <?php }else{ ?>
+                                        <?php if($v == $currentUserId){  ?>
+                                            <?php
+                                                if($vo['res'] > 0){
+                                                    echo '<font color="red">赢</font>';
+                                                }else{
+                                                    echo '<font color="green">输</font>';
+                                                }
+                                            ?>
+
+                                        <?php }else{ ?>
+                                        <span class="user_id"><?=$v ?></span>
+                                        <?php } ?>
+                                    <?php }?>
+                                <?php } ?>
+                        <?php
+                        
+                              }
+                         ?>
+                </div>
+            </div>
+        <?php } ?>
+        <span class="thick">
+            庄:&nbsp;
+        </span>
+        <?php if($bankerId == $currentUserId){?>
+            <span style="color: red">(自己)&nbsp;&nbsp;<?=$bankerId ?></span>
+        <?php }else{ ?>
+            <span><?=$bankerId ?></span>
+        <?php } ?>
+<?php
+    }
+?>

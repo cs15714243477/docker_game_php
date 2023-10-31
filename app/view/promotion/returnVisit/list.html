@@ -1,0 +1,384 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	th[data-field="userId"]{
+		width: 85px;
+	}
+	td[data-field="userId"]{
+		width: 85px;
+	}
+	th[data-field="joinPlanTime"]{
+		width: 80px;
+	}
+	td[data-field="joinPlanTime"]{
+		width: 80px;
+	}
+	th[data-field="rewardMoney"]{
+		width: 80px;
+	}
+	td[data-field="rewardMoney"]{
+		width: 80px;
+	}
+	th[data-field="betDays"]{
+		width: 80px;
+	}
+	td[data-field="betDays"]{
+		width: 80px;
+	}
+	th[data-field="goldValidBet"]{
+		width: 80px;
+	}
+	td[data-field="goldValidBet"]{
+		width: 80px;
+	}
+	th[data-field="clubValidBet"]{
+		width: 80px;
+	}
+	td[data-field="clubValidBet"]{
+		width: 80px;
+	}
+	th[data-field="clubWinScore"]{
+		width: 100px;
+	}
+	td[data-field="clubWinScore"]{
+		width: 100px;
+	}
+	th[data-field="score"]{
+		width: 90px;
+	}
+	td[data-field="score"]{
+		width: 90px;
+	}
+
+	th[data-field="rechargeAmount"]{
+		width: 80px;
+	}
+	td[data-field="rechargeAmount"]{
+		width: 80px;
+	}
+	th[data-field="rechargeExchangeDiff"]{
+		width: 80px;
+	}
+	td[data-field="rechargeExchangeDiff"]{
+		width: 80px;
+	}
+	th[data-field="lastGoldBetTime"]{
+		width: 90px;
+	}
+	td[data-field="lastGoldBetTime"]{
+		width: 90px;
+	}
+	th[data-field="lastClubBetTime"]{
+		width: 95px;
+	}
+	td[data-field="lastClubBetTime"]{
+		width: 95px;
+	}
+	th[data-field="details"]{
+		width: 80px;
+	}
+	td[data-field="details"]{
+		width: 80px;
+	}
+
+
+
+	.layui-table-cell{
+		padding: 0px;
+	}
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+
+	.pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 0;
+		width: 100%;
+        height: 40px;
+		left:10px;
+        z-index: 1000;
+        background: white;
+    }
+
+	/*.explain{*/
+	/*	position: absolute;*/
+	/*	right: 70px;*/
+	/*	z-index: 10000;*/
+	/*	top:180px;*/
+	/*}*/
+	.font-word{
+		color: #cc0000;
+		font-size: larger
+	}
+	.font-number{
+		color: green;
+		font-size: larger
+	}
+
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 150px">
+							<input type="number" name="userId" id="userId" autocomplete="off" placeholder="会员ID" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 100px;">
+							<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input" value="<?=$startDate?>">
+						</div>
+						<div class="layui-input-inline" style="width: 5px">-</div>
+						<div class="layui-input-inline" style="width: 100px;">
+							<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input" value="<?=$endDate?>">
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 200px">
+							<select name="planId" id="planId" lay-search>
+								<option value="">方案名称</option>
+								<?php
+									foreach($planList as $k => $v) {
+								echo '<option value="'. $v['planId'] .'">' . $v['planTitle'] . '</option>';
+								}
+								?>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="export">
+							<i class="pear-icon pear-icon-export"></i>
+							导出
+						</button>
+
+					</div>
+				</form>
+
+			</div>
+		</div>
+
+		<div class="layui-card">
+
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+
+				<span class="font-word">送分人数</span><span class="font-number" id="giveScoreNums"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="font-word">充值人数</span><span class="font-number" id="rechargePeopleNums"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="font-word">送分金额</span><span class="font-number" id="rewardMoneySum"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="font-word">(金)投注量</span><span class="font-number" id="goldValidBetSum"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="font-word">(俱)投注量</span><span class="font-number" id="clubValidBetSum"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="font-word">(金)玩家输赢</span><span class="font-number" id="goldWinScoreSum"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="font-word">(俱)玩家输赢</span><span class="font-number" id="clubWinScoreSum"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="font-word">充值量</span><span class="font-number" id="rechargeAmountSum"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="font-word">提现量</span><span class="font-number" id="exchangeAmountSum"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="font-word">充提亏盈</span><span class="font-number" id="depositWithdrawSum"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="font-word">账户余额</span><span class="font-number" id="totalScoreSum"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+
+<?php include app_path() . "/view/public/footer.html"; ?>
+
+		<script src="<?=$staticUrl ?>/static/recharge.js"></script>
+<script>
+	dateOption = {"date1": '', "date2": ''};
+	let tableUrl = '/promotion/returnVisit';
+	layui.use(['table','form','jquery','count'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		count = layui.count;
+		let form = layui.form;
+
+		let startDate = $("#date1").val();
+		let endDate = $("#date2").val();
+		let promoterId = $("#promoterId").val();
+        let clubId = $(".clubId").val();
+		let zhishu = $("#zhishu").val();
+		let querystring = "";
+		let param = "";
+		if(startDate && endDate){
+			//初始化日期控件
+			dateOption = {"date1": startDate, "date2": endDate};
+		}
+
+		let cols = [
+			[
+				{field: 'userId', title: 'ID/方案名称', align: 'left',width: 85,templet: function (d) {
+						let strUserPlan = d.userId + "<br />";
+						strUserPlan += d.planTitle + "<br />";
+						return strUserPlan;
+					}},
+				//{field: 'planTitle', title: '方案名称', align: 'center',width: 100},
+				{field: 'joinPlanTime', title: '添加时间', align: 'left',width: 80,templet: function (d) {
+						let strTime1 = '无';
+						let time1 = '无';
+
+						if(d.joinPlanTime){
+							time1 = d.joinPlanTime.split(/\s+/)
+							strTime1 = '<p class = "line"><span>'+time1[0]+'</span></p>'
+							strTime1 += '<p class = "line"><span>'+time1[1]+'</span></p>'
+						}
+						return strTime1;
+					}},
+				{field: 'rewardMoney', title: '金额/天数', align: 'left',width: 80,templet: function (d) {
+						let strMoneyDays = d.rewardMoney + "<br />";
+						strMoneyDays += d.totalDays + "<br />";
+						return strMoneyDays;
+					}},
+				{field: 'betDays', title: '投注天数', align: 'left',width: 80,sort:true},
+				//{field: 'totalDays', title: '累计天数', align: 'center',width: 100},
+				{field: 'goldValidBet', title: '(金)投注量', align: 'left',width: 80,sort:true},
+				{field: 'clubValidBet', title: '(俱)投注量', align: 'left',width: 80,sort:true},
+				//{field: 'goldWinScore', title: '(金)玩家输赢', align: 'center',width: 110},
+				{field: 'clubWinScore', title: '金/俱(玩家输赢)', align: 'left',width: 100,templet: function (d) {
+						let strPlayerWinLose = d.goldWinScore + "<br />";
+						strPlayerWinLose += d.clubWinScore + "<br />";
+						return strPlayerWinLose;
+					}},
+				//{field: 'rechargeNum', title: '充值次数', align: 'center',width: 90},
+				{field: 'score', title: '余额/充值次数', align: 'left',width: 90,templet: function (d) {
+						let strRechargeAmount = d.score + "<br />";
+						strRechargeAmount += d.rechargeNum + "<br />";
+						return strRechargeAmount;
+					}},
+				{field: 'rechargeAmount', title: '充值/提现', align: 'left',width: 80,templet: function (d) {
+						let strDepositWithdraw = d.rechargeAmount + "<br />";
+						strDepositWithdraw += d.exchangeAmount + "<br />";
+						return strDepositWithdraw;
+					}},
+				{field: 'rechargeExchangeDiff', title: '充提亏盈', align: 'left',width: 80,sort:true},
+				{field: 'lastGoldBetTime', title: '(金)最近下注', align: 'left',width: 95,sort:true,templet: function (d) {
+						let strTime1 = '无</br>';
+						let time1 = '无';
+						if(d.lastGoldBetTime){
+							time1 = d.lastGoldBetTime.split(/\s+/)
+							strTime1 = '<p class = "line"><span>'+time1[0]+'</span></p>'
+							strTime1 += '<p class = "line"><span>'+time1[1]+'</span></p>'
+						}
+						return strTime1;
+					}},
+
+				{field: 'lastClubBetTime', title: '(俱)最近下注', align: 'left',width: 95,sort:true,templet: function (d) {
+						let strTime2 = '无';
+						let time2 = '无';
+						if(d.lastClubBetTime){
+							time2 = d.lastClubBetTime.split(/\s+/)
+							strTime2 = '<p class = "line"><span>'+time2[0]+'</span></p>'
+							strTime2 += '<p class = "line"><span>'+time2[1]+'</span></p>'
+						}
+						return strTime2;
+					}},
+				,{field: 'details', title: '详情', align: 'left', width: 90,templet: function (d) {
+						let startDate = $("#date1").val();
+						let endDate = $("#date2").val();
+
+						// startDate = (new Date(startDate)).getTime();
+						// startDate = new Date(startDate).format("yyyy-MM-dd");
+						//
+						// endDate = (new Date(endDate)).getTime();
+						// endDate = new Date(endDate).format("yyyy-MM-dd");
+
+						let strClub =   '<a onclick="openNewTab(this)" lay-href="/club/userIncomeStat?startDate='+startDate+'&endDate='+endDate+'&userId='+d.userId+'" data-name="'+d.userId+'俱乐部盈利统计" lay-text="ID:'+d.userId+'俱乐部盈利统计" style="color: deepskyblue;font-weight: bold">俱乐部游戏详情</a></br>';
+						let strCoin =   '<a onclick="openNewTab(this)" lay-href="/player/userIncomeStat?startDate='+startDate+'&endDate='+endDate+'&userId='+d.userId+'" data-name="'+d.userId+'金币场盈利统计" lay-text="ID:'+d.userId+'金币场盈利统计" style="color: deepskyblue;font-weight: bold">金币场游戏详情</a></br>';
+						return strClub + strCoin;
+				}}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+            url: tableUrl + querystring,
+			page: true ,
+			limit: 20,
+			cols: cols ,
+			skin: 'line',
+			height:650,
+			autoSort:false,
+			done: function(res, curr, count){
+				let queryFormData = form.val("queryForm");
+				window.tableSummary({"submitUrl": '/promotion/userPlanStatSummary', "data": queryFormData, "selIds": 'rechargePeopleNums,depositWithdrawSum,giveScoreNums,rewardMoneySum,goldValidBetSum,clubValidBetSum,goldWinScoreSum,clubWinScoreSum,rechargeAmountSum,exchangeAmountSum,totalScoreSum'});
+			}
+		});
+
+		table.on('sort(listTable1)', function(obj){
+			let queryFormData = form.val("queryForm");
+			table.reload('table1', {
+				initSort: obj
+				,where: $.extend(queryFormData, {field: obj.field, order: obj.type})
+			});
+		});
+
+		form.on('submit(query)', function(data){
+			//console.log(data.field);
+            if(isNaN(data.field.userId)){
+                data.field.userId = 1
+            }
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+		form.on('submit(export)', function(data){
+			let loading = layer.load();
+			$.ajax({
+				url: '/promotion/exportUserPlanStat',
+				data: data.field,
+				type: 'post',
+				success:function(res){
+					layer.close(loading);
+					if(res.code == 0){
+						window.open('/player/download?file='+res.file);
+					}else{
+						layer.msg(res.msg,{icon:2,time:1000});
+					}
+				}
+			})
+			return false;
+		});
+	})
+</script>
+<script>
+	// Date.prototype.format = function(fmt) {
+	// 	var o = {
+	// 		"M+": this.getMonth() + 1, //月份
+	// 		"d+": this.getDate(), //日
+	// 		"h+": this.getHours(), //小时
+	// 		"m+": this.getMinutes(), //分
+	// 		"s+": this.getSeconds(), //秒
+	// 		"q+": Math.floor((this.getMonth() + 3) / 3), //季度
+	// 		"S": this.getMilliseconds() //毫秒
+	// 	};
+	// 	if (/(y+)/.test(fmt)) {
+	// 		fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+	// 	}
+	// 	for (var k in o) {
+	// 		if (new RegExp("(" + k + ")").test(fmt)) {
+	// 			fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+	// 		}
+	// 	}
+	// 	return fmt;
+	// }
+</script>
+<script src="<?=$staticUrl ?>/static/laydateClub.js"></script>

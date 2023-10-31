@@ -1,0 +1,60 @@
+<?php
+    if($gameId==910) {
+        foreach($card as $key => $vo) {   
+?>        
+        <div class="layui-col-xs12 layui-col-sm12">
+            <div class="layui-status-img">
+                <span class="thick">
+                    <?=$vo['title'] ?>：
+                </span>                   
+                <?php 
+                    if($key < 2){
+                        foreach($vo['poker'] as $v1){ 
+                ?>
+                    <a href="javascript:;">
+                        <img src="<?=$staticUrl ?>/cards/common/<?=$v1 ?>.png" width="40px" height="50px">
+                    </a>
+                <?php 
+                        } 
+                    }
+                ?>
+                <span class="thick">
+                    <?php if($vo['dui']==1){ ?><span style="color: #008000">(对子)</span> <?php } ?>
+                </span>
+                <span class="thick">
+                    <?php if($vo['win']==1){ ?><span style="color: #ff0000">(赢)</span> <?php } ?>
+                </span>
+                    <span class="thick">
+                    <?php if($vo['win']==2){ ?><span style="color: #EEC900">(和)</span> <?php } ?>
+                </span>
+
+                <div class ="layui_user" style="width:350px">
+                    <?php 
+                        if($vo['userId']){
+                            foreach($vo['userId'] as $k1 => $v1){
+                    ?>                        	                           
+                                <?php
+                                    if($v1 == $currentUserId){
+                                ?>
+                                    <span class="user_id" style="color:#ff0000;"><?=$v1 ?>(自己)</span>
+                                <?php }else{ ?>
+                                    <span class="user_id"><?=$v1 ?></span>
+                                <?php } ?>
+                                
+                                <?php 
+                                    if(count($vo['userId']) > 8){
+                                ?>
+                                    <span class = "more" onclick="bet_user($(this))">更多</span>
+                                <?php } ?>                           
+                    <?php
+                            }
+                        } 
+                    ?>
+                </div>
+            </div>
+        </div>
+
+    <?php } ?>    
+<?php   
+    }
+?>

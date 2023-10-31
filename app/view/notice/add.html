@@ -1,0 +1,64 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">过期时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="expireTime" id="date1" lay-verify="required" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">标题</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="title" lay-verify="required" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">内容</label>
+                    <div class="layui-input-block">
+                        <textarea name="content" placeholder="请输入内容" class="layui-textarea" rows="10"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="status" value="0" title="关闭">
+                        <input type="radio" name="status" value="1" title="开启" checked>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">类型</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="type" value="0" title="普通" checked>
+                        <input type="radio" name="type" value="1" title="弹窗">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php include app_path() . "/view/public/tpl_form_bottom_save.html"; ?>
+</form>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    dateOption = {"date1": ''};
+    layui.use(['form','jquery'],function(){
+        $ = layui.jquery;
+        let form = layui.form;
+
+        //form.verify()
+        form.on('submit(save)', function(data){
+            /*let roleIds = "";
+            $('input[type=checkbox]:checked').each(function() {
+                roleIds += $(this).val()+",";
+            });
+            roleIds = roleIds.substr(0,roleIds.length-1);
+            data.field.roleIds = roleIds;*/
+            window.save({"submitUrl": '/notice/addPublicNotice', "data": data.field, "tableId": 'table1'});
+            return false;
+        });
+    })
+</script>
+<script src="<?=$staticUrl ?>/static/laydate.js"></script>

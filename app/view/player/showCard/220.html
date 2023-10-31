@@ -1,0 +1,76 @@
+<?php
+    if($gameId==220) {
+        $new = $card["new"];
+        $win = $card["win"];
+        unset($card["new"],$card["win"]);
+        if($new == 8) {
+
+            foreach($card as $key => $vo) {
+?>
+                <div class="layui-col-xs12 layui-col-sm12">
+                    <div class="layui-status-img">
+                        <span class="thick">
+                            座位：<?=$key ?> &nbsp;&nbsp;
+                        </span>
+                        <?php foreach($vo["card"] as $voo){ ?>
+                        <a href="javascript:;"><img src="<?=$staticUrl ?>/cards/common/<?=$voo ?>.png" width="40px" height="50px"></a>
+                        <?php } ?>
+                        <span class="thick">
+                            <?php if($key == $win){ ?><span style="color: #CF1900">(赢)</span> <?php } ?>
+                        </span>
+                    </div>
+                </div>
+<?php
+            }
+        }elseif($new == 10) {
+            foreach($card as $key => $vo) {
+?>
+                <div class="layui-col-xs12 layui-col-sm12">
+                    <div class="layui-status-img">
+                        <span class="thick">
+                            座位：<?=$key ?> &nbsp;&nbsp;
+                        </span>
+                        <?php foreach($vo["card"] as $key1 => $voo){ ?>
+                            <a href="javascript:;"><img src="<?=$staticUrl ?>/cards/common/<?=$voo ?>.png" width="40px" height="50px"></a>
+                        <?php } ?>
+                        <span class="thick"><?=$vo['cardType'] ?></span>
+                        <span class="thick">
+                            <?php if($key == $win){ ?><span style="color: #CF1900">(赢)</span> <?php } ?>
+                        </span>
+                        <span class="thick">
+                            <?php if($vo['giveUp'] == 1){ ?><span style="color: #f47920">(弃牌)</span> <?php } ?>
+                        </span>
+                        <span class="thick"><?php if(in_array($key, $betPosition)){ ?><img src="<?=$staticUrl ?>/cards/houtaitoux.png" width="32px" height="32px"><?php } ?></span>
+                        <?php foreach($vo as $k => $v1){ ?>
+                            <?php if($k == 'userId'){ ?>
+                                <div style="float:right; width:230px">
+                                    <?php 
+                                        if($v1) {
+                                            foreach($v1 as $k2 => $v2) {     
+                                    ?>
+                                            <?php
+                                                if($v2 == $currentUserId){
+                                            ?>
+                                                <span class="user_id" style=" color:#ff0000;line-height:50px;"><?=$v2 ?>(自己)</span>
+                                            <?php }else{ ?>
+                                                <span class="user_id" style="line-height:50px;"><?=$v2 ?></span>
+                                            <?php } ?>		
+                                    <?php 
+                                            }
+                                        }
+                                    ?>
+                                </div>
+                        <?php
+                                }
+                            } 
+                        ?>
+                    </div>
+
+                    
+                </div>
+
+<?php
+            }
+        }
+    }
+?>

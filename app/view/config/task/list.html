@@ -1,0 +1,214 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<div class="layui-tab layui-tab-brief">
+					<ul class="layui-tab-title">
+						<li class="layui-this">流水任务</li>
+						<li>胜局任务</li>
+						<!--<li>牌型任务</li>-->
+					</ul>
+					<div class="layui-tab-content">
+						<div class="layui-tab-item layui-show">
+							<table style="margin-top: 10px;" id="table1" lay-filter="listTable1"></table>
+						</div>
+						<div class="layui-tab-item">
+							<table style="margin-top: 10px;" id="table2" lay-filter="listTable2"></table>
+						</div>
+						<div class="layui-tab-item">
+							<table style="margin-top: 10px;" id="table3" lay-filter="listTable3"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<?php include app_path() . "/view/public/tpl_toolbar_add_batchRemove.html"; ?>
+		
+		<script type="text/html" id="bar">
+			<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
+		</script>
+
+		<?php include app_path() . "/view/public/tpl_switch_status01.html"; ?>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl1 = '/task/taskList?type=1';
+	let tableUrl2 = '/task/taskList?type=2';
+	let tableUrl3 = '/task/taskList?type=3';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols1 = [
+			[
+				{type:'checkbox'}
+				,{field: 'sortId', title: '排序', align: 'center', edit: 'text'}
+				, {field: 'title', title: '标题', align: 'center'}
+				, {field: 'gameName', title: '游戏', align: 'center'}
+				, {field: 'taskType', title: '任务类型', align: 'center', toolbar: '#taskType'}
+				, {field: 'roomName', title: '房间', align: 'center'}
+				, {field: 'reachNum', title: '达到数量', align: 'center'}
+				, {field: 'rewardScore', title: '奖励金币', align: 'center'}
+				, {field: 'createTime', title: '创建时间', align: 'center'}
+				, {field: 'taskCycle', title: '任务周期', align: 'center', toolbar: '#taskCycle'}
+				, {title: "操作", align: 'center', toolbar: '#bar'}
+			]
+		]
+
+		let cols2 = [
+			[
+				{type:'checkbox'}
+				,{field: 'sortId', title: '排序', align: 'center', edit: 'text'}
+				, {field: 'title', title: '标题', align: 'center'}
+				, {field: 'gameName', title: '游戏', align: 'center'}
+				, {field: 'taskType', title: '任务类型', align: 'center', toolbar: '#taskType'}
+				, {field: 'roomName', title: '房间', align: 'center'}
+				, {field: 'reachNum', title: '达到数量', align: 'center'}
+				, {field: 'rewardScore', title: '奖励金币', align: 'center'}
+				, {field: 'createTime', title: '创建时间', align: 'center'}
+				, {field: 'taskCycle', title: '任务周期', align: 'center', toolbar: '#taskCycle'}
+				, {title: "操作", align: 'center', toolbar: '#bar'}
+			]
+		]
+
+		let cols3 = [
+			[
+				{type:'checkbox'}
+				,{field: 'sortId', title: '排序', align: 'center', edit: 'text'}
+				, {field: 'title', title: '标题', align: 'center'}
+				, {field: 'gameName', title: '游戏', align: 'center'}
+				, {field: 'taskType', title: '任务类型', align: 'center', toolbar: '#taskType'}
+				, {field: 'roomName', title: '房间', align: 'center'}
+				, {field: 'reachNum', title: '达到数量', align: 'center'}
+				, {field: 'rewardScore', title: '奖励金币', align: 'center'}
+				, {field: 'createTime', title: '创建时间', align: 'center'}
+				, {field: 'taskCycle', title: '任务周期', align: 'center', toolbar: '#taskCycle'}
+				, {title: "操作", align: 'center', toolbar: '#bar'}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl1,
+			page: true ,
+			cols: cols1 ,
+			skin: 'line',
+			defaultToolbar: false,
+			toolbar: '#toolbar',
+			height:770
+		});
+
+		table.render({
+			elem: '#table2',
+			url: tableUrl2,
+			page: true ,
+			cols: cols2 ,
+			skin: 'line',
+			defaultToolbar: false,
+			toolbar: '#toolbar',
+            height:770
+		});
+
+		table.render({
+			elem: '#table3',
+			url: tableUrl3,
+			page: true ,
+			cols: cols3 ,
+			skin: 'line',
+			defaultToolbar: false,
+			toolbar: '#toolbar',
+            height:770
+		});
+
+
+		table.on('tool(listTable1)', function(obj){
+			console.log(obj);
+			if(obj.event === 'remove'){
+				window.remove(obj, {"_id": obj.data['_id'], "submitUrl": '/task/removeTask'});
+			}
+		});
+
+		table.on('toolbar(listTable1)', function(obj){
+			if(obj.event === 'add'){
+				window.add('/task/addTask?type=1', {"height": '600px'});
+			}else if(obj.event === 'batchRemove'){
+				window.batchRemove(obj, {"submitUrl": '/task/removeTask', "tableId": 'table1'});
+			}
+		});
+
+		table.on('tool(listTable2)', function(obj){
+			if(obj.event === 'remove'){
+				window.remove(obj, {"_id": obj.data['_id'], "submitUrl": '/task/removeTask'});
+			}
+		});
+		table.on('toolbar(listTable2)', function(obj){
+			if(obj.event === 'add'){
+				window.add('/task/addTask?type=2', {"height": '600px'});
+			} else if(obj.event === 'batchRemove'){
+				window.batchRemove(obj, {"submitUrl": '/task/removeTask', "tableId": 'table2'});
+			}
+		});
+
+		table.on('tool(listTable3)', function(obj){
+			if(obj.event === 'remove'){
+				window.remove(obj, {"_id": obj.data['_id'], "submitUrl": '/task/removeTask'});
+			}
+		});
+		table.on('toolbar(listTable3)', function(obj){
+			if(obj.event === 'add'){
+				window.add('/task/addTask?type=3', {"height": '600px'});
+			} else if(obj.event === 'batchRemove'){
+				window.batchRemove(obj, {"submitUrl": '/task/removeTask', "tableId": 'table3'});
+			}
+		});
+
+	})
+</script>
+<script type="text/html" id="taskType">
+	{{#  if(d.taskType == 2){ }}
+	<span class="layui-btn layui-btn-xs layui-btn-normal">胜局任务</span>
+	{{#  } else if(d.taskType == 3) { }}
+	<span class="layui-btn layui-btn-xs layui-btn-normal">牌型任务</span>
+	{{#  } else if(d.taskType == 1) { }}
+	<span class="layui-btn layui-btn-xs layui-btn-normal">流水任务</span>
+	{{#  } else { }}
+	<span class="layui-btn layui-btn-xs layui-btn-disabled">未知任务</span>
+	{{#  } }}
+</script>
+<script type="text/html" id="taskCycle">
+	{{#  if(d.taskCycle == 2){ }}
+	<span class="layui-btn layui-btn-xs layui-btn-normal">每日奖励</span>
+	{{#  } else if(d.taskCycle == 3) { }}
+	<span class="layui-btn layui-btn-xs layui-btn-normal">每周奖励</span>
+	{{#  } else if(d.taskCycle == 1) { }}
+	<span class="layui-btn layui-btn-xs layui-btn-normal">一次性奖励</span>
+	{{#  } else { }}
+	<span class="layui-btn layui-btn-xs layui-btn-disabled">未知奖励</span>
+	{{#  } }}
+
+</script>
+
+<style>
+    .pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 670px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 0;
+		width: 100%;
+       height: 40px;
+       z-index: 1000;
+       background: white;
+    }
+	.layui-table-body .layui-table-cell{
+		height: 37px !important;
+		line-height: 37px !important;
+	}
+</style>

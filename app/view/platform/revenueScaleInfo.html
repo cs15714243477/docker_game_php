@@ -1,0 +1,234 @@
+<style>
+	.layui-table-header th{
+		background-color: #D7D7D7 !important;
+		font-weight: bold;
+	}
+	.pear-btn-selected {
+		color: #fff !important;
+		background-color: #000000 !important;
+		border: #5FB878;
+	}
+</style>
+<div>
+	<div class="layui-row layui-col-space10">
+		<div class="layui-col-md10">
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-md12">
+					<div class="layui-card">
+						<div class="layui-card-body">
+							<div class="layui-form " style="margin-bottom: 5px" lay-filter="platForm2">
+								<div class="layui-inline">
+									<input class="layui-input" id="dateValue2" name="dateValue2" placeholder="时间" type="text" value="">
+									<input class="layui-input" id="typeReve" name="typeReve" type="hidden" value="9">
+								</div>
+								<div class="layui-inline">
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn9"  onclick="getEcharts2(9);">付费用户</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn10" onclick="getEcharts2(10);">首充用户</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn11" onclick="getEcharts2(11);">首充金额</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn12" onclick="getEcharts2(12);">二次充值比例</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn13" onclick="getEcharts2(13);">系统税收</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn14" onclick="getEcharts2(14);">游戏输赢</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn15" onclick="getEcharts2(15);">代理佣金</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn16" onclick="getEcharts2(16);">官方盈亏</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn17" onclick="getEcharts2(17);">提现</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn18" onclick="getEcharts2(18);">充值</button>
+								</div>
+
+							</div>
+							<div id="container2" style="width:100%;height:400px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md2">
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-md12">
+					<div class="layui-inline" style="float:right;">
+						<button type="button" class="pear-btn pear-btn-sm">
+							<i class="layui-icon layui-icon-help" style="font-size: 30px" lay-width="500px" lay-tips="
+                                <span style='color: #000000;'><b>付费用户: </b>当天的充值用户数(去重),包含新老充值用户</span><br/><hr />
+                                <span style='color: #000000;'><b>首充用户: </b>首次充值的用户数</span><br/><hr />
+                                <span style='color: #000000;'><b>首充金额: </b>首次充值用户当天累计充值金额</span><br/><hr />
+                                <span style='color: #000000;'><b>二次充值比例: </b>当天充值用户中，两次以上付费人数占比</span><br/><hr />
+                                <span style='color: #000000;'><b>官方税收: </b>平台所有游戏累计税收</span><br/><hr />
+                                <span style='color: #000000;'><b>游戏输赢: </b>平台所有机器人与真实会员的对战盈余</span><br/><hr />
+                                <span style='color: #000000;'><b>代理佣金: </b>当天所产生的代理佣金总额</span><br/><hr />
+                                <span style='color: #000000;'><b>官方盈亏: </b>官方税收+游戏输赢-代理佣金-奖励金额</span><br/><hr />
+                                <span style='color: #000000;'><b>提现: </b>当天所有的成功出款总额</span><br/><hr />
+                                <span style='color: #000000;'><b>充值:: </b>当天所有充值渠道的总收入</span><br/><hr />
+
+                                "></i>
+						</button>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	Highcharts.SVGRenderer.prototype.symbols.download = function (x, y, w, h) {
+		var path = [
+			// Arrow stem
+			'M', x + w * 0.5, y,
+			'L', x + w * 0.5, y + h * 0.7,
+			// Arrow head
+			'M', x + w * 0.3, y + h * 0.5,
+			'L', x + w * 0.5, y + h * 0.7,
+			'L', x + w * 0.7, y + h * 0.5,
+			// Box
+			'M', x, y + h * 0.9,
+			'L', x, y + h,
+			'L', x + w, y + h,
+			'L', x + w, y + h * 0.9
+		];
+		return path;
+	};
+
+	let options = {
+		chart: {
+			type: 'line'                          //指定图表的类型，默认是折线图（line）
+		},
+		title: {
+			text: '付费用户'                 // 标题
+		},
+		xAxis: {
+			title: {
+				text: '日期'
+			},
+			categories: []   // x 轴分类
+		},
+		yAxis: {
+			title: {
+				text: '数量'                // y 轴标题
+			}
+		},
+		series: [
+			{                              // 数据列
+				name: '付费用户',                        // 数据列名
+				data: []                     // 数据
+			}
+		],
+		exporting: {
+			buttons: {
+				exportButton: {
+					text: '导出excel',
+					onclick: function () {
+						this.downloadXLS();
+					},
+					symbol:'download',
+				},
+				contextButton: {
+					enabled: false
+				}
+			}
+		},
+		credits : {
+			enabled : false
+		},
+	};
+
+	let options12 = {
+		chart: {
+			type: 'line'
+		},
+		title: {
+			text: '二次充值比例'
+		},
+		xAxis: {
+			title: {
+				text: '日期'
+			},
+			categories: []
+		},
+		yAxis: {
+			title: {
+				text: '数量'
+			},
+			labels: {
+				formatter: function() {
+					return this.value+"%";
+				}
+			}
+		},
+		plotOptions: {
+			series: {
+				dataLabels: {
+					enabled: true,
+					format: '{y} %'
+				}
+			},
+			enableMouseTracking: false
+		},
+		tooltip: {
+			pointFormat: '{point.y:.2f}%'
+		},
+		series: [
+			{
+				name: '二次充值比例',
+				data: []
+			},
+		],
+		exporting: {
+			buttons: {
+				exportButton: {
+					text: '导出excel',
+					onclick: function () {
+						this.downloadXLS();
+					},
+					symbol:'download',
+				},
+				contextButton: {
+					enabled: false
+				}
+			}
+		},
+		credits : {
+			enabled : false
+		}
+	};
+	dateOption = {"dateId": 'dateValue2', "callback": getEcharts2};
+	getEcharts2(0, '');
+	function getEcharts2 (type, dateRange = ''){
+		let loading = layer.load(1, {
+			shade: false,
+			time: 2*1000
+		});
+		if (type == 0) {
+
+			type = $("#typeReve").val();
+
+		} else {
+			$("#typeReve").val(type);
+		}
+
+		if (dateRange == '') {
+			dateRange = $("#dateValue").val();
+		}
+		$.post('/platform/revenueScalePart',{"type":type, "dateRange":dateRange},function (res) {
+			console.log(res);
+
+			layer.close(loading);
+			if(type == 12){
+				options12.title.text = res.data.title;
+				options12.xAxis.categories = res.data.categories;
+				options12.series[0].name = res.data.series_name;
+				options12.series[0].data = res.data.series_data;
+				let chart = Highcharts.chart('container2', options12);
+			}else{
+				options.title.text = res.data.title;
+				options.xAxis.categories = res.data.categories;
+				options.series[0].name = res.data.series_name;
+				options.series[0].data = res.data.series_data;
+				options.yAxis.title.text = res.data.ytitle;
+				let chart = Highcharts.chart('container2',options);
+			}
+			$("#searchBtn"+type).addClass("pear-btn-selected");
+			$("#searchBtn"+type).siblings().removeClass("pear-btn-selected");
+		},'json')
+	};
+
+</script>
+<script src="<?=$staticUrl ?>/static/laydateYmdRange.js"></script>

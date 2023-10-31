@@ -1,0 +1,32 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">热更地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="updateUrl" lay-verify="required" autocomplete="off" placeholder="请输入热更地址" class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php include app_path() . "/view/public/tpl_form_bottom_save.html"; ?>
+</form>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    dateOption = {"date1": ''};
+    layui.use(['form','jquery'],function(){
+        $ = layui.jquery;
+        let form = layui.form;
+
+        //form.verify()
+        form.on('submit(save)', function(data){
+            window.save({"submitUrl": '/gameUpdate/addGameUpdate', "data": data.field, "tableId": 'table1'});
+            return false;
+        });
+    })
+</script>
+<script src="/static/laydate.js"></script>

@@ -1,0 +1,83 @@
+<?php
+    if($gameId==210) {
+        foreach($card as $key => $vo) {
+?>
+            <div class="layui-col-xs12 layui-col-sm12">
+                <div class="layui-status-img">
+                    <span class="thick">
+                        <?php if($key==0){ ?>黑：<?php }elseif($key==1){ ?>红：<?php }else{ ?>倍：<?php } ?>
+                    </span>
+
+                    <?php 
+                        if($key < 3){
+                            foreach($vo as $k1 => $v1){ 
+                                if($k1 != "userId"){
+                    ?>          
+                                    <?php if($k1 < 3){  ?>
+                                        <?php if($key < 2){ ?>
+                                            <a href="javascript:;">
+                                                <img src="<?=$staticUrl ?>/cards/common/<?=$v1 ?>.png" width="40px" height="50px">
+                                            </a>
+                                        <?php } ?>
+                                    <?php 
+                                        }else{
+                                            if($v1 > 0){
+                                                echo '<font color="red" style="position: absolute;left:170px;">赢</font>';
+                                            }else{
+                                                echo '<font color="green" style="position: absolute;left:170px;">输</font>';
+                                            }
+                                        }                                           
+                                    ?>   
+                          <?php }else{ ?>
+                                    
+                                    <div class ="layui_user" style="width: 485px;">
+                                        <?php
+
+                                            if($v1) {
+                                                foreach($v1 as $k2 => $v2) {
+                                        ?>
+
+                                                 <?php
+                                                      if($v2 != $bankerId){
+                                                 ?>
+                                                        <?php
+                                                            if($v2 == $currentUserId){
+                                                        ?>
+                                                            <span class="user_id" style=" color:#ff0000;"><?=$v2 ?>(自己)</span>
+                                                        <?php }else{ ?>
+                                                            <span class="user_id"><?=$v2 ?></span>
+                                                <?php
+                                                            }
+                                                        }
+                                                    }
+                                                ?>
+                                                <?php 
+                                                    if(count($v1) > 12){
+                                                ?>
+                                                    <span class = "more" onclick="bet_user($(this))">更多</span>
+                                                <?php } ?>                                        
+                                            <?php         
+                                                }
+                                            ?>
+                                    </div>
+                    <?php 
+                                } 
+                            }
+                        } 
+                    ?>
+                </div>
+            </div>
+<?php } ?>
+        <span class="thick">
+            庄:&nbsp;
+        </span>
+        <?php if($bankerId == $currentUserId){?>
+            <span>(自己)</span>
+        <?php } ?>
+        <?php if($bankerId > 0){?>
+            <span><?=$bankerId ?></span>
+        <?php } ?>
+<?php } ?>
+
+
+

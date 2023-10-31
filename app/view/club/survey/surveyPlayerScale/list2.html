@@ -1,0 +1,394 @@
+<style>
+    /*.s-w{width: 100px}*/
+    .layui-fluid {padding: 10px;}
+    .layui-card-body {padding: 10px 10px;}
+    /*.layui-table-tool {padding-bottom: 0px;background-color:#FFFFFF;}*/
+</style>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-form " style="margin-bottom: 10px" lay-filter="platForm2">
+                        <div class="layui-inline">
+                            <input class="layui-input" id="dateValue" name="dateValue" placeholder="时间" type="text" value="">
+                        </div>
+                        <!--
+
+
+                         <div class="layui-inline s-w">
+                            <select name="user" id="user" class="layui-select" lay-filter="status">
+                                <option value="3">全体用户</option>
+                                <option value="1">代理用户</option>
+                                <option value="2">独立用户</option>
+                            </select>
+                        </div>
+                        <div class="layui-inline s-w">
+                            <select name="platform" id="platform" class="layui-select" lay-filter="platform">
+                                <option value="4">全平台</option>
+                                <option value="3">pc</option>
+                                <option value="2">安卓</option>
+                                <option value="1">苹果</option>
+                            </select>
+                        </div>
+
+
+
+                        -->
+                        <div class="layui-inline">
+                            <!--
+                            <button class="layui-btn" lay-submit lay-filter="searchBtn2" name="searchBtn2" value="3"><i class="layui-icon">&#xe615;</i></button>
+                            -->
+                            <button style="margin-left: 1px;" class="layui-btn" lay-submit lay-filter="searchBtn3" name="searchBtn3" id="searchBtn3" onclick="search_type(3);">新增用户</button>
+                            <button style="margin-left: 1px; background-color: #20222A;" class="layui-btn" lay-submit lay-filter="searchBtn4" name="searchBtn4" id="searchBtn4" onclick="search_type(4);">有效新增</button>
+                            <button style="margin-left: 1px; background-color: #20222A;" class="layui-btn" lay-submit lay-filter="searchBtn5" name="searchBtn5" id="searchBtn5" onclick="search_type(5);">注册用户</button>
+                            <button style="margin-left: 1px; background-color: #20222A;" class="layui-btn" lay-submit lay-filter="searchBtn6" name="searchBtn6" id="searchBtn6" onclick="search_type(6);">活跃用户</button>
+                            <button style="margin-left: 1px; background-color: #20222A;" class="layui-btn" lay-submit lay-filter="searchBtn7" name="searchBtn7" id="searchBtn7" onclick="search_type(7);">游戏人数</button>
+                            <button style="margin-left: 1px; background-color: #20222A;" class="layui-btn" lay-submit lay-filter="searchBtn19" name="searchBtn19" id="searchBtn19" onclick="search_type(19);">新增次日留存</button>
+                            <button style="margin-left: 1px; background-color: #20222A;" class="layui-btn" lay-submit lay-filter="searchBtn8" name="searchBtn8" id="searchBtn8" onclick="search_type(8);">累计用户</button>
+                        </div>
+                        <div class="layui-inline" style="float:right;">
+                            <button type="button" class="layui-btn layui-btn-sm">
+                                <i class="layui-icon layui-icon-help" style="font-size: 30px;" lay-width="450px" lay-tips="
+                               <span><i style='color: #1E9FFF;'>新增用户：</i>首次启动应用的用户</span><br />
+                               <span><i style='color: #1E9FFF;'>有效新增：</i>游戏记录>=2新增用户(包含体验场)</span><br />
+                               <span><i style='color: #1E9FFF;'>注册用户：</i>成功绑定手机的用户数</span><br />
+                               <span><i style='color: #1E9FFF;'>活跃用户：</i>当天启动应用的用户(去重),包含新老用户</span><br />
+                               <span><i style='color: #1E9FFF;'>游戏人数：</i>当天有对局记录的活跃用户(包含体验场)</span><br />
+                               <span><i style='color: #1E9FFF;'>新增用户次日留存：</i>昨天的新增用户,今天登陆的比例</span><br />
+                               <span><i style='color: #1E9FFF;'>当前在线：</i>当前同时在线人数，每5分钟刷新一次</span><br />
+                               <span><i style='color: #1E9FFF;'>累计用户：</i>时间段内，累计新增用户数</span><br />
+                               <span><i style='color: #1E9FFF;'>付费用户：</i>当天的充值用户数(去重),包含新老充值用户</span><br />
+                               <span><i style='color: #1E9FFF;'>首充用户：</i>首次充值的用户数</span><br />
+                               <span><i style='color: #1E9FFF;'>首充金额：</i>首次充值用户当天累计充值金额</span><br />
+                               <span><i style='color: #1E9FFF;'>二次充值比例：</i>当天充值用户中，两次以上付费人数占比</span><br />
+                               <span><i style='color: #1E9FFF;'>官方税收: </i>平台所有游戏累计税收</span><br />
+                               <span><i style='color: #1E9FFF;'>游戏输赢: </i>平台所有机器人与真实会员的对战盈余</span><br />
+                               <span><i style='color: #1E9FFF;'>代理佣金: </i>当天所产生的代理佣金总额</span><br />
+                               <span><i style='color: #1E9FFF;'>官方盈亏: </i>官方税收+游戏输赢-代理佣金</span><br />
+                               <span><i style='color: #1E9FFF;'>提现: </i>当天所有的成功出款总额</span><br />
+                               <span><i style='color: #1E9FFF;'>充值: </i>当天所有充值渠道的总收入</span><br />
+                                "></i>
+                            </button>
+                        </div>
+                        <div class="layui-inline" style="margin-top: 10px;">
+
+                        </div>
+
+                    </div>
+
+                    <div id="container" style="width:100%;height:400px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    Highcharts.SVGRenderer.prototype.symbols.download = function (x, y, w, h) {
+        var path = [
+            // Arrow stem
+            'M', x + w * 0.5, y,
+            'L', x + w * 0.5, y + h * 0.7,
+            // Arrow head
+            'M', x + w * 0.3, y + h * 0.5,
+            'L', x + w * 0.5, y + h * 0.7,
+            'L', x + w * 0.7, y + h * 0.5,
+            // Box
+            'M', x, y + h * 0.9,
+            'L', x, y + h,
+            'L', x + w, y + h,
+            'L', x + w, y + h * 0.9
+        ];
+        return path;
+    };
+    var options = {
+        chart: {
+            type: 'line'                          //指定图表的类型，默认是折线图（line）
+        },
+        title: {
+            text: '新增用户'                 // 标题
+        },
+        xAxis: {
+            title: {
+                text: '日期'
+            },
+            categories: []   // x 轴分类
+        },
+        yAxis: {
+            title: {
+                text: '数量'                // y 轴标题
+            }
+        },
+        series: [
+            {                              // 数据列
+                name: '新增用户',                        // 数据列名
+                data: []                     // 数据
+            }
+        ],
+        exporting: {
+            buttons: {
+                exportButton: {
+                    text: '导出excel',
+                    onclick: function () {
+                        this.downloadXLS();
+                    },
+                    symbol:'download',
+                },
+                contextButton: {
+                    enabled: false
+                },
+                // contextButton: {
+                //     onclick: function () {
+                //         this.downloadXLS();
+                //     },
+                //     //symbolStroke: "red",
+                //     text: '导出excel',
+                //     //symbol:'download',
+                //     //symbol: 'url(http://geodev.grid.unep.ch/images/button_download.png)'
+                //     // x:10,
+                //     // y:10
+                //    // {
+                //     //    textKey: 'downloadXLS',
+                //     //     onclick: function () {
+                //     //         this.downloadXLS();
+                //     //     }
+                //     //},
+                //     // {
+                //     //     textKey: 'downloadCSV',
+                //     //     onclick: function () {
+                //     //         this.downloadCSV();
+                //     //     }
+                //     // }
+                //
+                // }
+            }
+        },
+        // navigation: {
+        //     buttonOptions: {
+        //         enabled: true,
+        //         height: 40,
+        //         width: 48,
+        //         symbolSize: 24,
+        //         symbolX: 23,
+        //         symbolY: 21,
+        //         symbolStrokeWidth: 2
+        //     }
+        // },
+        credits : {
+            enabled : false
+        },
+    };
+
+    var options7 = {
+        chart: {
+            type: 'line'                          //指定图表的类型，默认是折线图（line）
+        },
+        title: {
+            text: '新增用户'                 // 标题
+        },
+        xAxis: {
+            title: {
+                text: '日期'
+            },
+            categories: []   // x 轴分类
+        },
+        yAxis: {
+            title: {
+                text: '数量'                // y 轴标题
+            }
+        },
+        series: [
+            {                              // 数据列
+                name: '金币场',                        // 数据列名
+                data: []                     // 数据
+            },
+            {                              // 数据列
+                name: '好友房',                        // 数据列名
+                data: []                     // 数据
+            },
+            {                              // 数据列
+                name: '俱乐部',                        // 数据列名
+                data: []                     // 数据
+            },
+        ],
+        exporting: {
+            buttons: {
+                exportButton: {
+                    text: '导出excel',
+                    onclick: function () {
+                        this.downloadXLS();
+                    },
+                    symbol:'download',
+                },
+                contextButton: {
+                    enabled: false
+                },
+            }
+        },
+        credits : {
+            enabled : false
+        },
+    };
+
+    var options19 = {
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: '新增次日留存'
+        },
+        xAxis: {
+            title: {
+                text: '日期'
+            },
+            categories: []
+        },
+        yAxis: {
+            title: {
+                text: '数量'
+            },
+            labels: {
+                formatter: function() {
+                    return this.value+"%";
+                }
+            }
+        },
+        plotOptions: {
+            series: {
+                dataLabels: {
+                    enabled: true,
+                    format: '{y} %'
+                }
+            },
+            enableMouseTracking: false
+        },
+        tooltip: {
+            pointFormat: '{point.y:.2f}%'
+        },
+        series: [
+            {
+                name: '新增次日留存',
+                data: []
+            },
+        ],
+        exporting: {
+            buttons: {
+                exportButton: {
+                    text: '导出excel',
+                    onclick: function () {
+                        this.downloadXLS();
+                    },
+                    symbol:'download',
+                },
+                contextButton: {
+                    enabled: false
+                }
+            }
+        },
+        credits : {
+            enabled : false
+        }
+    };
+
+    $(document).ready(function() {
+        var loading = layer.load(1, {
+            shade: false,
+            time: 2*1000
+        });
+        $.post('platform.php?get=userScalePart',function (res) {
+            layer.close(loading);
+            options.title.text = res.data.title;
+            options.xAxis.categories = res.data.categories;
+            options.series[0].name = res.data.series_name;
+            options.series[0].data = res.data.series_data;
+            var chart = Highcharts.chart('container',options);
+        },'json')
+    });
+    var before7 = getDay(-7);
+    var curentday = getDay(0);
+    var datestr = before7+' ~ '+curentday;
+    initdateValue(datestr);
+    function search_type(user_type) {
+        form.on('submit(searchBtn'+user_type+')', function(data){
+            var loading = layer.load(1, {
+                shade: false,
+                time: 2*1000
+            });
+            var dateValue   = data.field.dateValue;
+            $.post('platform.php?get=userScalePart',{dateValue:dateValue,userType:user_type},function (res) {
+                layer.close(loading);
+                if(user_type == 19){
+                    options19.title.text = res.data.title;
+                    options19.xAxis.categories = res.data.categories;
+                    options19.series[0].name = res.data.series_name;
+                    options19.series[0].data = res.data.series_data;
+                    var chart = Highcharts.chart('container', options19);
+                }else{
+                    if(user_type == 7){
+                        options7.title.text = res.data.title;
+                        options7.xAxis.categories = res.data.categories;
+                        options7.series[0].name = "金币场";
+                        options7.series[0].data = res.data.series_data.gold_coin;
+                        options7.series[1].name = "好友房";
+                        options7.series[1].data = [12, 59, 81, 11, 89, 11, 18, 18]
+                        options7.series[2].name = "俱乐部"
+                        options7.series[2].data = [8, 48, 5, 48, 89, 16, 74, 11]
+                        var chart = Highcharts.chart('container', options7);
+                    }else{
+                        options.title.text = res.data.title;
+                        options.xAxis.categories = res.data.categories;
+                        options.series[0].name = res.data.series_name;
+                        options.series[0].data = res.data.series_data;
+                        var chart = Highcharts.chart('container', options);
+                    }
+
+                }
+                //$("#searchBtn"+user_type).addClass("layui-btn-normal");
+
+                //$("#searchBtn"+user_type).addClass("layui-btn-normal");//background-color: #0C0C0C
+                $("#searchBtn"+user_type).removeAttr("style","background-color");
+                $("#searchBtn"+user_type).attr("style","margin-left: 1px;");
+                $.each([3,4,5,6,7,8,19], function(index, value) {
+                    if(value != user_type){
+                        $("#searchBtn"+value).removeClass("layui-btn-normal");
+                        //$("#searchBtn"+value).removeAttr("style","background-color");
+                        $("#searchBtn"+value).attr("style","background-color: #20222A;margin-left: 1px;");
+                    }
+                });
+                if(dateValue){
+                    initdateValue(dateValue);
+                }else{
+                    initdateValue(datestr);
+                }
+            },'json')
+            return false;
+        });
+    }
+
+    function initdateValue(dateValue) {
+        laydate.render({
+            elem: '#dateValue',
+            type:'date',
+            range: '~',
+            format: 'yyyy-MM-dd',
+            min: -365,
+            max: 'laydate.now()',
+            value:dateValue,
+            change: function(dateValue){
+                var d = dateValue.split(' ~ ');
+                var s = new Date(d[0]);
+                var e = new Date(d[1]);
+                var d=(e-s)/(1000*60*60*24);
+                if(d>60){
+                    alert('最多选择60天'); return false;
+                }
+            }
+        });
+    }
+
+
+
+</script>
+

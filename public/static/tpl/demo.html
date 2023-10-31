@@ -1,0 +1,46 @@
+layui常用tpl
+
+表头上按钮
+<script type="text/html" id="toolbar">
+    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
+        <i class="layui-icon layui-icon-add-1"></i>
+        新增
+    </button>
+    <button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove">
+        <i class="layui-icon layui-icon-delete"></i>
+        删除
+    </button>
+</script>
+table.on('toolbar(table1)', function(obj){
+if(obj.event === 'add'){
+window.add(MODULE_PATH + 'addAdminRole');
+} else if(obj.event === 'refresh'){
+window.refresh('role-table');
+} else if(obj.event === 'batchRemove'){
+window.batchRemove(obj);
+}
+});
+
+表格行操作
+<script type="text/html" id="bar">
+    <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></button>
+    <button class="pear-btn pear-btn-warming pear-btn-sm" lay-event="power"><i class="layui-icon layui-icon-vercode"></i></button>
+    <button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
+</script>
+table.on('tool(table1)', function(obj){
+if(obj.event === 'remove'){
+window.remove(obj);
+} else if(obj.event === 'edit'){
+window.edit(MODULE_PATH + 'addAdminRole');
+} else if(obj.event === 'power'){
+window.power(MODULE_PATH + 'addAdminRole');
+}
+});
+
+switch
+<script type="text/html" id="enable">
+    <input type="checkbox" name="enable" value="{{d.id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="user-enable" checked = "{{ d.id == 10003 ? 'true' : 'false' }}">
+</script>
+form.on('switch(enable)', function(obj){
+layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+});

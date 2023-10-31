@@ -1,0 +1,204 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+
+	.pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 650px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 5px;
+		width: 100%;
+       height: 40px;
+       z-index: 1000;
+       background: white;
+		left:10px;
+    }
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="status" lay-filter="status">
+								<option value="">账号状态</option>
+								<option value="0">停用</option>
+								<option value="1">启用</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="searchType" id="searchType">
+								<option value="1" selected="selected">盟主ID</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 250px">
+							<input type="text" id="searchValue" name="searchValue" autocomplete="off" placeholder="请输入查询内容" class="layui-input" value="">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="add">
+							<i class="pear-icon pear-icon-add"></i>
+							添加
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script type="text/html" id="releate">
+	<span class="pear-btn pear-btn-primary pear-btn-sm" lay-event="detail">详情</span>
+</script>
+<script type="text/html" id="gameConfig">
+	<span class="pear-btn pear-btn-primary pear-btn-sm" lay-event="gconfig">配置</span>
+</script>
+<script>
+	//dateOption = {"date1": '', "date2": ''};
+	let tableUrl = '/club/clubList';
+	layui.use(['table','form','jquery','upload'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		upload = layui.upload;
+		let form = layui.form;
+
+		var clubId = $("#searchValue").val();
+
+		var querystring
+		if(clubId){
+			querystring = '?searchType=1'+'&searchValue='+clubId;
+		}else{
+			querystring = '';
+		}
+
+		let cols = [
+			[
+				{field:'clubId',title:"盟主ID", align:'center'}
+				,{field:'clubName', title: '俱乐部名称' ,align:'center'}
+				, {field: 'clubIconUrl', title: '图标', width:200, align: 'center', toolbar: '#upload'}
+				,{field:'qq', title: '联系QQ' ,align:'center'}
+				,{field:'tel', title: '联系电话' ,align:'center'}
+				,{field:'realMemberNum', title: '真实人数' ,align:'center', templet: function (d) {
+					return d.realMemberNum ?? 0;
+				}}
+				,{field:'showMemberNum', title: '虚拟人数' ,align:'center', templet: function (d) {
+					return d.showMemberNum ?? 0;
+				}}
+				,{field:'enableAndroid', title:'机器人', align:'center', toolbar: '#statusSwitch'}
+				,{field:'globalMatch', title:'全局匹配', align:'center', toolbar: '#globalSwitch'}
+				,{field:'minAndroidTable', title:'桌数(最小)', align:'center', edit:'text'}
+				,{field:'maxAndroidTable', title:'桌数(最大)', align:'center', edit:'text'}
+				, {fixed: 'right', title: '详情', align: 'center', width: 80, toolbar: '#releate'}
+				, {fixed: 'right', title: '游戏配置', align: 'center', toolbar: '#gameConfig'}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl+ querystring,
+			page: true ,
+			cols: cols ,
+			skin: 'line',
+			toolbar: '#toolbar',
+			defaultToolbar: ['filter'],
+			height:730,
+			done: function(res, curr, count){
+				let queryFormData = form.val("queryForm");
+				let tableElem = this.elem;
+				let tableViewElem = tableElem.next();
+				upload.render({
+					elem: tableViewElem.find('.test-upload-size')
+					,url: '/club/clubIconUpload'
+					,accept: 'file'
+					,before: function(){
+						this.url += '?clubId=' + this.item.attr('id');
+						layer.load();
+					}
+					,done: function(res, index, upload){
+						layer.msg(res.msg);
+						layer.closeAll('loading');
+						layui.table.reload('table1');
+					}
+					,error: function(index, upload){
+						layer.closeAll('loading');
+					}
+				})
+			}
+		});
+
+		form.on('submit(add)', function(data){
+			//console.log(data.field);
+			window.add('/club/addClub', {"height": '600px'});
+			return false;
+		});
+
+		form.on('submit(query)', function(data){
+			//console.log(data.field);
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+		form.on('switch(statusSwitch)', function(obj){
+			window.switch01(obj, {"submitUrl": '/club/clubRobotStatus', "field": 'enableAndroid'});
+		});
+
+		form.on('switch(globalSwitch)', function(obj){
+			window.switch01(obj, {"submitUrl": '/club/clubGlobalMatch', "field": 'globalMatch'});
+		});
+
+		table.on('edit(listTable1)', function(obj){
+			window.editTableNum(obj, {"submitUrl": '/club/editMoTabNum'});
+		});
+
+		table.on('tool(listTable1)', function(obj){
+			if(obj.event === 'detail'){
+				window.agentdetail('/club/clubDetail?clubId='+obj.data['clubId'], {"width": '800px', "height": '600px'});
+			}
+			if(obj.event === 'gconfig'){
+				window.agentdetail('/club/clubGameCon?clubId='+obj.data['clubId'], {"width": '800px', "height": '600px'});
+			}
+		});
+	})
+</script>
+<script type="text/html" id="statusSwitch">
+	<input type="checkbox" name="serviceSwitch" value="{{d._id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="statusSwitch" {{ d.enableAndroid == 1 ? 'disabled' : '' }} {{ d.enableAndroid == 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="globalSwitch">
+	<input type="checkbox" name="globalSwitch" value="{{d._id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="globalSwitch"  {{ d.clubId == 1000 ? 'disabled' : '' }} {{ d.globalMatch == 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="upload">
+	<img src="{{d.clubIconUrl}}" width="30" height="30" onerror="this.src='/error.jpg'" />
+	<button class="layui-btn layui-btn-danger test-upload-size" id="{{d.clubId}}">
+		<i class="layui-icon"></i>上传图片
+	</button><input class="layui-upload-file" type="file" accept="" name="file">
+</script>

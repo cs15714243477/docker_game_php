@@ -1,0 +1,177 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<div class="layui-tab layui-tab-brief">
+					<ul class="layui-tab-title">
+						<li class="layui-this">普通公告</li>
+						<li>在线用户强制弹窗公告</li>
+					</ul>
+					<div class="layui-tab-content">
+						<div class="layui-tab-item layui-show">
+							<table style="margin-top: 10px;" id="table1" lay-filter="listTable1"></table>
+						</div>
+						<div class="layui-tab-item">
+							<table style="margin-top: 10px;" id="table2" lay-filter="listTable2"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<?php include app_path() . "/view/public/tpl_toolbar_add_batchRemove.html"; ?>
+		
+		<script type="text/html" id="bar">
+			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></button>
+			<!--<button class="pear-btn pear-btn-warming pear-btn-sm" lay-event="power"><i class="layui-icon layui-icon-vercode"></i></button>-->
+			<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
+		</script>
+		<script type="text/html" id="bar2">
+			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="sendNotice"><i class="layui-icon">发送</i></button>
+			<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
+		</script>
+		<script type="text/html" id="type">
+			<input type="checkbox" name="type" value="{{d._id}}" lay-skin="switch" lay-text="弹窗|普通" lay-filter="type" {{ d.type== 1 ? 'checked' : '' }}>
+		</script>
+
+		<?php include app_path() . "/view/public/tpl_switch_status01.html"; ?>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl1 = '/notice/noticeList';
+	let tableUrl2 = '/notice/forceNoticeList';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols1 = [
+			[
+				{type:'checkbox'},
+				, {field: 'Id', title: 'ID', align: 'center', width: 80}
+				, {field: 'title', title: '标题', align: 'center', width: 200, edit: 'text'}
+				, {field: 'content', title: '内容', align: 'center', width: 400, edit: 'text'}
+				, {field: 'status', title: '状态', align: 'center', toolbar: '#status'}
+				, {field: 'type', title: '公告类型', align: 'center', toolbar: '#type'}
+				, {field: 'sortId', title: '排序', align: 'center', edit: 'text'}
+				, {field: 'startTime', title: '开始时间', align: 'center'}
+				, {field: 'expireTime', title: '结束时间', align: 'center'}
+				, {fixed: 'right', title: "操作", align: 'center', toolbar: '#bar', width: 150}
+			]
+		]
+
+		let cols2 = [
+			[
+				{type:'checkbox'},
+				, {field: 'Id', title: 'ID', align: 'center', width: 80}
+				, {field: 'title', title: '标题', align: 'center', edit: 'text'}
+				, {field: 'content', title: '内容', align: 'center', edit: 'text'}
+				, {fixed: 'right', title: "操作", align: 'center', toolbar: '#bar2'}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl1,
+			page: true ,
+			cols: cols1 ,
+			skin: 'line',
+			defaultToolbar: false,
+			toolbar: '#toolbar',
+			height:765
+		});
+
+		table.render({
+			elem: '#table2',
+			url: tableUrl2,
+			page: true ,
+			cols: cols2 ,
+			skin: 'line',
+			defaultToolbar: false,
+			toolbar: '#toolbar',
+            height:750
+		});
+
+
+		table.on('tool(listTable1)', function(obj){
+			console.log(obj);
+			if(obj.event === 'remove'){
+				window.remove(obj, {"_id": obj.data['_id'], "submitUrl": '/notice/removePublicNotice'});
+			} else if(obj.event === 'edit'){
+				window.edit('/notice/editPublicNotice?_id='+obj.data._id, {"width": '600px',"height": '600px'});
+			} else if(obj.event === 'power'){
+				window.edit();
+			}
+		});
+
+		table.on('toolbar(listTable1)', function(obj){
+			if(obj.event === 'add'){
+				window.add('/notice/addPublicNotice', {"width": '600px',"height": '600px'});
+			} else if(obj.event === 'refresh'){
+				window.refresh('table1');
+			} else if(obj.event === 'batchRemove'){
+				window.batchRemove(obj, {"submitUrl": '/notice/removePublicNotice', "tableId": 'table1'});
+			}
+		});
+
+		table.on('edit(listTable1)', function (obj) {
+			window.editTableCell(obj, {"submitUrl": '/notice/switchPublicNotice'});
+		});
+
+		form.on('switch(status)', function(obj){
+			//layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+			window.switch01(obj, {"submitUrl": '/notice/switchPublicNotice', "field": 'status'});
+		});
+		form.on('switch(type)', function(obj){
+			//layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+			window.switch01(obj, {"submitUrl": '/notice/switchPublicNotice', "field": 'type'});
+		});
+
+
+		table.on('tool(listTable2)', function(obj){
+			console.log(obj);
+			if(obj.event === 'remove'){
+				window.remove(obj, {"_id": obj.data['_id'], "submitUrl": '/notice/removeForcePublicNotice'});
+			} else if(obj.event === 'sendNotice'){
+				window.sendNotice(obj, {"_id": obj.data['_id'], "submitUrl": '/notice/sendForcePublicNotice'});
+			}
+		});
+		table.on('toolbar(listTable2)', function(obj){
+			if(obj.event === 'add'){
+				window.add('/notice/addForcePublicNotice', {"width": '600px',"height": '600px'});
+			} else if(obj.event === 'refresh'){
+				window.refresh('table2');
+			} else if(obj.event === 'batchRemove'){
+				window.batchRemove(obj, {"submitUrl": '/notice/removeForcePublicNotice', "tableId": 'table2'});
+			}
+		});
+		table.on('edit(listTable2)', function (obj) {
+			window.editTableCell(obj, {"submitUrl": '/notice/switchForcePublicNotice', "tableId": 'table2'});
+		});
+	})
+
+</script>
+<style>
+    .pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 670px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 5px;
+		width: 100%;
+        height: 40px;
+        z-index: 1000;
+        background: white;
+    }
+
+	.layui-table-body .layui-table-cell{
+		height: 37px !important;
+		line-height: 37px !important;
+	}
+</style>
+

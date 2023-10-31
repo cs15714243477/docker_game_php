@@ -1,0 +1,198 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<div class="layui-tab layui-tab-card">
+					<ul class="layui-tab-title">
+						<li class="layui-this">手动提现申请</li>
+					</ul>
+					<div class="layui-tab-content">
+						<div class="layui-tab-item layui-show">
+							<form class="layui-form" action="">
+								<div class="layui-form-item">
+									<label class="layui-form-label">会员ID</label>
+									<div class="layui-input-inline">
+										<input type="text" name="userId" id="userId" lay-verify="userId" autocomplete="off" placeholder="请输入会员ID,8位数的数字" class="layui-input" oninput="getUserInfo()" onporpertychange="getUserInfo()">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">真实姓名</label>
+									<div class="layui-input-inline">
+										<input type="text" name="trueName" id="trueName" autocomplete="off" value='' disabled="disabled" placeholder="输入会员ID后，自动显示" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">渠道ID</label>
+									<div class="layui-input-inline">
+										<input type="text" name="promoterId" id="promoterId" autocomplete="off" value='' disabled="disabled" placeholder="输入会员ID后，自动显示" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">当前金币</label>
+									<div class="layui-input-inline">
+										<input type="text" name="nowScore" id="nowScore" autocomplete="off" value='' disabled="disabled" placeholder="输入会员ID后，自动显示" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">银行金币</label>
+									<div class="layui-input-inline">
+										<input type="text" name="bankScore" id="bankScore" autocomplete="off" value='' disabled="disabled" placeholder="输入会员ID后，自动显示" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">提现金额</label>
+									<div class="layui-input-inline">
+										<input type="number" name="rechargeMoney" id="rechargeMoney" autocomplete="off" lay-verify="rechargeMoney" required placeholder="请输入金额,不需要*100" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">提现类型</label>
+									<div class="layui-input-block">
+
+										<span id="withdrawType"></span>
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">备注信息</label>
+									<div class="layui-input-inline">
+										<input type="text" name="remark" id="remark" lay-verify="require" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<button type="submit" id="btnScore" class="pear-btn pear-btn-primary pear-btn-sm" style="width: 300px;" lay-submit lay-filter="save">提交</button>
+								</div>
+
+
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let from;
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		form = layui.form;
+
+		form.verify({
+			userId: function(value){
+				let v_len = value.length;
+				if((v_len != 8) ){
+					return '会员ID位数的不对';
+				}
+			}
+			,rechargeMoney: function(value){
+				if(value.length == 0){
+					return '提现金额不能为空!';
+				}
+				if(value.toString().indexOf(".") != -1){
+					if(value.toString().split(".")[1].length > 2) {
+						return '提现金额只能是两位小数!';
+					}
+				}
+				/*if(!/(^[\-1-9][0-9]*([0-9]+)?)$/.test(value)){
+                    return '充值金额只能是整数!';
+                }*/
+			}
+		});
+
+		form.on('submit(save)', function(data){
+			$('#btnScore').addClass("layui-btn-disabled").attr("disabled",true);
+			/*let roleIds = "";
+            $('input[type=checkbox]:checked').each(function() {
+                roleIds += $(this).val()+",";
+            });
+            roleIds = roleIds.substr(0,roleIds.length-1);
+            data.field.roleIds = roleIds;*/
+			//let rechargeChannelId = $('input:radio[name="rechargeChannelId"]:checked').val();
+			/*if (data.field.rechargeChannelId == 19 || data.field.rechargeChannelId == 88888888) {
+				if (data.field.rechargeMoney > 5000) {
+					layer.msg("奖励金额不能大于5000", {offset: '15px',icon: 0,time: 1000});
+					$('#btnScore').removeClass("layui-btn-disabled").attr("disabled",false);
+					return false;
+				}
+			}*/
+			//window.save({"submitUrl": '/recharge/incscore', "data": data.field, "btn": 'btnScore', "callback": getUserInfo});
+			window.save({"submitUrl": '/exchange/createExchangeOrder', "data": data.field, "btn": 'btnScore'});
+			return false;
+		});
+
+	})
+	function getUserInfo() {
+		$('#userId').val($('#userId').val().replace(/\s+/g,""));
+		let userId = $('#userId').val();
+		if ((userId.length === 8)) {
+			let index = layer.load(1, {shade: [0.1,'#fff'], time:15000});
+			$.ajax({
+				url:"/player/getPlayerInfo"
+				,data: {"userId":userId}
+				,type: "POST"
+				,success: function(res){
+					layer.closeAll();
+					$('#btnScore').removeClass("layui-btn-disabled").attr("disabled",false);
+					if (res.code == 0) {
+						// $('#userName').val(res.data.userName);
+						let nowScore = (res.data.score * 0.01).toFixed(2);
+						let bankScore = (res.data.bankScore * 0.01).toFixed(2);
+						$('#nowScore').val(nowScore);
+						$('#bankScore').val(bankScore);
+						$('#trueName').val(res.data.trueName);
+						$('#promoterId').val(res.data.promoterId);
+						let radioHtml = '';
+						if (res.data.bank.bankCardName != '') {
+							radioHtml += "<input type='radio' name='withdrawType' value='3' title='网银'>";
+						}
+						if (res.data.alipay.alipayAccount != '') {
+							radioHtml += "<input type='radio' name='withdrawType' value='2' title='支付宝'>";
+						}
+						if (res.data.usdt.address != '') {
+							radioHtml += "<input type='radio' name='withdrawType' value='4' title='USDT'>";
+						}
+						if (radioHtml == '') {
+							layer.msg("会员没有可用的提现类型", {offset: '15px',icon: 0,time: 1000});
+							$('#btnScore').addClass("layui-btn-disabled").attr("disabled",true);
+						} else {
+							$("#withdrawType").html(radioHtml);
+							$("input[type='radio']").eq(0).attr("checked", true);
+							form.render();
+						}
+
+
+
+						/*if (res.msg != '') {
+							layer.msg(res.msg, {offset: '15px',icon: 0,time: 1000});
+						}*/
+					} else {
+						layer.msg(res.msg, {offset: '15px',icon: 0,time: 1000});
+						//$('#layui-form')[0].reset();
+					}
+					//$('#rechargeMoney').val(58);
+				}
+			});
+		}
+	}
+</script>
+
+<style>
+	.pear-container{
+		position: fixed;
+		width:100%;
+	}
+
+	.layui-table-box{
+		height: 750px;
+	}
+
+	.layui-table-page{
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+		height: 40px;
+		z-index: 1000;
+		background: white;
+	}
+</style>

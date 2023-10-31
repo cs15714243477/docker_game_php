@@ -1,0 +1,106 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">标题</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="title" lay-verify="required" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">游戏</label>
+                    <div class="layui-input-inline">
+                        <select name="gameId" lay-verify="required" lay-search>
+                            <option value="0">选择游戏</option>
+                            <?php
+                                foreach($gameList as $k => $v) {
+                            echo '<option value="'. $v['gameId'] .'">' . $v['gameId'] . '-' . $v['gameName'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">房间</label>
+                    <div class="layui-input-inline">
+                        <select name="roomId" lay-verify="required" lay-search>
+                            <option value="0">选择游戏</option>
+                            <?php
+                                foreach($gameList as $k => $v) {
+                                    foreach($v['rooms'] as $kroom => $vroom) {
+                                    echo '<option value="'. $vroom['roomId'] .'">' . $vroom['roomId'] . '-' . $vroom['roomName'] . '</option>';
+                                }}
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">任务类型</label>
+                    <div class="layui-input-inline">
+                        <select name="taskType" lay-verify="required" lay-search>
+                            <?php
+                                foreach($taskType as $k => $v) {
+                            echo '<option value="'. $k .'">' . $v . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">任务周期</label>
+                    <div class="layui-input-inline">
+                        <select name="taskCycle" lay-verify="required" lay-search>
+                            <?php
+                                foreach($taskCycle as $k => $v) {
+                            echo '<option value="'. $k .'">' . $v . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">排序</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="sortId" required  lay-verify="required" autocomplete="off" class="layui-input" min="1" oninput="if(value < 1){layer.msg('清输入正确的数值');value='0'}">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">达到数值</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="reachNum" required  lay-verify="required" autocomplete="off" class="layui-input" min="0" oninput="if(value < 0){layer.msg('清输入正确的数值');value='0'}">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">奖励</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="rewardScore" required  lay-verify="required" autocomplete="off" class="layui-input" min="0" oninput="if(value < 0){layer.msg('清输入正确的数值');value='0'}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php include app_path() . "/view/public/tpl_form_bottom_save.html"; ?>
+</form>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    dateOption = {"date1": ''};
+    layui.use(['form','jquery'],function(){
+        $ = layui.jquery;
+        let form = layui.form;
+        form.on('submit(save)', function(data){
+            var tableId = "table"+data.field.taskType;
+            window.save({"submitUrl": '/task/addtask', "data": data.field, "tableId": tableId});
+            return false;
+        });
+    })
+</script>
+<script src="<?=$staticUrl ?>/static/laydate.js"></script>

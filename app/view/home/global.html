@@ -1,0 +1,241 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<link rel="stylesheet" href="<?=$staticUrl ?>/static/admin/css/other/console2.css" />
+<style>
+	.pear-card2 .count {color: #51A351;font-size: 20px;margin-top: 10px;}
+</style>
+	<body class="pear-container">
+	<div class="layui-row layui-col-space10">
+		<div class="layui-col-md12">
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-md12">
+					<div class="layui-card">
+						<div class="layui-card-body">
+							<div class="layui-row layui-col-space10">
+								<div class="layui-col-md1 layui-col-sm1 layui-col-xs1">
+									<div class="pear-card2">
+										<div class="title">其他在线</div>
+										<div class="count pear-text"><?=$data['simulatorValue'] ?></div>
+									</div>
+								</div>
+								<div class="layui-col-md1 layui-col-sm1 layui-col-xs1">
+									<div class="pear-card2">
+										<div class="title">苹果在线</div>
+										<div class="count pear-text"><?=$data['iosValue'] ?></div>
+									</div>
+								</div>
+								<div class="layui-col-md1 layui-col-sm1 layui-col-xs1">
+									<div class="pear-card2">
+										<div class="title">安卓在线</div>
+										<div class="count pear-text"><?=$data['androidValue'] ?></div>
+									</div>
+								</div>
+								<div class="layui-col-md1 layui-col-sm1 layui-col-xs1">
+									<div class="pear-card2">
+										<div class="title">好友房在线</div>
+										<div class="count pear-text"><?=$data['friendRoomValue'] ?></div>
+									</div>
+								</div>
+								<div class="layui-col-md1 layui-col-sm1 layui-col-xs1">
+									<div class="pear-card2">
+										<div class="title">俱乐部在线</div>
+										<div class="count pear-text"><?=$data['clubValue'] ?></div>
+									</div>
+								</div>
+								<div class="layui-col-md1 layui-col-sm1 layui-col-xs1">
+									<div class="pear-card2">
+										<div class="title">注册人数</div>
+										<div class="count pear-text"><?=$data['teamRegPeople'] ?></div>
+									</div>
+								</div>
+								<div class="layui-col-md1 layui-col-sm1 layui-col-xs1">
+									<div class="pear-card2">
+										<div class="title">注册代理</div>
+										<div class="count pear-text"><?=$data['teamRegPromoterNum'] ?></div>
+									</div>
+								</div>
+								<div class="layui-col-md1 layui-col-sm1 layui-col-xs1">
+									<div class="pear-card2">
+										<div class="title">提现人数</div>
+										<div class="count pear-text"><?=$data['teamExchangePeople'] ?></div>
+									</div>
+								</div>
+								<div class="layui-col-md1 layui-col-sm1 layui-col-xs1">
+									<div class="pear-card2">
+										<div class="title">提现笔数</div>
+										<div class="count pear-text"><?=$data['teamExchangeNum'] ?></div>
+									</div>
+								</div>
+								<div class="layui-col-md1 layui-col-sm1 layui-col-xs1">
+									<div class="pear-card2">
+										<div class="title">提现金额</div>
+										<div class="count pear-text"><?=$data['teamExchangeAmount'] ?></div>
+									</div>
+								</div>
+								<div class="layui-col-md1 layui-col-sm1 layui-col-xs1">
+									<div class="pear-card2">
+										<div class="title">注绑人数</div>
+										<div class="count pear-text"><?=$data['teamRegBindPeople'] ?></div>
+									</div>
+								</div>
+								<div class="layui-col-md1 layui-col-sm1 layui-col-xs1">
+									<div class="pear-card2">
+										<div class="title">有效代理</div>
+										<div class="count pear-text"><?=$data['teamActiveRegPromoterNum'] ?></div>
+									</div>
+								</div>
+								<div class="layui-col-md1 layui-col-sm1 layui-col-xs1">
+									<div class="pear-card2">
+										<div class="title">平台累计用户</div>
+										<div class="count pear-text"><?=$data['totalPlayerCount'] ?></div>
+									</div>
+								</div>
+								<div class="layui-col-md1 layui-col-sm1 layui-col-xs1">
+									<div class="pear-card2">
+										<div class="title">好友房累计用户</div>
+										<div class="count pear-text"><?=$data['totalPlayerCountFriend'] ?></div>
+									</div>
+								</div>
+								<div class="layui-col-md1 layui-col-sm1 layui-col-xs1">
+									<div class="pear-card2">
+										<div class="title">俱乐部累计用户</div>
+										<div class="count pear-text"><?=$data['totalPlayerCountClub'] ?></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layui-col-md12">
+					<div class="layui-card">
+						<div class="layui-card-header">
+							充值分析
+						</div>
+						<div class="layui-card-body">
+							<table id="table1" lay-filter="listTable1"></table>
+						</div>
+					</div>
+					<div class="layui-card">
+						<div class="layui-card-header">
+							使用记录
+						</div>
+						<div class="layui-card-body">
+							<table id="table2" lay-filter="listTable2"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl1 = '/home/rechargeData';
+	let tableUrl2 = '/home/gameData';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols1 = [
+			[
+				{field: 'rechargeTypeName', title: '充值类型', align: 'center', minWidth: 120}
+				,{field: 'rechargePeople', title: '充值人数', align: 'center', minWidth: 200}
+				,{field: 'rechargeNum', title: '充值笔数', align: 'center', minWidth: 200}
+				,{field: 'rechargeAmount', title: '充值金额', align: 'center', minWidth: 200}
+			]
+		]
+
+		let cols2 = [
+			[
+				{field: 'roomName', title: '房间/在线', align: 'center', minWidth: 120}
+				,{field: 'online_count', title: '当前在线', align: 'center', minWidth: 40, totalRow: true}
+				,{field: 'allWinScore', title: '平台营收', align: 'center', minWidth: 100, totalRow: true}
+				,{field: 'revenue', title: '总税收', align: 'center', minWidth: 100, totalRow: true}
+				,{field: 'platformWinScore', title: '游戏输赢', align: 'center', minWidth: 100, totalRow: true}
+				,{field: 'taxAvg', title: '人均税收', align: 'center', minWidth: 100}
+				,{field: 'taxRate', title: '税收占比', align: 'center', minWidth: 100, totalRow: true}
+				,{field: 'avg', title: '人均贡献', align: 'center', minWidth: 100,}
+				,{field: 'avgRate', title: '贡献占比', align: 'center', minWidth: 100, totalRow: true}
+				//{field: 'scoreMonth', title: '本月输赢', align: 'center', minWidth: 200, totalRow: true},
+				// {field: 'gameCount', title: '游戏局数', align: 'center', minWidth: 200, totalRow: true},
+				,{field: 'userCount', title: '游戏人数', align: 'center', minWidth: 100, totalRow: true}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl1,
+			page: false ,
+			cols: cols1 ,
+			skin: 'line',
+			//toolbar: '#toolbar'
+		});
+
+		table.render({
+			elem: '#table2',
+			url: tableUrl2,
+			page: false ,
+			totalRow: true,
+			cols: cols2 ,
+			skin: 'line',
+			height:600
+			//toolbar: '#toolbar'
+		});
+
+
+		table.on('tool(listTable1)', function(obj){
+			console.log(obj);
+			if(obj.event === 'remove'){
+				window.remove(obj, {"_id": obj.data['_id'], "submitUrl": '/notice/removePublicNotice'});
+			} else if(obj.event === 'edit'){
+				window.edit('/notice/editPublicNotice?_id='+obj.data._id, {"height": '600px'});
+			} else if(obj.event === 'power'){
+				window.edit();
+			}
+		});
+
+		table.on('toolbar(listTable1)', function(obj){
+			if(obj.event === 'add'){
+				window.add('/notice/addPublicNotice', {"height": '600px'});
+			} else if(obj.event === 'refresh'){
+				window.refresh('table1');
+			} else if(obj.event === 'batchRemove'){
+				window.batchRemove(obj, {"submitUrl": '/notice/removePublicNotice', "tableId": 'table1'});
+			}
+		});
+
+		table.on('edit(listTable1)', function (obj) {
+			window.editTableCell(obj, {"submitUrl": '/notice/switchPublicNotice'});
+		});
+
+		form.on('switch(status)', function(obj){
+			//layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+			window.switch01(obj, {"submitUrl": '/notice/switchPublicNotice', "field": 'status'});
+		});
+		form.on('switch(type)', function(obj){
+			//layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+			window.switch01(obj, {"submitUrl": '/notice/switchPublicNotice', "field": 'type'});
+		});
+
+
+		table.on('tool(listTable2)', function(obj){
+			console.log(obj);
+			if(obj.event === 'remove'){
+				window.remove(obj, {"_id": obj.data['_id'], "submitUrl": '/notice/removeForcePublicNotice'});
+			} else if(obj.event === 'sendNotice'){
+				window.sendNotice(obj, {"_id": obj.data['_id'], "submitUrl": '/notice/sendForcePublicNotice'});
+			}
+		});
+		table.on('toolbar(listTable2)', function(obj){
+			if(obj.event === 'add'){
+				window.add('/notice/addForcePublicNotice', {"height": '600px'});
+			} else if(obj.event === 'refresh'){
+				window.refresh('table2');
+			} else if(obj.event === 'batchRemove'){
+				window.batchRemove(obj, {"submitUrl": '/notice/removeForcePublicNotice', "tableId": 'table2'});
+			}
+		});
+		table.on('edit(listTable2)', function (obj) {
+			window.editTableCell(obj, {"submitUrl": '/notice/switchForcePublicNotice', "tableId": 'table2'});
+		});
+	})
+</script>

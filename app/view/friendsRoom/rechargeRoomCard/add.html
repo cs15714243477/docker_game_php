@@ -1,0 +1,192 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<div class="layui-tab layui-tab-card">
+					<ul class="layui-tab-title">
+						<li class="layui-this">充值房卡</li>
+						<li>赠送记录</li>
+					</ul>
+					<div class="layui-tab-content">
+						<div class="layui-tab-item layui-show">
+							<form class="layui-form" action="">
+
+								<div class="layui-form-item">
+									<label class="layui-form-label">会员ID</label>
+									<div class="layui-input-inline">
+										<input type="text" name="userId" id="userId" lay-verify="userId" autocomplete="off" placeholder="请输入会员ID,8位数的数字" class="layui-input" oninput="getUserInfo()" onporpertychange="getUserInfo()">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">类型</label>
+									<div class="layui-input-block">
+										<?php
+											foreach($giveScoreType as $k => $v) {
+												$checked = '';
+												if($k==0) $checked='checked';
+												echo "<input type='radio' name='rechargeChannelId' lay-filter='rechargeChannelId' value='{$k}' title='{$v}' {$checked}>";
+											}
+										?>
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">真实姓名</label>
+									<div class="layui-input-inline">
+										<input type="text" name="trueName" id="trueName" autocomplete="off" value='' disabled="disabled" placeholder="输入会员ID后，自动显示" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">渠道ID</label>
+									<div class="layui-input-inline">
+										<input type="text" name="promoterId" id="promoterId" autocomplete="off" value='' disabled="disabled" placeholder="输入会员ID后，自动显示" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">当前房卡</label>
+									<div class="layui-input-inline">
+										<input type="text" name="nowRoomCard" id="nowRoomCard" autocomplete="off" value='' disabled="disabled" placeholder="输入会员ID后，自动显示" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">房卡数量</label>
+									<div class="layui-input-inline">
+										<input type="number" name="rechargeRoomCard" id="rechargeRoomCard" autocomplete="off" lay-verify="rechargeRoomCard" required placeholder="输入房卡数量,不需要*100" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">备注信息</label>
+									<div class="layui-input-inline">
+										<input type="text" name="remark" id="remark" lay-verify="remark" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<button type="submit" id="btnScore" class="pear-btn pear-btn-primary pear-btn-sm" style="width: 300px;" lay-submit lay-filter="save">提交</button>
+								</div>
+
+
+							</form>
+						</div>
+						<div class="layui-tab-item">
+							<table id="table1" lay-filter="listTable1"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl1 = '/friendsRoom/roomCardList';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols1 = [
+			[
+				{field:'userId', title: '会员ID' ,align:'center',minWidth:120}
+				,{field:'beforeRoomCard', title: '操作前房卡' ,align:'center',minWidth:80}
+				,{field:'rewardNum',title: '赠送房卡' ,align:'center',minWidth:100}
+				,{field:'afterRoomCard', title: '操作后房卡' ,align:'center',minWidth:120}
+				,{field:'createTime', title: '操作时间' ,align:'center',minWidth:100}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl1,
+			page: true ,
+			cols: cols1 ,
+			skin: 'line',
+			height:770
+		});
+
+		form.verify({
+			userId: function(value){
+				let v_len = value.length;
+				if((v_len != 8) && (v_len != 6)){
+					return '会员ID位数的不对';
+				}
+			}
+			,rechargeRoomCard: function(value){
+				if(value.length == 0){
+					return '充值数量不能为空!';
+				}
+				// if(value.toString().indexOf(".") != -1){
+				// 	if(value.toString().split(".")[1].length > 2) {
+				// 		return '充值数量只能是两位小数!';
+				// 	}
+				// }
+				if(!/(^[\-1-9][0-9]*([0-9]+)?)$/.test(value)){
+                    return '充值金额只能是整数!';
+                }
+			}
+		});
+		// form.on('radio(rechargeChannelId)', function(data){
+		// 	if(data.value == 19){
+		// 		$("#activityShow").show();
+		// 	}else{
+		// 		if(data.value == 99999999){
+		// 			layer.msg("支付补发最好备注订单号", {offset: '15px',icon: 0,time: 2000})
+		// 		}
+		// 		$("#activityShow").hide();
+		// 	}
+		// });
+
+
+		form.on('submit(save)', function(data){
+			$('#btnScore').addClass("layui-btn-disabled").attr("disabled",true);
+			window.save({"submitUrl": '/friendsRoom/incRoomCard', "data": data.field, "btn": 'btnScore', "callback": getUserInfo});
+			return false;
+		});
+
+	})
+	function getUserInfo() {
+		var userId = $('#userId').val();
+		if ((userId.length === 8) || (userId.length === 6)) {
+			let index = layer.load(1, {shade: [0.1,'#fff'], time:15000});
+			$.ajax({
+				url:"/player/getPlayerInfo"
+				,data: {"userId":userId}
+				,type: "POST"
+				,success: function(res){
+					if (res.code == 0) {
+						// $('#userName').val(res.data.userName);
+						let nowRoomCard = (res.data.roomCard * 0.01).toFixed(2);
+						let bankScore = (res.data.bankScore * 0.01).toFixed(2);
+						$('#nowRoomCard').val(nowRoomCard);
+						$('#bankScore').val(bankScore);
+						$('#trueName').val(res.data.trueName);
+						$('#promoterId').val(res.data.promoterId);
+					} else {
+						layer.close(index);
+						layer.msg(res.msg, {offset: '15px',icon: 0,time: 1000});
+						//$('#layui-form')[0].reset();
+					}
+					$('#rechargeRoomCard').val('');
+					layer.close(index);
+				}
+			});
+		}
+	}
+</script>
+
+<style>
+	.pear-container{
+		position: fixed;
+		width:100%;
+	}
+
+	.layui-table-box{
+		height: 720px;
+	}
+
+	.layui-table-page{
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+		height: 40px;
+		z-index: 1000;
+		background: white;
+	}
+</style>

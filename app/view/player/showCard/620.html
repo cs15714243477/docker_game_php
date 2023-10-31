@@ -1,0 +1,46 @@
+<?php
+    if($gameId==620) {
+        foreach($card as $key => $vo) {
+?>
+            <div class="layui-col-xs12 layui-col-sm12">
+                <?php if($key<=3){ ?>
+                    <div class="layui-status-img">
+                        <span class="thick">座位<?=$key ?>：</span>
+                        <a href="javascript:;"><img src="<?=$staticUrl ?>/cards/paigow/<?=$vo[0][0] ?>.png" width="40px" height="50px"></a>
+                        <a href="javascript:;"><img src="<?=$staticUrl ?>/cards/paigow/<?=$vo[0][1] ?>.png" width="40px" height="50px"></a>
+
+                    <?php if(1==$vo[6]){ ?>
+                        <span class="thick"><font color="red">庄</font>  </span>
+                        <span class="thick">抢庄倍数：<?=$vo[3] ?></span>&nbsp;&nbsp;
+                    <?php } else { ?>
+                        <span class="thick"><font color="red">&nbsp;&nbsp;&nbsp;</font>  </span>
+                        <span class="thick">下注倍数：<?=$vo[4] ?></span>&nbsp;&nbsp;
+                    <?php } ?>
+
+                    <span class="thick">牌型：<?=$vo[1] ?></span>&nbsp;&nbsp;&nbsp;
+                   <!-- <span class="thick">点数：<?=$vo[2] ?></span>&nbsp;&nbsp;&nbsp;-->
+
+                    <span class="thick">
+                        <?php if(0==$vo[5] && 1!=$vo[6]){ ?> <font color="red">和</font>  <?php } ?>
+                        <?php if(1==$vo[5]){ ?> <font color="red">赢</font>  <?php } ?>
+                        <?php if(2==$vo[5]){ ?> <font color="green">输</font>  <?php } ?>
+                    </span>
+
+                    <span class="thick">
+                        <?php if(isset($vo['userId']) && in_array($currentUserId, $vo['userId'])){ ?><img src="<?=$staticUrl ?>/cards/houtaitoux.png" width="32px" height="32px"><?php } ?>
+                    </span>
+                    <?php if(isset($vo['userId']) && in_array($currentUserId, $vo['userId'])){ ?>
+                        <div style="float:right; width:120px">
+                            <span class="user_id" style=" color:#ff0000;line-height:50px;"><?=$currentUserId ?>(自己)</span>
+                        </div>
+                    <?php } ?>
+
+                </div>
+                <?php }else{ ?>
+                <span class="thick"></span>
+                <?php } ?>
+            </div>
+<?php
+        }
+    }
+?>

@@ -1,0 +1,238 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+
+	.pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 680px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 10px;
+		width: 100%;
+       height: 40px;
+       z-index: 1000;
+       background: white;
+    }
+
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 150px">
+							<input type="text" name="roomId" id="roomId" autocomplete="off" placeholder="房间号" maxlength="5" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 150px">
+							<input type="number" name="userId" id="userId" autocomplete="off" placeholder="房主ID" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 160px">
+							<select name="gameId" id="gameId" lay-filter="gameId">
+								<option value="">选择游戏</option>
+								<?php
+									foreach($gameList as $k => $v) {
+										echo '<option value="'. $v['gameId'] .'">' . $v['gameId'] . '-' . $v['gameName'] . '</option>';
+									}
+								?>
+							</select>
+						</div>
+					</div>
+
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-input-inline" style="width: 5px">-</div>
+						<div class="layui-input-inline">
+							<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+						<!--<button type="reset" class="pear-btn pear-btn-md">
+							<i class="layui-icon layui-icon-refresh"></i>
+							重置
+						</button>-->
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+		<script src="<?=$staticUrl ?>/static/recharge.js"></script>
+<script>
+	dateOption = {"date1": '', "date2": ''};
+	let tableUrl = '/friendsRoom/playerRoomRecord';
+	layui.use(['table','form','jquery','count'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		count = layui.count;
+		let form = layui.form;
+
+		let cols = [
+			[
+				{field: 'userId', title: '房主ID', align: 'center'}
+				, {field: 'gameName', title: '游戏名称', align: 'center'}
+				, {field: 'roomId', title: '房间号', align: 'center'}
+				, {field: '', title: '局数/时长', align: 'center', templet: function (d){
+					return d.roundNum + '/' + d.playDuration;
+				}}
+				/*, {field: 'userCount', title: '参与人数', align: 'center'}*/
+				, {field: 'winScore', title: '总战绩(积分)', align: 'left'}
+				, {field: 'endTime', title: '结束时间', align: 'left', minWidth: 180}
+				, {field: '', title: '操作', align: 'center', width: 90, templet: function (d){
+					return  '<a onclick="openNewTab(this)" lay-href="/friendsRoom/playerGameDetail?roomId='+d.roomId+'" data-name="'+d.roomId+'" lay-text="roomId:'+d.roomId+'" style="color: blue;font-weight: bold">查看详情</a>';
+
+				}}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl,
+			page: true ,
+			cols: cols ,
+			skin: 'line',
+			limit: 20,
+			height:700,
+			//toolbar: '#toolbar',
+			done: function(res, curr, count){
+				let queryFormData = form.val("queryForm");
+				//console.log(queryFormData);
+				//window.tableSummary({"submitUrl": '/player/userGameDetailSummary', "data": queryFormData, "selIds": 'ptIncomeSum,revenueSum,platformWinScoreSum'});
+			}
+		});
+
+		form.on('submit(query)', function(data){
+			//console.log(data.field);
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+
+	})
+	function showCard(obj) {
+		let id = $(obj).text();
+		let gameId = $(obj).attr('gameId');
+		let oid = $(obj).attr('oid');
+		let w = '600px';
+		let h = '500px';
+		if (gameId == 300 || gameId == 100 || gameId == 550) {
+			w = '1000px';
+			h = '800px';
+		}
+		window.agentdetail('/player/showCard?oid=' + oid, {"width": w, "height": h});
+	}
+</script>
+<script src="<?=$staticUrl ?>/static/laydateYmd.js"></script>
+		<script type="text/html" id="gameInfoIdTpl">
+			{{#  if(d.gameInfoId == -1){ }}
+			合计
+			{{#  }else{ }}
+			<a href="javascript:;" onclick="showCard(this);" class="layui-table-link" gameId="{{d.gameId}}" oid="{{d._id}}">{{d.gameInfoId}}</a>
+			{{#  } }}
+
+		</script>
+		<script type="text/html" id="allBet">
+
+			{{#  if(d.allBet == -1){ }}
+			/
+			{{#  }else{ }}
+
+			{{ d.allBet }}
+			{{#  if(d.gameId == 900){ }}
+			[<span style="color:red;font-weight: bold">和:{{ d.he }}</span>&nbsp;&nbsp;<span style="color:green;font-weight: bold">龙:{{ d.long }}</span>&nbsp;&nbsp;<span style="color:orange;font-weight: bold">虎:{{ d.hu }}</span>]
+			{{#  } else if(d.gameId == 720){ }}
+			[<span style="color:red;font-weight: bold">顺:{{ d.shun }}</span>&nbsp;&nbsp;<span style="color:green;font-weight: bold">天:{{ d.tian }}</span>&nbsp;&nbsp;<span style="color:orange;font-weight: bold">地:{{ d.di }}</span>]
+			{{#  } else if(d.gameId == 210){ }}
+			[<span style="color:red;font-weight: bold">倍:{{ d.bei }}</span>&nbsp;&nbsp;<span style="color:green;font-weight: bold">黑:{{ d.hei }}</span>&nbsp;&nbsp;<span style="color:orange;font-weight: bold">红:{{ d.hong }}</span>]
+			{{#  } else if(d.gameId == 930 || d.gameId == 920){ }}
+			[<span style="color:red;font-weight: bold">天:{{ d.tian }}</span>&nbsp;&nbsp;<span style="color:green;font-weight: bold">地:{{ d.di }}</span>&nbsp;&nbsp;<span style="color:orange;font-weight: bold">玄:{{ d.xuan }}</span>&nbsp;&nbsp;<span style="color:purple;font-weight: bold">黄:{{ d.huang }}</span>]
+
+			{{#  } else if(d.gameId == 950){ }}
+			[
+			<span style="color:sienna;font-weight: bold">奔驰:{{ d.bens }}</span>&nbsp;&nbsp;
+			<span style="color:darkblue;font-weight: bold">宝马:{{ d.bmw }}</span>&nbsp;&nbsp;
+			<span style="color:black;font-weight: bold">奥迪:{{ d.audi }}</span>&nbsp;&nbsp;
+			<span style="color:green;font-weight: bold">捷豹:{{ d.jaguar }}</span>&nbsp;&nbsp;
+			<span style="color:orange;font-weight: bold">保时捷:{{ d.porsche }}</span>&nbsp;&nbsp;
+			<span style="color:blue;font-weight: bold">玛莎拉蒂:{{ d.maserati }}</span>&nbsp;&nbsp;
+			<span style="color:purple;font-weight: bold">兰博基尼:{{ d.lamborghini }}</span>&nbsp;&nbsp;
+			<span style="color:red;font-weight: bold">法拉利:{{ d.ferrari }}</span>
+			]
+			{{#  } }}
+			{{#  if(d.isBanker == 1){ }}
+			<span><img src="/cards/zhuang2.png" width="25px" height="25px"></span>
+			{{#  } }}
+
+			<br />
+			{{ d.earnScore }}
+
+			{{#  } }}
+		</script>
+		<script type="text/html" id="shangfenxiafen">
+
+			{{#  if(d.beforeScore == -1){ }}
+			/
+			{{#  }else{ }}
+			上分:{{ d.beforeScore }}<br />下分:{{ d.score }}<br />
+			输赢:
+			{{#  if(d.winScore > 0){ }}
+			<span style="color:red;font-weight: bold">{{ d.winScore }}</span>
+			{{#  } else { }}
+			<span style="color:#333;">{{ d.winScore }}</span>
+			{{#  } }}
+			{{#  } }}
+
+
+
+
+
+		</script>
+		<script type="text/html" id="roomInfo">
+			{{#  if(d.roomId == -1){ }}
+			/
+			{{#  }else{ }}
+			{{ d.roomId }}<br />{{ d.roomName }}
+			{{#  } }}
+		</script>
+		<script type="text/html" id="timeInfo">
+			{{#  if(d.endTime == -1){ }}
+			/
+			{{#  }else{ }}
+			进入:{{ d.startTime }}<br />结算:{{ d.endTime }}<br />时长:{{ d.playTime }}
+			{{#  } }}
+
+
+		</script>

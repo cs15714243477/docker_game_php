@@ -1,0 +1,197 @@
+<style>
+	.layui-table-header th{
+		background-color: #D7D7D7 !important;
+		font-weight: bold;
+	}
+	.pear-btn-selected {
+		color: #fff !important;
+		background-color: #000000 !important;
+		border: #5FB878;
+	}
+</style>
+<div>
+	<div class="layui-row layui-col-space10">
+		<div class="layui-col-md10">
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-md12">
+					<div class="layui-card">
+						<div class="layui-card-body">
+							<div class="layui-form " style="margin-bottom: 5px" lay-filter="platForm2">
+								<div class="layui-inline">
+									<input class="layui-input" id="dateValue2" name="dateValue2" placeholder="时间" type="text" value="">
+									<input class="layui-input" id="type2" name="type2" type="hidden" value="100">
+								</div>
+								<div class="layui-inline">
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn100" onclick="getEcharts2(100);">开房时长</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn101" onclick="getEcharts2(101);">开房局数</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn102" onclick="getEcharts2(102);">赠送房卡数量</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn103" onclick="getEcharts2(103);">会员剩余房卡</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn104" onclick="getEcharts2(104);">房卡付费用户</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn105" onclick="getEcharts2(105);">房卡购买次数</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn106" onclick="getEcharts2(106);">房卡首充金额</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn107" onclick="getEcharts2(107);">房卡总充值</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn108" onclick="getEcharts2(108);">代理销售额</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn109" onclick="getEcharts2(109);">商城销售额</button>
+								</div>
+
+							</div>
+							<div id="container2" style="width:100%;height:400px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md2">
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-md12">
+					<div class="layui-inline" style="float:right;">
+						<button type="button" class="pear-btn pear-btn-sm">
+							<i class="layui-icon layui-icon-help" style="font-size: 30px"  lay-width="500px" lay-tips="
+                                <span style='color: #000000;'><b>开房时长: </b>统计时间段内，累计开房时长</span><br/><hr />
+                                <span style='color: #000000;'><b>开房局数: </b>统计时间段内，累计开房局数</span><br/><hr />
+                                <span style='color: #000000;'><b>赠送房卡数量: </b>统计时间段内，平台免费赠送房卡数量</span><br/><hr />
+                                <span style='color: #000000;'><b>会员剩余房卡: </b>统计时间段内，所有会员剩余的房卡数量</span><br/><hr />
+                                <span style='color: #000000;'><b>房卡付费用户: </b>统计时间段内，房卡付费用户数（去重统计）</span><br/><hr />
+                                <span style='color: #000000;'><b>房卡购买次数: </b>统计时间段内，所有会员累计购买房卡次数</span><br/><hr />
+                                <span style='color: #000000;'><b>房卡首充金额: </b>首次购买房卡所支付的平均金额（单位：金币）</span><br/><hr />
+                                <span style='color: #000000;'><b>房卡总销售额: </b>统计时间段内，房卡总销售额（单位：金币）</span><br/><hr />
+                                <span style='color: #000000;'><b>代理销售额: </b>统计时间段内，代理总销售额（单位：金币）</span><br/><hr />
+                                <span style='color: #000000;'><b>商城销售额: </b>统计时间段内，商城总销售额（单位：金币）</span><br/><hr />
+
+                                "></i>
+						</button>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	Highcharts.SVGRenderer.prototype.symbols.download = function (x, y, w, h) {
+		var path = [
+			// Arrow stem
+			'M', x + w * 0.5, y,
+			'L', x + w * 0.5, y + h * 0.7,
+			// Arrow head
+			'M', x + w * 0.3, y + h * 0.5,
+			'L', x + w * 0.5, y + h * 0.7,
+			'L', x + w * 0.7, y + h * 0.5,
+			// Box
+			'M', x, y + h * 0.9,
+			'L', x, y + h,
+			'L', x + w, y + h,
+			'L', x + w, y + h * 0.9
+		];
+		return path;
+	};
+	dateOption = {"dateId": 'dateValue2', "callback": getEcharts2};
+	let options = {
+		chart: {
+			type: 'line'                          //指定图表的类型，默认是折线图（line）
+		},
+		title: {
+			text: '新增用户'                 // 标题
+		},
+		xAxis: {
+			title: {
+				text: '日期'
+			},
+			categories: []   // x 轴分类
+		},
+		yAxis: {
+			title: {
+				text: '数量'                // y 轴标题
+			}
+		},
+		series: [
+			{                              // 数据列
+				name: '新增用户',                        // 数据列名
+				data: []                     // 数据
+			}
+		],
+		exporting: {
+			buttons: {
+				exportButton: {
+					text: '导出excel',
+					onclick: function () {
+						this.downloadXLS();
+					},
+					symbol:'download',
+				},
+				contextButton: {
+					enabled: false
+				},
+				// contextButton: {
+				//     onclick: function () {
+				//         this.downloadXLS();
+				//     },
+				//     //symbolStroke: "red",
+				//     text: '导出excel',
+				//     //symbol:'download',
+				//     //symbol: 'url(http://geodev.grid.unep.ch/images/button_download.png)'
+				//     // x:10,
+				//     // y:10
+				//    // {
+				//     //    textKey: 'downloadXLS',
+				//     //     onclick: function () {
+				//     //         this.downloadXLS();
+				//     //     }
+				//     //},
+				//     // {
+				//     //     textKey: 'downloadCSV',
+				//     //     onclick: function () {
+				//     //         this.downloadCSV();
+				//     //     }
+				//     // }
+				//
+				// }
+			}
+		},
+		// navigation: {
+		//     buttonOptions: {
+		//         enabled: true,
+		//         height: 40,
+		//         width: 48,
+		//         symbolSize: 24,
+		//         symbolX: 23,
+		//         symbolY: 21,
+		//         symbolStrokeWidth: 2
+		//     }
+		// },
+		credits : {
+			enabled : false
+		},
+	};
+	getEcharts2(0, '');
+	function getEcharts2(type, dateRange = '') {
+		let loading = layer.load(1, {
+			shade: false,
+			time: 2*1000
+		});
+		if (type == 0) {
+			type = $("#type2").val();
+		} else {
+			$("#type2").val(type);
+		}
+		if (dateRange == '') {
+			dateRange = $("#dateValue2").val();
+		}
+		console.log(dateRange);
+		$.get('/friendsRoom/surveyPlayerScale',{"type":type, "dateRange":dateRange},function (res) {
+			console.log(res);
+			layer.close(loading);
+			options.title.text = res.data.title;
+			options.xAxis.categories = res.data.categories;
+			options.series[0].name = res.data.series_name;
+			options.series[0].data = res.data.series_data;
+			options.yAxis.title.text = res.data.ytitle;
+			let chart = Highcharts.chart('container2',options);
+
+			$("#searchBtn"+type).addClass("pear-btn-selected");
+			$("#searchBtn"+type).siblings().removeClass("pear-btn-selected");
+		},'json')
+	};
+</script>
+<script src="<?=$staticUrl ?>/static/laydateYmdRange.js"></script>

@@ -1,0 +1,127 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+					<div class="layui-form-item layui-inline">
+						<label class="layui-form-label">查询类型</label>
+						<div class="layui-input-inline">
+							<select name="searchType" lay-search>
+								<option value="">全部</option>
+								<option value="gameVerId">gameVerId</option>
+								<option value="gameId">游戏ID</option>
+								<option value="version">游戏版本</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 250px">
+							<input type="text" name="searchText" autocomplete="off" placeholder="请输入查询内容" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+<?php include app_path() . "/view/public/tpl_toolbar_add_batchRemove.html"; ?>
+
+<script type="text/html" id="bar">
+	<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
+</script>
+<script type="text/html" id="isForce">
+	<input type="checkbox" name="isForce" value="{{d._id}}" lay-skin="switch" lay-text="是|否" lay-filter="isForce" {{ d.isForce== 1 ? 'checked' : '' }}>
+</script>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl1 = '/gameVer/gameVerList';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols1 = [
+			[
+				{type:'checkbox'}
+				, {field: 'gameVerId', title: 'gameVerId', align: 'left', width: 100}
+				, {field: 'gameId', title: '游戏id', align: 'left', width: 200}
+				, {field: 'version', title: '版本号', align: 'left', width: 200,edit:'text'}
+				, {field: 'remark', title: '备注', align: 'center', width: 200,edit:'text'}
+				, {field: 'isForce', title: '是否强更', align: 'left', width: 200, toolbar: '#isForce'}
+				, {field: 'downUrl', title: '下载地址(Android)', align: 'left', width: 200,edit:'text'}
+				, {field: 'downUrlIos', title: '下载地址(Ios)', align: 'left', width: 200,edit:'text'}
+				, {fixed: 'right', title: "操作", align: 'left', toolbar: '#bar', width: 150}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl1,
+			page: true ,
+			cols: cols1 ,
+			skin: 'line',
+			defaultToolbar: false,
+			toolbar: '#toolbar',
+			height:700
+		});
+
+		form.on('submit(query)', function(data){
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+		table.on('tool(listTable1)', function(obj){
+			if(obj.event === 'remove'){
+				window.remove(obj, {"_id": obj.data['_id'], "submitUrl": '/gameVer/removeGameVer'});
+			}
+		});
+
+		table.on('toolbar(listTable1)', function(obj){
+			if(obj.event === 'add'){
+				window.add('/gameVer/addGameVer', {"height": '600px'});
+			} else if(obj.event === 'refresh'){
+				window.refresh('table1');
+			} else if(obj.event === 'batchRemove'){
+				window.batchRemove(obj, {"submitUrl": '/gameVer/removegameVer', "tableId": 'table1'});
+			}
+		});
+		table.on('edit(listTable1)', function(obj){
+			window.editTableCell(obj, {"submitUrl": '/gameVer/editGameVer'});
+		});
+		form.on('switch(isForce)', function(obj){
+			//layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+			window.switch01(obj, {"submitUrl": '/gameVer/switchGameVer', "field": 'isForce'});
+		});
+	})
+</script>
+
+<style>
+    .pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 630px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 5px;
+		width: 100%;
+        height: 40px;
+        z-index: 1000;
+        background: white;
+		left:10px;
+    }
+</style>
+

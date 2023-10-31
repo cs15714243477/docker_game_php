@@ -1,0 +1,27 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+					<div class="layui-form-item ">
+						<label class="layui-form-label">冻结原因</label>
+						<div class="layui-input-inline">
+							<?php
+								if(!empty($reason)){
+							?>
+								<textarea placeholder="请输入原因" name="frozenReason" id="frozenReason" class="layui-textarea" style="width: 600px; height: 300px" readonly><?= $reason ?></textarea>
+							<?php
+								}else{
+							?>
+								<textarea placeholder="请输入原因" name="frozenReason" id="frozenReason" class="layui-textarea" style="width: 600px; height: 300px"></textarea>
+							<?php
+								}
+							?>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+
+<?php include app_path() . "/view/public/footer.html"; ?>

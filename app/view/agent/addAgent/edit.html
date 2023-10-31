@@ -1,0 +1,129 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body>
+<form class="layui-form" action="" lay-filter="editForm">
+    <input type="hidden" name="_id" value="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="text-align: left">代理ID</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="promoterId" value="" lay-verify="required" autocomplete="off" class="layui-input layui-border" readonly>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="text-align: left">代理名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="promoterName" value="" lay-verify="required" autocomplete="off" class="layui-input layui-border" readonly>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="text-align: left">上级代理ID</label>
+                    <div class="layui-input-block">
+                        <input type="number" name="pid" value="" lay-verify="pid" autocomplete="off" class="layui-input layui-border" readonly>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="text-align: left">代理给下级直属玩家转账</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="allowTransferScore" value="0" title="不能" checked>
+                        <input type="radio" name="allowTransferScore" value="1" title="可以">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="text-align: left">代理的分成比例（每万提成金额）</label>
+                    <div class="layui-input-block">
+                        <input type="number" name="setRate" id="setRate" autocomplete="off" lay-verify="setRate" required placeholder="" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <span>代理的分成比例默认为 -1 </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit="" lay-filter="save">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+        </div>
+    </div>
+</form>
+<?php include app_path() . "/view/public/footer.html"; ?>
+
+<script>
+    josnData = '<?php echo $formData; ?>';
+    formData= JSON.parse(josnData);console.log(formData);
+    layui.use(['form','jquery'],function(){
+        $ = layui.jquery;
+        let form = layui.form;
+        form.verify({
+            pid: function(value){
+                /*let v_len = value.length;
+                if((v_len != 8) && (v_len != 6)){
+                    return '会员ID位数的不对';
+                }*/
+                // if(value != 1000) {
+                //     return '上级代理ID必须等于1000';
+                // }
+            }
+            ,setRate: function(value){
+                if(value.length < -1){
+                    return '分成比例不正确!';
+                }
+                /*if(value.toString().indexOf(".") != -1){
+                    if(value.toString().split(".")[1].length > 2) {
+                        return '充值金额只能是两位小数!';
+                    }
+                }*/
+                if(!/(^[\-1-9][0-9]*([0-9]+)?)$/.test(value)){
+                    return '只能是整数!';
+                }
+            }
+        });
+
+        form.val('editForm', {
+            "promoterName": formData.promoterName
+            ,"promoterId": formData.promoterId
+            ,"pid": formData.pid
+            ,"allowTransferScore": formData.allowTransferScore
+            ,"setRate": formData.setRate
+            ,"_id": formData._id
+        });
+
+        form.on('submit(save)', function(data){
+            /* let roleIds = "";
+             $('input[type=checkbox]:checked').each(function() {
+                 roleIds += $(this).val()+",";
+             });
+             roleIds = roleIds.substr(0,roleIds.length-1);
+             data.field.roleIds = roleIds;*/
+            /*let powerAll = dtree.getCheckbarNodesParam("power");
+            let powerStr = '';
+            $.each(powerAll,function(index,value){
+                powerStr += value.nodeId;
+                powerStr += ','
+            });
+            powerStr = powerStr.substring(0,powerStr.length-1);
+            console.log(powerStr);
+            data.field.menuPurview = powerStr;*/
+            console.log(data.field);
+            window.save({"submitUrl": '/agent/editAgent', "data": data.field, "tableId": 'table1'});
+            return false;
+        });
+    })
+</script>
+<style>
+    .layui-border{
+        border: none;
+    }
+</style>

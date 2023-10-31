@@ -1,0 +1,157 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+
+	.pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 650px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 0;
+		width: 100%;
+		height: 40px;
+		z-index: 1000;
+		background: white;
+    }
+
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="channelId" lay-search>
+								<option value="">全渠道</option>
+								<?php
+								foreach($channel as $k => $v) {
+									echo '<option value="'. $k .'">' . $v . '</option>';
+								}
+								?>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-input-inline" style="width: 5px">-</div>
+						<div class="layui-input-inline">
+							<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 250px">
+							<input type="text" name="searchText" autocomplete="off" placeholder="请输入代理ID" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+						<!--<button type="reset" class="pear-btn pear-btn-md">
+							<i class="layui-icon layui-icon-refresh"></i>
+							重置
+						</button>-->
+					</div>
+					<div class="layui-form-item layui-inline" style="float:right;">
+						<div class="layui-input-inline">
+							<button type="button" class="pear-btn pear-btn-sm">
+								<i class="layui-icon layui-icon-help"  lay-width="500px" lay-tips="
+                                <span style='color: #000000;'><b>代理日报: </b>本报表所统计数据，只包含有上下级关系的代理用户，没有上下级关系的普通会员不在统计范围内</span><br/><hr />
+                                <span style='color: #000000;'><b>新增代理: </b>当天激活代理资格的用户数</span><br/><hr />
+                                <span style='color: #000000;'><b>新增有效代理: </b>当天首次绑定下级会员的代理</span><br/><hr />
+                                <span style='color: #000000;'><b>新增下线: </b>当天绑定下级会员的总数</span><br/><hr />
+                                <span style='color: #000000;'><b>今日业绩: </b>当天累计产生的有效投注</span><br/><hr />
+                                <span style='color: #000000;'><b>今日佣金: </b>当天所产生的佣金</span><br/><hr />
+                                <span style='color: #000000;'><b>提现佣金: </b>当天被提现的佣金</span><br/><hr />
+                                <span style='color: #000000;'><b>累计佣金: </b>官方累计产生的所有佣金</span><br/><hr />
+                                "></i>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+		<script src="<?=$staticUrl ?>/static/recharge.js"></script>
+<script>
+	dateOption = {"date1": '', "date2": ''};
+	let tableUrl = '/agent/daily';
+	layui.use(['table','form','jquery','count'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols = [
+			[
+				{field:'_id', title: '日期' ,align:'center',minWidth:200}
+				, {field: 'promoterId',title: '渠道', align: 'center', minWidth: 120}
+				//, {field: 'newAgent', title: '新增代理', align: 'left', minWidth: 120}
+				, {field: 'teamRegPromoterNum', title: '新增代理', align: 'center', minWidth: 100}
+				, {field: 'teamActiveRegPromoterNum', title: '新增有效代理', align: 'center', minWidth: 100}//teamRegActivePromoterNum
+				, {field: 'teamRegPeople', title: '新增下线', align: 'center', minWidth: 100}
+				/*, {field: '', title: '累计代理', align: 'center', minWidth: 100}*/
+				, {field: 'teamFlowAmount', title: '今日业绩', align: 'center', minWidth: 120}
+				, {field: 'teamValidFlowAmount', title: '今日有效业绩', align: 'center', minWidth: 120}
+				, {field: 'teamProfit', title: '代理提成' ,align:'center', minWidth: 120}
+				//, {field: 'teamTransferToScoreAmount', title: '团队提现佣金', align: 'center', minWidth: 100}
+				//, {field: 'teamTransferToScoreAmount', title: '代理提现', align: 'center', minWidth: 100}
+				, {field: 'transferToScoreAmount', title: '代理提现', align: 'center', minWidth: 100}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl,
+			page: true ,
+			cols: cols ,
+			skin: 'line',
+			toolbar: true,
+			height: 730,
+			defaultToolbar: ['filter','exports'],
+			done: function(res, curr, count){
+
+			}
+		});
+
+		table.on('tool(listTable1)', function(obj){
+			console.log(obj);
+			if(obj.event === 'updateStatus'){
+				window.updateOrderStatus(obj, {"submitUrl": '/recharge/confirm'});
+			} else if(obj.event === 'cancle'){
+				window.cancleOrder(obj, {"submitUrl": '/recharge/cancle'});
+			}
+		});
+		form.on('submit(query)', function(data){
+			//console.log(data.field);
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+	})
+</script>
+<script src="/static/laydateYmd.js"></script>

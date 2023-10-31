@@ -1,0 +1,137 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+</style>
+<body class="pear-container">
+<div class="layui-card" style="position: fixed; z-index: 1000; width: 100%; top:-5px;">
+	<div class="layui-card-body">
+		<form class="layui-form" action="" lay-filter="queryForm">
+			<div class="layui-form-item layui-inline">
+				<div class="layui-input-inline">
+					<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-input-inline" style="width: 5px">-</div>
+				<div class="layui-input-inline">
+					<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item layui-inline">
+				<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+					<i class="layui-icon layui-icon-search"></i>
+					查询
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div style="position: absolute; top:80px; width: 100%;">
+	<div class="layui-card">
+		<div class="layui-card-body">
+			<h2 class="layui-font-red layui-font-16">充值对账</h2>
+			<table id="table1" lay-filter="listTable1"></table>
+		</div>
+	</div>
+	<div class="layui-card">
+		<div class="layui-card-body">
+			<h2 class="layui-font-red layui-font-16">提现对账</h2>
+			<table id="table2" lay-filter="listTable2"></table>
+		</div>
+	</div>
+	<div class="layui-card">
+		<div class="layui-card-body">
+			<h2 class="layui-font-red layui-font-16">代理转余额</h2>
+			<table id="table3" lay-filter="listTable3"></table>
+		</div>
+	</div>
+</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	dateOption = {"date1": '', "date2": ''};
+	let tableUrl1 = '/chargeBillCon/rechargeBill';
+	let tableUrl2 = '/chargeBillCon/exchangeBill';
+	let tableUrl3 = '/chargeBillCon/daiLiToYuE';
+	layui.use(['table','form','jquery','count'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		count = layui.count;
+		let form = layui.form;
+
+		let cols1 = [
+			[
+				{field: 'rechargeTypeName', title: '支付通道', align: 'center'}
+				, {field: 'rechargeNum', title: '充值笔数', align: 'center', totalRow: true}
+				, {field: 'rechargeTotal', title: '充值金额', align: 'center', totalRow: true}
+			]
+		];
+
+		let cols2 = [
+			[
+				{field: 'withdrawTypeName', title: '支付通道', align: 'center'}
+				, {field: 'exchangeNum', title: '提现笔数', align: 'center', totalRow: true}
+				, {field: 'exchangeTotal', title: '提现金额', align: 'center', totalRow: true}
+			]
+		];
+
+		let cols3 = [
+			[
+				{field: 'withdrawTypeName', title: '名称', align: 'center'}
+				, {field: 'exchangeNum', title: '转换笔数', align: 'center', totalRow: true}
+				, {field: 'exchangeTotal', title: '转换金额', align: 'center', totalRow: true}
+			]
+		];
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl1,
+			page: true ,
+			limit: 30
+			, limits: [10, 20, 30, 45, 60, 75, 90, 100],
+			cols: cols1 ,
+			totalRow: true,
+			skin: 'line',
+			height:410
+		});
+
+		table.render({
+			elem: '#table2',
+			url: tableUrl2,
+			page: true ,
+			limit: 30
+			, limits: [10, 20, 30, 45, 60, 75, 90, 100],
+			cols: cols2 ,
+			totalRow: true,
+			skin: 'line',
+            height:410
+		});
+
+		table.render({
+			elem: '#table3',
+			url: tableUrl3,
+			//page: true ,
+			cols: cols3 ,
+			totalRow: true,
+			skin: 'line',
+            height:410
+		});
+
+		form.on('submit(query)', function(data){
+			window.refresh('table1', {"data": data});
+			window.refresh('table2', {"data": data});
+			window.refresh('table3', {"data": data});
+			return false;
+		});
+
+	})
+</script>
+<script src="<?=$staticUrl ?>/static/laydateYmd.js"></script>

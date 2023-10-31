@@ -1,0 +1,92 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body>
+<form class="layui-form" action="">
+    <input type="hidden" name="clubId" value="<?= $clubId ?>"/>
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <?php
+                foreach($gameList as $k => $v) {
+                ?>
+                    <div class="layui-form-item" style="margin-bottom:10px !important; margin-top: 5px !important;">
+                        <label class="layui-form-label" style="width: 120px;text-align: left;"><?= $v['gameName'] ?>：&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        <div class="layui-input-block">
+                            <?php
+                                if(!empty($v['gameChecked']) && $v['gameChecked'] == 1 ) {
+                            ?>
+                                <?php
+                                    if($clubId == 1000) {
+                                ?>
+                                    <input type="checkbox" name="game[]" value="<?= $v['gameId'] ?>" lay-skin="primary" title="游戏开关" checked="" disabled>
+                                <?php
+                                    }else{
+                                ?>
+                                    <input type="checkbox" name="game[]" value="<?= $v['gameId'] ?>" lay-skin="primary" title="游戏开关" checked="">
+                                <?php
+                                    }
+                                ?>
+
+                                <div class="layui-unselect layui-form-checkbox layui-form-checked" lay-skin="primary"><span>游戏开关</span><i class="layui-icon layui-icon-ok"></i></div>
+                            <?php
+                                }else{
+                            ?>
+                                <input type="checkbox" name="game[]" value="<?= $v['gameId'] ?>" lay-skin="primary" title="游戏开关">
+                                <div class="layui-unselect layui-form-checkbox" lay-skin="primary"><span>游戏开关</span><i class="layui-icon layui-icon-ok"></i></div>
+                            <?php
+                                }
+                            ?>
+
+                            <?php
+                                if(!empty($v['enableAndroid']) && $v['enableAndroid'] == 1 ) {
+                            ?>
+
+                                <?php
+                                    if(in_array($v['gameId'],$keysHun) || $clubId == 1000) {
+                                ?>
+                                    <input type="checkbox" name="robot[]" value="<?= $v['gameId'] ?>" lay-skin="primary" title="机器人开关" checked="" disabled>
+                                <?php
+                                    }else{
+                                ?>
+                                    <input type="checkbox" name="robot[]" value="<?= $v['gameId'] ?>" lay-skin="primary" title="机器人开关" checked="">
+                                <?php
+                                    }
+                                ?>
+                                <div class="layui-unselect layui-form-checkbox layui-form-checked" lay-skin="primary"><span>机器人开关</span><i class="layui-icon layui-icon-ok"></i></div>
+                            <?php
+                                }else{
+                            ?>
+                                <input type="checkbox" name="robot[]" value="<?= $v['gameId'] ?>" lay-skin="primary" title="机器人开关">
+                                <div class="layui-unselect layui-form-checkbox" lay-skin="primary"><span>机器人开关</span><i class="layui-icon layui-icon-ok"></i></div>
+                            <?php
+                                }
+                            ?>
+                        </div>
+                    </div>
+                <?php
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <span style="font-size: medium;color: #FF5722;float: left;">&nbsp;&nbsp;&nbsp;&nbsp;保存配置后约10分钟生效!!!</span>
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit lay-filter="save">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+        </div>
+    </div>
+</form>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    layui.use(['form','jquery'],function(){
+        $ = layui.jquery;
+        let form = layui.form;
+        form.on('submit(save)', function(data){
+            window.save({"submitUrl": '/club/clubGameCon', "data": data.field, "tableId": 'table1'});
+            return false;
+        });
+    })
+
+</script>

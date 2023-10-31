@@ -1,0 +1,56 @@
+<?php
+    if($gameId==450) {
+        foreach($card as $key => $vo) {
+?>
+        <div class="layui-col-xs12 layui-col-sm12">
+            <div class="layui-status-img">
+                <span class="thick">
+                    座位:<?=$key ?>
+                </span>
+                <?php foreach($vo['cards'] as $vooo){ ?>
+                    <a href="javascript:;"><img src="<?=$staticUrl ?>/cards/showhand/<?=$vooo ?>.png" width="40px" height="50px"></a>
+                <?php } ?>
+                <span class="thick"><?=$vo['cardType'] ?></span>
+                <span class="thick">
+                    <?php if(in_array($key, $vo['winChairId'])){ ?><span style="color: #CF1900">(赢)</span> <?php } ?>
+                </span>
+                <span class="thick">
+                    <?php if($vo['disCard'] == '1'){ ?><span style="color: #f47920">(弃牌)</span> <?php } ?>
+                </span>
+                <span class="thick"><?php if(in_array($key, $betPosition)){ ?><img src="<?=$staticUrl ?>/cards/houtaitoux.png" width="32px" height="32px"><?php } ?></span>
+                <?php if(!empty($vo['useCards'][0])) { ?>
+                    <br />
+                    <span class="thick">
+                        会员使用的牌:
+                    </span>
+                    <?php foreach($vo['useCards'] as $vooo){ ?>
+                    <a href="javascript:;"><img src="<?=$staticUrl ?>/cards/showhand/<?=$vooo ?>.png" width="40px" height="50px"></a>
+                    <?php } ?>
+                <?php } ?>
+
+                <div style="float:right; width:130px">
+                    <?php 
+                        if($vo['userId']){
+                            foreach($vo['userId'] as $k1 => $v1){
+                    ?>                        	                            
+                                <?php
+                                    if($v1 == $currentUserId){
+                                ?>
+                                    <span class="user_id" style="color:#ff0000; line-height: 50px; position: relative; bottom:55px;"><?=$v1 ?>(自己)</span>
+                                <?php }else{ ?>
+                                    <span class="user_id" style="line-height: 50px; position: relative; bottom:55px;"><?=$v1 ?></span>
+                                <?php } ?>		                                                                   
+                    <?php
+                            }
+                        } 
+                    ?>
+                </div>
+            </div>
+        </div>
+        <?php
+                }
+        ?>
+
+<?php
+        }
+?>

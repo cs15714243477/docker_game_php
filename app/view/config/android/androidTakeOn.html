@@ -1,0 +1,63 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table class="layui-table"
+					   lay-data="{url:'/android/androidTakeOn', id:'androidTakeOn'}"
+					   lay-filter="androidTakeOn">
+					<thead>
+					<tr>
+						<th lay-data="{field:'gameId',align:'center', width:80}">游戏ID</th>
+						<th lay-data="{field:'gameName', minWidth: 100}">游戏名称</th>
+						<th lay-data="{field:'roomId',align:'center', width:80}">房间ID</th>
+						<th lay-data="{field:'roomName', minWidth: 150}">房间名称</th>
+						<th lay-data="{field:'androidCount',align:'center', width:100, edit: 'text'}">上桌数量</th>
+						<th lay-data="{fixed:'right', minWidth: 80, align: 'center', toolbar: '#updateAndroid'}">操作</th>
+					</tr>
+					</thead>
+				</table>
+
+
+			</div>
+		</div>
+
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl1 = '/android/androidTakeOn';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+
+		//监听单元格编辑
+		table.on('edit(androidTakeOn)', function(obj){
+			var value = obj.value ,data = obj.data ,field = obj.field;
+			$.post("/android/androidTakeOnEdit",{"gameId":data.gameId,"roomId":data.roomId,"field":field,"value":value},function (res) {
+				if(res.code == 0){
+					layer.msg(res.msg, {offset: 'auto',icon: 1,time: 1000});
+				}else{
+					layer.msg(res.msg, {offset: 'auto',icon: 2,time: 1000});
+				}
+
+			},"json")
+		});
+		// table.on('edit(androidTakeOn)', function(obj){
+		// 	window.editTableCell(obj, {"submitUrl": '/android/androidTakeOnEdit'});
+		// });
+
+		//监听工具条
+		table.on('tool(androidTakeOn)', function(obj){
+			var data = obj.data;
+			var layEvent = obj.event;
+			if(layEvent === 'updateAndoridConfig'){ //查看
+				$.post("android/androidListUpdateCount",{"gameId":data.gameId,"roomId":data.roomId},function (res) {
+					layer.msg(res.msg, {offset: 'auto',icon: 0,time: 1000});
+				},"json");
+			}
+		});
+
+	})
+</script>
+<script type="text/html" id="updateAndroid">
+	<button class="pear-btn pear-btn-primary pear-btn-xs" lay-event="updateAndoridConfig">更新</button>
+
+</script>

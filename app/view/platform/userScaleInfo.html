@@ -1,0 +1,223 @@
+<style>
+	.layui-table-header th{
+		background-color: #D7D7D7 !important;
+		font-weight: bold;
+	}
+	.pear-btn-selected {
+		color: #fff !important;
+		background-color: #000000 !important;
+		border: #5FB878;
+	}
+</style>
+<div>
+	<div class="layui-row layui-col-space10">
+		<div class="layui-col-md10">
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-md12">
+					<div class="layui-card">
+						<div class="layui-card-body">
+							<div class="layui-form " style="margin-bottom: 5px" lay-filter="platForm2">
+								<div class="layui-inline">
+									<input class="layui-input" id="dateValue" name="dateValue" placeholder="时间" type="text" value="">
+									<input class="layui-input" id="type" name="type" type="hidden" value="3">
+								</div>
+								<div class="layui-inline">
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn3" onclick="getEcharts(3);">新增用户</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn4" onclick="getEcharts(4);">有效新增</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn5" onclick="getEcharts(5);">注册用户</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn6" onclick="getEcharts(6);">活跃用户</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn7" onclick="getEcharts(7);">游戏人数</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn19" onclick="getEcharts(19);">新增次日留存</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn8" onclick="getEcharts(8);">累计用户</button>
+								</div>
+
+							</div>
+							<div id="container" style="width:100%;height:400px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md2">
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-md12">
+					<div class="layui-inline" style="float:right;">
+						<button type="button" class="pear-btn pear-btn-sm">
+							<i class="layui-icon layui-icon-help" style="font-size: 30px" lay-width="500px" lay-tips="
+                                <span style='color: #000000;'><b>新增用户: </b>首次启动应用的用户</span><br/><hr />
+                                <span style='color: #000000;'><b>有效新增: </b>游戏记录>=1新增用户(包含体验场)</span><br/><hr />
+                                <span style='color: #000000;'><b>注册用户: </b>成功绑定手机的用户数</span><br/><hr />
+                                <span style='color: #000000;'><b>活跃用户: </b>当天启动应用的用户(去重),包含新老用户</span><br/><hr />
+                                <span style='color: #000000;'><b>游戏人数: </b>当天有对局记录的活跃用户(包含体验场)</span><br/><hr />
+                                <span style='color: #000000;'><b>新增用户次日留存: </b>昨天的新增用户,今天登陆的比例</span><br/><hr />
+                                <span style='color: #000000;'><b>累计用户: </b>时间段内，累计新增用户数</span><br/><hr />
+
+                                "></i>
+						</button>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	Highcharts.SVGRenderer.prototype.symbols.download = function (x, y, w, h) {
+		var path = [
+			// Arrow stem
+			'M', x + w * 0.5, y,
+			'L', x + w * 0.5, y + h * 0.7,
+			// Arrow head
+			'M', x + w * 0.3, y + h * 0.5,
+			'L', x + w * 0.5, y + h * 0.7,
+			'L', x + w * 0.7, y + h * 0.5,
+			// Box
+			'M', x, y + h * 0.9,
+			'L', x, y + h,
+			'L', x + w, y + h,
+			'L', x + w, y + h * 0.9
+		];
+		return path;
+	};
+
+	let options = {
+		chart: {
+			type: 'line'                          //指定图表的类型，默认是折线图（line）
+		},
+		title: {
+			text: '新增用户'                 // 标题
+		},
+		xAxis: {
+			title: {
+				text: '日期'
+			},
+			categories: []   // x 轴分类
+		},
+		yAxis: {
+			title: {
+				text: '数量'                // y 轴标题
+			}
+		},
+		series: [
+			{                              // 数据列
+				name: '新增用户',                        // 数据列名
+				data: []                     // 数据
+			}
+		],
+		exporting: {
+			buttons: {
+				exportButton: {
+					text: '导出excel',
+					onclick: function () {
+						this.downloadXLS();
+					},
+					symbol:'download',
+				},
+				contextButton: {
+					enabled: false
+				}
+			}
+		},
+		credits : {
+			enabled : false
+		},
+	};
+
+	let options19 = {
+		chart: {
+			type: 'line'
+		},
+		title: {
+			text: '新增次日留存'
+		},
+		xAxis: {
+			title: {
+				text: '日期'
+			},
+			categories: []
+		},
+		yAxis: {
+			title: {
+				text: '数量'
+			},
+			labels: {
+				formatter: function() {
+					return this.value+"%";
+				}
+			}
+		},
+		plotOptions: {
+			series: {
+				dataLabels: {
+					enabled: true,
+					format: '{y} %'
+				}
+			},
+			enableMouseTracking: false
+		},
+		tooltip: {
+			pointFormat: '{point.y:.2f}%'
+		},
+		series: [
+			{
+				name: '新增次日留存',
+				data: []
+			},
+		],
+		exporting: {
+			buttons: {
+				exportButton: {
+					text: '导出excel',
+					onclick: function () {
+						this.downloadXLS();
+					},
+					symbol:'download',
+				},
+				contextButton: {
+					enabled: false
+				}
+			}
+		},
+		credits : {
+			enabled : false
+		}
+	};
+	dateOption = {"dateId": 'dateValue', "callback": getEcharts};
+	getEcharts(0, '');
+	function getEcharts(type, dateRange = '') {
+		let loading = layer.load(1, {
+			shade: false,
+			time: 2*1000
+		});
+		if (type == 0) {
+			type = $("#type").val();
+		} else {
+			$("#type").val(type);
+		}
+
+		if (dateRange == '') {
+			dateRange = $("#dateValue").val();
+		}
+		$.post('/platform/userScalePart',{"type":type, "dateRange":dateRange},function (res) {
+			layer.close(loading);
+			if(type == 19){
+				options19.title.text = res.data.title;
+				options19.xAxis.categories = res.data.categories;
+				options19.series[0].name = res.data.series_name;
+				options19.series[0].data = res.data.series_data;
+				let chart = Highcharts.chart('container', options19);
+			}else{
+				options.title.text = res.data.title;
+				options.xAxis.categories = res.data.categories;
+				options.series[0].name = res.data.series_name;
+				options.series[0].data = res.data.series_data;
+				options.yAxis.title.text = res.data.ytitle;
+				let chart = Highcharts.chart('container',options);
+			}
+			$("#searchBtn"+type).addClass("pear-btn-selected");
+			$("#searchBtn"+type).siblings().removeClass("pear-btn-selected");
+		},'json')
+	};
+</script>
+<script src="<?=$staticUrl ?>/static/laydateYmdRange.js"></script>

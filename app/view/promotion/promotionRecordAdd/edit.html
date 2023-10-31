@@ -1,0 +1,151 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+    .longspan260{
+        width: 260px;
+        text-align: left;
+    }
+    .longspan130{
+        width: 130px;
+        text-align: left;
+    }
+</style>
+<body class="pear-container">
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <form class="layui-form edit-form" lay-filter="editForm">
+                <div>
+                <div class="layui-tab layui-tab-brief" lay-filter="TabBrief">
+                    <div class="layui-tab-content">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">添加方式</label>
+                                <div class="layui-input-block">
+                                    <input type='radio' name='addType' lay-filter='addTypeEvent' value='1' title='单独录入' checked>
+                                    <input type='radio' name='addType' lay-filter='addTypeEvent' value='2' title='批量录入'>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item" id="numberTypeShow">
+                                <label class="layui-form-label longspan130">编号类型</label>
+                                <div class="layui-input-block">
+                                    <input type='radio' name='numberType' value='1' title='用户ID' checked>
+                                    <input type='radio' name='numberType' value='2' title='手机号'>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item" id="numberShow">
+                                <label class="layui-form-label longspan130">
+                                    UID(编号)
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="numbering" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                    金额
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="number" name="rechargeMoney" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                    选择方案
+                                </label>
+
+                                <div class="layui-input-inline">
+                                    <select name="planId">
+                                        <?php
+                                        foreach($planList as $k => $v) {
+                                            $selected = '';
+                                            echo "<option value='{$v["planId"]}' {$selected}>{$v['planTitle']}</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form-item" id="fileShow" style="display: none">
+                                <label class="layui-form-label longspan130">
+                                    EXCEL文件
+                                </label>
+                                <div class="layui-input-inline">
+
+
+                                    <button type="button" name="file" class="layui-btn" id="file1">
+                                        <i class="layui-icon"></i>上传文件
+                                    </button>
+                                    <span id="showFile" style="color: red"></span>
+                                    <input type="hidden" value="" name="pathName" id="pathName"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                </label>
+                                <div class="layui-input-inline">
+                                    <button id="saveButton" type="submit" class="pear-btn pear-btn-primary" lay-submit lay-filter="save">保存</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    layui.use('upload', function(){
+        var upload = layui.upload;
+    });
+</script>
+<script>
+    layui.use(['form','layer'], function () {
+        $ = layui.jquery;
+        let form = layui.form;
+        var upload = layui.upload;
+
+        var uploadInst = upload.render({
+            elem: '#file1' //绑定元素
+            ,accept: 'file'
+            ,url: '/promotion/excelFileUpload' //上传接口
+            ,done: function(res){
+                $("#showFile").html(res.basename);
+                $("#pathName").val(res.pathName);
+                layer.msg(res.msg);
+                layer.closeAll('loading');
+            }
+            ,error: function(res){
+                layer.msg(res.msg);
+            }
+        });
+
+        //监听提交
+        form.on('submit(save)', function(data){
+            data.field.file = $("#pathName").value;
+            if(data.field.addType == 2){
+                window.promotionSave({"submitUrl": '/promotion/batchRecordAdd', "data": data.field});
+                $("#saveButton").addClass("layui-btn-disabled").prop("disabled", true);
+            }else{
+                window.save({"submitUrl": '/promotion/promotionRecordAdd', "data": data.field});
+                $("#saveButton").addClass("layui-btn-disabled").prop("disabled", true);
+                setTimeout(function(){
+                    window.location.reload();
+                },2000)
+            }
+
+            return false;
+        });
+        form.on('radio(addTypeEvent)', function(data){
+            if(data.value == 1){
+                $("#numberShow").show();
+                $("#numberTypeShow").show();
+                $("#fileShow").hide();
+            }else{
+                $("#numberShow").hide();
+                $("#numberTypeShow").hide();
+                $("#fileShow").show();
+            }
+        });
+    });
+</script>

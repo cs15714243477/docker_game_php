@@ -1,0 +1,275 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+
+	.pear-container{
+		position: fixed;
+		width:100%;
+	}
+
+	.layui-table-box{
+		height: 600px;
+	}
+
+	.layui-table-page{
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+		height: 40px;
+		z-index: 1000;
+		background: white;
+	}
+
+	.layui-table-body .layui-table-cell{
+		height: 30px !important;
+		line-height: 27px !important;
+	}
+
+	.explain{
+		position: absolute;
+		right: 70px;
+		z-index: 10000;
+		top:120px;
+	}
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+<!--					<div class="layui-form-item layui-inline">-->
+<!--						<div class="layui-input-inline">-->
+<!--							<input type="text" name="channelId" id="channelId" autocomplete="off"  placeholder="渠道ID"  class="layui-input" lay-filter="promoterId">-->
+<!--						</div>-->
+<!--					</div>-->
+					<div class="layui-form-item layui-inline">
+						<!--<label class="layui-form-label">账号状态</label>-->
+						<div class="layui-input-inline">
+							<select name="status" id="status" lay-filter="status">
+								<option value="">账号状态</option>
+								<!--<option value="0">禁用</option>
+								<option value="1">正常</option>-->
+								<option value="2">禁止提现</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 150px;">
+							<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-input-inline" style="width: 5px">-</div>
+						<div class="layui-input-inline" style="width: 150px;">
+							<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="searchType" id="searchType">
+								<option value="1" selected="selected">盟主/合伙人ID</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 250px">
+							<input type="number" id="searchValue" name="searchValue" autocomplete="off" placeholder="请输入ID查询" class="layui-input" value="">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 250px">
+							<input type="text" id="clubName" name="clubName" autocomplete="off" placeholder="请输入俱乐部名字" class="layui-input" value="">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+						<!--<button type="reset" class="pear-btn pear-btn-md">
+							<i class="layui-icon layui-icon-refresh"></i>
+							重置
+						</button>-->
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<div class="layui-row layui-col-space10">
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">代理已提取金额汇总</div>
+							<div class="count pear-text" id="totalExchangeSum"></div>
+						</div>
+					</div>
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">代理可提取金额汇总</div>
+							<div class="count pear-text" id="scoreSum"></div>
+						</div>
+					</div>
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">合伙人数量汇总</div>
+							<div class="count pear-text" id="myPlayerTotalCountSum"></div>
+						</div>
+					</div>
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">会员数量汇总</div>
+							<div class="count pear-text" id="myPlayerMemberCountSum"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-card">
+			<button type="button" class="pear-btn pear-btn-sm explain">
+				<i class="layui-icon layui-icon-help" style="font-size: 30px"  lay-width="500px" lay-tips="
+				<span style='color: #000000;'><b>可提佣金: </b>往日预计佣金累计（不包括当天）</span><br/><hr /> 
+				<span style='color: #000000;'><b>已提现佣金: </b>已经提现的佣金</span><br/><hr />
+				<span style='color: #000000;'><b>合伙人: </b>直属合伙人（一级关系的）</span><br/><hr />
+				<span style='color: #000000;'><b>会员: </b>自己发展的会员包括自己</span><br/><hr />
+					"></i>
+			</button>
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+		<?php include app_path() . "/view/public/tpl_toolbar_agentList.html"; ?>
+<?php include app_path() . "/view/public/footer.html"; ?>
+		<script src="<?=$staticUrl ?>/static/recharge.js"></script>
+<script>
+	dateOption = {"date1": '', "date2": ''};
+	let tableUrl = '/club/member';
+	layui.use(['table','form','jquery','count'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		count = layui.count;
+		let form = layui.form;
+        let querystring
+		let startDate = $("#date1").val();
+        let endDate = $("#date2").val();
+        let promoterId = $("#searchValue").val();
+        let clubName = $("#clubName").val();
+
+		if(startDate && endDate){
+			//初始化日期控件
+			dateOption = {"date1": startDate, "date2": endDate};
+		}
+
+		if(promoterId){
+			querystring = '?startDate='+startDate+'&endDate='+endDate+'&searchType=1'+'&searchValue='+promoterId;
+			//querystring = '?searchType=1'+'&searchValue='+promoterId;
+		}else{
+			querystring = '?startDate='+startDate+'&endDate='+endDate;
+			//querystring = '?1=1';
+		}
+		if(clubName){
+            querystring += '&clubName='+clubName
+		}
+
+        let cols = [
+            [
+                {type:'checkbox', fixed: 'left'}
+                //,{field:'channelId', title: '职位',align:'center'}
+                ,{title:"盟主/合伙人ID", align:'left',width:150,
+					templet: function (d) {
+						if (d.promoterId > 10000000) {
+							return  '<a onclick="openNewTab(this)" lay-href="/player/playerInfo?userId='+d.promoterId+'" data-name="'+d.promoterId+'" lay-text="ID:'+d.promoterId+'" style="color: #00bfff;font-weight: bold">'+d.promoterId+'</a>';
+						} else {
+							return d.promoterId;
+						}
+					}
+            	}
+				,{field:'pid', title: '上级ID' ,align:'left',width:150}
+                ,{field:'score', title: '可提佣金' ,align:'left',width:150}
+				,{field:'totalExchange', title: '已提现佣金' ,align:'left',width:150}
+                ,{field:'myPlayerTotalCount', title: '合伙人数量' ,align:'left',width:150,templet:function (d){
+					var startDate = $("#date1").val();
+					var endDate = $("#date2").val();
+                    var url = '/club/userGameStat?startDate='+startDate+'&endDate='+endDate+'&promoterId='+d.promoterId;
+                    var html = '<p><a onclick="openNewTab(this)" lay-href="'+url+'" data-name="'+d.promoterId+'直接数据" lay-text="ID:'+d.promoterId+'直接数据" style="color: #00bfff;font-weight: bold">'+d.myPlayerTotalCount+'</a></p>';
+                    return html;
+                }}
+				,{field:'myPlayerMemberCount', title: '会员数量' ,align:'left',width:150,templet:function (d){
+					var startDate = $("#date1").val();
+					var endDate = $("#date2").val();
+					var url = '/club/userGameStat2?startDate='+startDate+'&endDate='+endDate+'&promoterId='+d.promoterId+'&status=1';
+					var html = '<p><a onclick="openNewTab(this)" lay-href="'+url+'" data-name="'+d.promoterId+'会员数量" lay-text="ID:'+d.promoterId+'会员数量" style="color: #00bfff;font-weight: bold">'+d.myPlayerMemberCount+'</a></p>';
+					return html;
+				}}
+				//,{field:'myPlayerMemberCount', title: '会员数量' ,align:'left',width:150}
+                //,{field:'totalAgentRevenue', title: '会员税收' ,align:'center'}
+                //,{field:'totalMyProfit', title: '分成佣金' ,align:'center'}
+                //,{field:'totalTeamAgentRevenue', title: '合伙人团队税收' ,align:'center'}
+                //,{field:'totalTeamProfit', title: '合伙人团队分成' ,align:'center'}
+                // ,{field:'totalTeamContri', title: '团队贡献' ,align:'center',templet:function (d){
+                //     var startDate = $("#date1").val();
+                //     var endDate = $("#date2").val();
+                //     var status = $("#status").val();
+                //     var clubName = $("#clubName").val();
+                //     var url = '/club/memberChild?startDate='+startDate+'&endDate='+endDate+'&status='+status+'&clubName='+clubName+'&promoterId='+d.promoterId;
+				// 	//var url = '/club/memberChild?status='+status+'&clubName='+clubName+'&promoterId='+d.promoterId;
+                //     return  '<a onclick="openNewTab(this)" lay-href="'+url+'" data-name="'+d.promoterId+'-'+startDate+'~'+endDate+'团队数据" lay-text="ID:'+d.promoterId+'团队数据" style="color: #00bfff;font-weight: bold">'+d.totalTeamContri+'</a>';
+                // }}
+                ,{field:'clubsNameStr', title: '俱乐部(分成)' ,align:'left',width:200}
+				,{field:'createTime', title: '创建时间' ,align:'left',width:200}
+            ]
+        ]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl+ querystring,
+			page: true ,
+			cols: cols ,
+			skin: 'line',
+			toolbar: '#toolbar',
+			defaultToolbar: ['filter'],
+			height:700,
+			done: function(res, curr, count){
+				let queryFormData = form.val("queryForm");
+				//console.log(queryFormData);
+				window.tableSummary({"submitUrl": '/club/memberSummary', "data": queryFormData, "selIds": 'scoreSum,totalExchangeSum,myPlayerTotalCountSum,myPlayerMemberCountSum'});
+			}
+		});
+
+
+		table.on('toolbar(listTable1)', function(obj){
+			if(obj.event === 'reopen'){
+				obj.value = 0;
+				window.batchReopenWithdrawFrozenWithdraw(obj, {"submitUrl": '/club/userStatus', "tableId": 'table1'});
+			} else if(obj.event === 'refresh'){
+				window.refresh('table1');
+			} else if(obj.event === 'frozen'){
+				obj.value = 1;
+				window.batchReopenWithdrawFrozenWithdraw(obj, {"submitUrl": '/club/userStatus', "tableId": 'table1'});
+			}
+		});
+
+		// table.on('edit(listTable1)', function (obj) {
+		// 	window.editTableCell(obj, {"submitUrl": '/agent/switchAgent'});
+		// });
+
+		form.on('submit(query)', function(data){
+			//console.log(data.field);
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+		// form.on('switch(status)', function(obj){
+		// 	//layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+		// 	window.switch01(obj, {"submitUrl": '/admin/switchAdminUser', "field": 'status'});
+		// });
+	})
+</script>
+<script src="<?=$staticUrl ?>/static/laydateClubHis.js"></script>

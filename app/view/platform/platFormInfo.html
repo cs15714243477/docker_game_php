@@ -1,0 +1,204 @@
+
+<link rel="stylesheet" href="<?=$staticUrl ?>/static/admin/css/other/console2.css" />
+<style>
+	.pear-card2 .count{
+		font-size:20px;
+	}
+</style>
+	<body class="pear-container">
+	<div class="layui-row layui-col-space10">
+		<div class="layui-col-md12">
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-md12">
+					<div class="layui-card">
+						<div class="layui-card-body">
+
+							<div class="layui-row layui-col-space10">
+
+								<div class="layui-col-md12">
+									<div class="layui-inline" style="float:right;">
+										<button type="button" class="pear-btn pear-btn-sm">
+											<i class="layui-icon layui-icon-help" style="font-size: 30px" lay-width="300px" lay-tips="
+								<span style='color: #000000;'><b>新增用户：</b>首次启动应用的用户</span><br />
+								<span style='color: #000000;'><b>有效新增：</b>游戏记录>=1新增用户</span><br/>
+								<span style='color: #000000;'><b>注册用户：</b>成功绑定手机的用户数</span><br />
+								<span style='color: #000000;'><b>活跃用户：</b>启动应用的用户,包含新老用户</span><br/>
+								<span style='color: #000000;'><b>游戏人数：</b>有对局记录的活跃用户</span><br/>
+								<span style='color: #000000;'><b>次日留存：</b>昨天的新增用户,今天登陆的比例</span><br/>
+								<span style='color: #000000;'><b>当前在线：</b>当前同时在线人数，每5分钟刷新一次</span><br/>
+								<span style='color: #000000;'><b>累计用户：</b>时间段内，累计新增用户数</span><br />
+								<span style='color: #000000;'><b>付费用户：</b>充值用户数,包含新老充值用户</span><br />
+								<span style='color: #000000;'><b>首充用户：</b>首次充值的用户数</span><br />
+								<span style='color: #000000;'><b>首充金额：</b>首次充值用户当天累计充值金额</span><br />
+								<span style='color: #000000;'><b>二次充值比：</b>充值用户中,两次以上付费人数占比</span><br/>
+								<span style='color: #000000;'><b>官方税收: </b>平台所有游戏累计税收</span><br />
+								<span style='color: #000000;'><b>游戏输赢: </b>平台所有机器人与真实会员的对战盈余</span><br/>
+								<span style='color: #000000;'><b>代理佣金: </b>产生的代理佣金总额</span><br />
+								<span style='color: #000000;'><b>官方盈亏: </b>官方税收+游戏输赢-代理佣金-奖励金额</span><br />
+								<span style='color: #000000;'><b>提现: </b>所有的成功出款总额</span><br />
+								<span style='color: #000000;'><b>充值: </b>所有充值渠道的总收入</span><br />
+								"></i>
+										</button>
+									</div>
+									<div class="layui-inline" style="float:right;margin-right: 20px">
+										<span style="color: #cc0000;float: right"><?=$StatisticalInterval ?>分钟统计一次</span>
+									</div>
+								</div>
+
+
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">新增用户</div>
+										<div class="count pear-text"><?=$data['xzyh']['vals_t']?><br/><br/><?=$data['xzyh']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">有效新增</div>
+										<div class="count pear-text"><?=$data['yxxz']['vals_t']?><br/><br/><?=$data['yxxz']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">注册用户</div>
+										<div class="count pear-text"><?=$data['zcyh']['vals_t']?><br/><br/><?=$data['zcyh']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">活跃用户</div>
+										<div class="count pear-text"><?=$data['hyyh']['vals_t']?><br/><br/><?=$data['hyyh']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">游戏人数</div>
+										<div class="count pear-text"><?=$data['yxrs']['vals_t']?><br/><br/><?=$data['yxrs']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">新增次日留存</div>
+										<div class="count pear-text"><?=$data['crlc']['vals_t']?>%<br/><br/><?=$data['crlc']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">当前在线</div>
+										<div class="count pear-text"><?=$data['dqzx']?><br/><br/></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">累计用户</div>
+										<div class="count pear-text"><?=$data['ljyh']['vals_t']?><br/><br/><?=$data['ljyh']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">付费用户</div>
+										<div class="count pear-text"><?=$data['ffyh']['vals_t']?><br/><br/><?=$data['ffyh']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">首充用户</div>
+										<div class="count pear-text"><?=$data['scyh']['vals_t']?><br/><br/><?=$data['scyh']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">首充金额</div>
+										<div class="count pear-text"><?=$data['scje']['vals_t']?><br/><br/><?=$data['scje']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">二次充值比例</div>
+										<div class="count pear-text"><?=$data['eccz']['vals_t']?><br/><br/><?=$data['eccz']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">游戏输赢</div>
+										<div class="count pear-text"><?=$data['yxsy']['vals_t']?><br/><br/><?=$data['yxsy']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">官方税收</div>
+										<div class="count pear-text"><?=$data['xtss']['vals_t']?><br/><br/><?=$data['xtss']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">代理佣金</div>
+										<div class="count pear-text"><?=$data['dlyj']['vals_t']?><br/><br/><?=$data['dlyj']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">官方盈亏</div>
+										<div class="count pear-text"><?=$data['xtyk']['vals_t']?><br/><br/><?=$data['xtyk']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">充值</div>
+										<div class="count pear-text"><?=$data['cz']['vals_t']?><br/><br/><?=$data['cz']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">提现</div>
+										<div class="count pear-text"><?=$data['dh']['vals_t']?><br/><br/><?=$data['dh']['vals_r']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">奖励金额</div>
+										<div class="count pear-text"><?=$data['jlzc']?></div>
+									</div>
+								</div>
+
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">俱乐部总游戏输赢</div>
+										<div class="count pear-text"><?=$data['winScoreClub']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">俱乐部平台税收</div>
+										<div class="count pear-text"><?=$data['revenueClub']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">俱乐部官方盈亏</div>
+										<div class="count pear-text"><?=$data['gfykClub']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">俱乐部奖励</div>
+										<div class="count pear-text"><?=$data['rewardScoreClub']?></div>
+									</div>
+								</div>
+								<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+									<div class="pear-card2" style="height: 150px;">
+										<div class="title">俱乐部游戏人数</div>
+										<div class="count pear-text"><?=$data['playerCountClub']?></div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>

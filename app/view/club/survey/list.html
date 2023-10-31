@@ -1,0 +1,48 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<div class="layui-tab layui-tab-brief" lay-filter="demo">
+					<ul class="layui-tab-title">
+						<li class="layui-this">今天概况</li>
+						<li>今天昨天</li>
+						<li>本月上月</li>
+						<li>用户规模</li>
+						<li>营收规模</li>
+					</ul>
+					<div class="layui-tab-content">
+						<div class="layui-tab-item layui-show tab0"></div>
+						<div class="layui-tab-item tab1"></div>
+						<div class="layui-tab-item tab2"></div>
+						<div class="layui-tab-item tab3"></div>
+						<div class="layui-tab-item tab4"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+		<script src="/static/highcharts.js"></script>
+		<script src="/static/exporting.js"></script>
+		<script src="/static/export-data.js"></script>
+<script>
+	let tempTabArr = new Array();
+	tempTabArr[0] = "/club/surveyToday";
+	tempTabArr[1] = "/club/surveyYestodayAndToday";
+	tempTabArr[2] = "/club/surveyLastMonthAndThisMonth";
+	tempTabArr[3] = "/club/surveyPlayerScale";
+	tempTabArr[4] = "/club/surveyRevenueScale";
+	function openTabs(index) {
+		$('.tab' + index).load(tempTabArr[index], {"userId": 0});
+	}
+	layui.use(['jquery','element'],function () {
+		$ = layui.jquery;
+		let element = layui.element;
+		openTabs(0);
+		element.on('tab(demo)', function (data) {
+			let index = data.index;
+			console.log(index);
+			openTabs(index);
+		});
+
+	})
+</script>

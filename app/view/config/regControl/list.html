@@ -1,0 +1,136 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card" style="position: fixed; z-index: 1000; height: 80px; width: 100%; background: white;">
+			<div class="layui-card-body" >
+				<form class="layui-form" action="" lay-filter="queryForm" >
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 250px">
+							<input type="text" name="searchText" autocomplete="off" placeholder="请输入代理ID，多个用逗号分开" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card" style="position: relative; top:55px;">
+			<div class="layui-card-body">
+				<table class="layui-table" lay-data="{url:'/PromoterReg/promoterRegControl',id:'promoterRegControl', page: true, limit: 15, limits:[15,30,50,100,200]}" lay-filter="promoterRegControl">
+					<thead>
+					<tr>
+						<th lay-data="{fixed:'left',field:'promoterId',align:'center', minWidth: 80}" rowspan="2">代理ID</th>
+						<th lay-data="{fixed:'left',field:'promoterName',align:'center', minWidth: 100}" rowspan="2">代理名称</th>
+						<th lay-data="{align:'center'}" colspan="2">默认控制</th>
+						<th lay-data="{align:'center'}" colspan="4">苹果控制</th>
+						<th lay-data="{align:'center'}" colspan="4">安卓控制</th>
+						<th lay-data="{align:'center'}" colspan="4">模拟器控制</th>
+					</tr>
+					<tr>
+						<th lay-data="{field:'initScore',align:'center', minWidth: 60,edit:'text'}">初始金</th>
+						<th lay-data="{field:'bindScore',align:'center', minWidth: 60,edit:'text'}">绑定金</th>
+						<th lay-data="{align:'center', minWidth: 80,toolbar:'#iosReg'}">注册</th>
+						<th lay-data="{align:'center', minWidth: 80,toolbar:'#iosLogin'}">登录</th>
+						<th lay-data="{field:'iosGiveScore',align:'center', minWidth: 60,edit:'text'}">初始金</th>
+						<th lay-data="{field:'iosBindScore',align:'center', minWidth: 60,minWidth: 80,edit:'text'}">绑定金</th>
+						<th lay-data="{align:'center', minWidth: 80,toolbar:'#androidReg'}">注册</th>
+						<th lay-data="{align:'center', minWidth: 80,toolbar:'#androidLogin'}">登录</th>
+						<th lay-data="{field:'androidGiveScore',align:'center', minWidth: 60,edit:'text'}">初始金</th>
+						<th lay-data="{field:'androidBindScore',align:'center', minWidth: 60,edit:'text'}">绑定金</th>
+						<th lay-data="{align:'center', minWidth: 80,toolbar:'#simulatorReg'}">注册</th>
+						<th lay-data="{align:'center', minWidth: 80,toolbar:'#simulatorLogin'}">登录</th>
+						<th lay-data="{field:'simulatorGiveScore',align:'center', minWidth: 60,edit:'text'}">初始金</th>
+						<th lay-data="{field:'simulatorBindScore',align:'center', minWidth: 60,edit:'text'}">绑定金</th>
+					</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+<?php include app_path() . "/view/public/tpl_toolbar_add_batchRemove.html"; ?>
+
+<script type="text/html" id="iosReg">
+	<input type="checkbox" name="iosReg" value="{{d._id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="iosReg" {{ d.iosReg== 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="iosLogin">
+	<input type="checkbox" name="iosLogin" value="{{d._id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="iosLogin" {{ d.iosLogin== 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="androidReg">
+	<input type="checkbox" name="androidReg" value="{{d._id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="androidReg" {{ d.androidReg== 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="androidLogin">
+	<input type="checkbox" name="androidLogin" value="{{d._id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="androidLogin" {{ d.androidLogin== 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="simulatorReg">
+	<input type="checkbox" name="simulatorReg" value="{{d._id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="simulatorReg" {{ d.simulatorReg== 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="simulatorLogin">
+	<input type="checkbox" name="simulatorLogin" value="{{d._id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="simulatorLogin" {{ d.simulatorLogin== 1 ? 'checked' : '' }}>
+</script>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+		form.on('submit(query)', function(data){
+			window.refresh('promoterRegControl', {"data": data});
+			return false;
+		});
+
+		form.on('switch(iosReg)', function(obj){
+			window.switch01(obj, {"submitUrl": '/promoterReg/promoterRegEdit', "field": 'iosReg'});
+		});
+		form.on('switch(iosLogin)', function(obj){
+			window.switch01(obj, {"submitUrl": '/promoterReg/promoterRegEdit', "field": 'iosLogin'});
+		});
+		form.on('switch(androidReg)', function(obj){
+			window.switch01(obj, {"submitUrl": '/promoterReg/promoterRegEdit', "field": 'androidReg'});
+		});
+
+		form.on('switch(androidLogin)', function(obj){
+			window.switch01(obj, {"submitUrl": '/promoterReg/promoterRegEdit', "field": 'androidLogin'});
+		});
+
+		form.on('switch(simulatorReg)', function(obj){
+			window.switch01(obj, {"submitUrl": '/promoterReg/promoterRegEdit', "field": 'simulatorReg'});
+		});
+
+		form.on('switch(simulatorLogin)', function(obj){
+			window.switch01(obj, {"submitUrl": '/promoterReg/promoterRegEdit', "field": 'simulatorLogin'});
+		});
+
+		table.on('edit(promoterRegControl)', function(obj){
+			window.editTableCell(obj, {"submitUrl": '/promoterReg/promoterRegEdit'});
+		});
+	})
+</script>
+
+<style>
+    .layui-table-box{
+        height: 730px;
+		overflow-y: auto;
+    } 
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 5px;
+		height: 40px;
+		z-index: 1000;
+		background: white;
+		left:10px;
+    }
+
+	.layui-table-header{
+		position: fixed;
+		z-index: 900;
+	}
+
+	.layui-table-body{
+		position: relative;
+		top:90px;
+	}
+</style>
+

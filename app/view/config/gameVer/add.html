@@ -1,0 +1,50 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">gameVerId</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="gameVerId" lay-verify="required" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">游戏id</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="gameId" lay-verify="required" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">版本号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="version" lay-verify="required" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">备注</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="remark" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php include app_path() . "/view/public/tpl_form_bottom_save.html"; ?>
+</form>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    dateOption = {"date1": ''};
+    layui.use(['form','jquery'],function(){
+        $ = layui.jquery;
+        let form = layui.form;
+
+        //form.verify()
+        form.on('submit(save)', function(data){
+            window.save({"submitUrl": '/gameVer/addGameVer', "data": data.field, "tableId": 'table1'});
+            return false;
+        });
+    })
+</script>
+<script src="<?=$staticUrl ?>/static/laydate.js"></script>

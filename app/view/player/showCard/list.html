@@ -1,0 +1,231 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style type="text/css">
+	span.thick {font-weight: bold}
+	.user_id{
+		margin-right: 5px;
+		line-height: 25px;
+		height: 25px;
+	}
+	.more{
+		position: absolute; 
+		right:0px;
+		top:0px;
+		font-size: 12px; 
+		cursor: pointer;
+		color: #0000ff;
+	}
+
+	.layui_user{
+		float:right; 
+		position: relative;
+		height: 50px;
+		overflow: hidden;
+	}
+
+	.layui_user_open{
+		float:right; 
+		position: relative;
+	}
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<?php if(!empty($card)) {  ?>
+				<div class="layui-row layui-col-space10">
+					<?php include app_path() . "/view/player/showCard/900.html"; ?>
+					<?php
+						if($gameId==940) {
+					?>
+						<?php include app_path() . "/view/player/showCard/940.html"; ?>
+					<?php
+						}
+					?>
+
+						<?php
+							if($gameId==930 || $gameId==920) {
+								foreach($card as $key => $vo) {
+							?>
+									<div class="layui-col-xs12 layui-col-sm12">
+										<?php if($key<=4) { ?>
+										<div class="layui-status-img">
+										<span class="thick">
+											<?php if($key==0){ ?>庄：<?php }elseif($key==1){ ?>天：<?php }elseif($key==2){ ?>地：<?php }elseif($key==3){ ?>玄：<?php }elseif($key==4){ ?>黄：<?php } ?>
+										</span>
+										<?php
+											$num = $gameId==930 ? 5 : 3;
+											foreach($vo as $k1 => $v1){
+												if($k1 != 'userId'){
+										?>
+											 <?php if($k1 < $num){ ?>
+												<a href="javascript:;">
+													<img src="<?=$staticUrl ?>/cards/common/<?=$v1 ?>.png" width="40px" height="50px">
+												</a>
+											 <?php
+												   }else{
+														if($v1 > 0){
+															echo '<font color="red">赢</font>';
+														}
+														if($v1 == 0 && $v1 != ""){
+															echo '<font color="green">输</font>';
+														}
+											       }
+											 ?>
+											<?php } else{ ?>
+											<div class ="layui_user" style="width:450px">
+												<?php
+													if($v1) {
+														foreach($v1 as $k2 => $v2) {
+												?>
+															<?php if($v2 != $bankerId){ ?>
+															<?php
+																if($v2 == $currentUserId){
+															?>
+																	<span class="user_id" style=" color:#ff0000"><?=$v2 ?>(自己)</span>
+																<?php }else{ ?>
+																	<span class="user_id"><?=$v2 ?></span>
+																<?php } ?>
+												<?php
+															}
+														}
+													}
+												?>
+
+												<?php
+													if(count($v1) > 12){
+												?>
+													<span class = "more" onclick="bet_user($(this))">更多</span>
+												<?php } ?>
+											</div>
+							<?php
+									}
+								}
+							?>
+						</div>
+					<?php } ?>
+					</div>
+					<?php } ?>
+							<span class="thick">
+									庄:&nbsp;
+							</span>
+							<?php if($bankerId == $currentUserId){?>
+								<span>(自己)</span>
+							<?php } ?>
+
+							<?php if($bankerId > 0){?>
+								<span><?=$bankerId ?></span>
+							<?php } ?>
+					<?php } ?>
+
+
+					<?php include app_path() . "/view/player/showCard/720.html"; ?>
+					<?php include app_path() . "/view/player/showCard/860.html"; ?>
+
+					<?php
+						if($gameId==810 || $gameId==830 || $gameId==870 || $gameId==890 || $gameId==850 || $gameId==880 || $gameId==820) {
+							foreach($card as $key => $vo) {
+					?>
+							<div class="layui-col-xs12 layui-col-sm12">
+								<?php if($key<=3){ ?>
+									<div class="layui-status-img">
+										<span class="thick">
+											座位<?=$key ?>：
+										</span>
+
+									<?php foreach($vo as $k => $v1){ ?>
+										<?php if($k != 'userId'){ ?>
+											<a href="javascript:;">
+												<img src="<?=$staticUrl ?>/cards/common/<?=$v1 ?>.png" width="40px" height="50px">
+											</a>
+										<?php }?>
+									<?php } ?>
+
+									<?php if($key==$card['999']['zhuang']){ ?>
+										<span class="thick"><font color="red">庄</font>  </span>
+										<span class="thick">抢庄倍数：<?=$card['999']['grabBetMultiple'][$key] ?></span>&nbsp;&nbsp;
+									<?php } else { ?>
+										<span class="thick">下注倍数：<?=$card['999']['grabBetMultiple'][$key] ?></span>&nbsp;&nbsp;
+									<?php } ?>
+
+									<?php if(isset($card['999']['cardTypeMultiple'][$key])){ ?>
+										<span class="thick">牌面倍数：<?=$card['999']['cardTypeMultiple'][$key] ?> </span>&nbsp;&nbsp;
+									<?php } ?>
+
+									<?php if(isset($card['999']['winOrLose'][$key])){ ?>
+										<span class="thick">
+										<?php if(1==$card['999']['winOrLose'][$key]){ ?> <font color="red">赢</font>  <?php } ?>
+												<?php if(2==$card['999']['winOrLose'][$key]){ ?> <font color="green">输</font>  <?php } ?>
+										</span>
+									<?php } ?>
+									<span class="thick">
+										<?php if(in_array($key, $betPosition)){ ?><img src="<?=$staticUrl ?>/cards/houtaitoux.png" width="32px" height="32px"><?php } ?>
+									</span>
+
+									<?php foreach($vo as $k => $v1){ ?>
+									<?php if($k == 'userId'){ ?>
+									<div style="float:right; width:120px">
+										<?php
+											if($v1) {
+												foreach($v1 as $k2 => $v2) {
+										?>
+											<?php
+												if($v2 == $currentUserId){
+											?>
+											<span class="user_id" style=" color:#ff0000;line-height:50px;"><?=$v2 ?>(自己)</span>
+											<?php }else{ ?>
+													<span class="user_id" style="line-height:50px;"><?=$v2 ?></span>
+											<?php } ?>
+											<?php
+												}
+											}
+										?>
+									</div>
+							<?php
+									}
+								}
+							?>
+							</div>
+								<?php }else{ ?>
+									<span class="thick"></span>
+								<?php } ?>
+							</div>
+							<?php
+							}
+						}
+					?>
+
+
+					<?php include app_path() . "/view/player/showCard/210.html"; ?>
+					<?php include app_path() . "/view/player/showCard/220.html"; ?>
+					<?php include app_path() . "/view/player/showCard/300.html"; ?>
+					<?php include app_path() . "/view/player/showCard/100.html"; ?>
+					<?php include app_path() . "/view/player/showCard/550.html"; ?>
+					<?php include app_path() . "/view/player/showCard/950.html"; ?>
+					<?php include app_path() . "/view/player/showCard/600.html"; ?>
+					<?php include app_path() . "/view/player/showCard/420.html"; ?>
+					<?php include app_path() . "/view/player/showCard/450.html"; ?>
+					<?php include app_path() . "/view/player/showCard/910.html"; ?>
+					<?php include app_path() . "/view/player/showCard/800.html"; ?>
+					<?php include app_path() . "/view/player/showCard/960.html"; ?>
+					<?php include app_path() . "/view/player/showCard/620.html"; ?>
+				</div>
+				<?php } ?>
+			</div>
+		</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+	})
+</script>
+
+<script>
+function bet_user(self){
+	if(self.parent().attr('class') == 'layui_user'){
+		self.parent().removeClass('layui_user').addClass('layui_user_open')
+	}else{
+		self.parent().removeClass('layui_user_open').addClass('layui_user')
+	}  
+}  
+</script>

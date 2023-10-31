@@ -1,0 +1,82 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body class="pear-container">
+<div class="layui-card">
+	<div class="layui-card-body">
+		<table id="table1" lay-filter="listTable1"></table>
+	</div>
+</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl1 = '/exchangeServer/exchangeServiceList';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols1 = [
+			[
+				{field:'exchangeServiceId',title: '编号' ,align:'center'}
+				,{field:'exchangeType',title: '接口分类' ,align:'center', toolbar: '#exchangeType'}
+				,{field:'controllerName', title: '接口名称' ,align:'center'}
+				,{field:'status', title:'接口状态', align:'center', toolbar: '#serviceSwitch'}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl1,
+			page: true ,
+			limit: 90,
+			cols: cols1 ,
+			skin: 'line',
+			defaultToolbar: false,
+			toolbar: '#toolbar',
+			height:830
+		});
+
+		form.on('switch(serviceSwitch)', function(obj){
+			window.switch21(obj, {"submitUrl": '/exchangeServer/exchangeServiceListStatus', "field": 'status'});
+		});
+	})
+</script>
+<script type="text/html" id="serviceSwitch">
+	<input type="checkbox" name="serviceSwitch" value="{{d._id}}" lay-skin="switch" lay-text="开启|关闭" lay-filter="serviceSwitch" {{ d.status == 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="exchangeType">
+	{{#  if(d.exchangeType == 1){ }}
+	<span style="color:Coral">银行卡</span>
+	{{#  } else if(d.exchangeType == 2) { }}
+	<span style="color:blue">支付宝</span>
+	{{#  } else if(d.exchangeType == 3) { }}
+	<span style="color:green">微信</span>
+	{{#  } else if(d.exchangeType == 4) { }}
+	<span style="color:DarkGray">京东金融</span>
+	{{#  } else if(d.exchangeType == 5) { }}
+	<span style="color:DarkGray">USDT</span>
+	{{#  } else { }}
+	<span style="color:red">未知</span>
+	{{#  } }}
+
+</script>
+
+<style>
+    .pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 730px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 5px;
+		width: 100%;
+       height: 40px;
+       z-index: 1000;
+       background: white;
+		left:10px;
+    }
+</style>
+

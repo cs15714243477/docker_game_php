@@ -1,0 +1,193 @@
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 150px">
+							<input type="text" name="startDate" id="date23" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-input-inline" style="width: 5px">-</div>
+						<div class="layui-input-inline" style="width: 150px">
+							<input type="text" name="endDate" id="date24" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+<!--		<div class="layui-card">-->
+<!--			<div class="layui-card-body">-->
+<!--				<div class="layui-row layui-col-space10">-->
+					<!--<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">操作前身上</div>
+							<div class="count pear-text" id="beforeScoreSum"></div>
+						</div>
+					</div>-->
+<!--					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">-->
+<!--						<div class="pear-card2">-->
+<!--							<div class="title">身上变动</div>-->
+<!--							<div class="count pear-text" id="addScoreSum"></div>-->
+<!--						</div>-->
+<!--					</div>-->
+					<!--<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">操作后身上</div>
+							<div class="count pear-text" id="afterScoreSum"></div>
+						</div>
+					</div>-->
+
+<!--					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">-->
+<!--						<div class="pear-card2">-->
+<!--							<div class="title">操作前保险箱</div>-->
+<!--							<div class="count pear-text" id="beforeBankScoreSum"></div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">-->
+<!--						<div class="pear-card2">-->
+<!--							<div class="title">保险箱变动</div>-->
+<!--							<div class="count pear-text" id="addBankScoreSum"></div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">-->
+<!--						<div class="pear-card2">-->
+<!--							<div class="title">操作后保险箱</div>-->
+<!--							<div class="count pear-text" id="afterBankScoreSum"></div>-->
+<!--						</div>-->
+<!--					</div>-->
+
+<!--				</div>-->
+<!--			</div>-->
+<!--		</div>-->
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table23" lay-filter="listTable23"></table>
+			</div>
+		</div>
+
+<script>
+	dateOption = {"date1": 'date23', "date2": 'date24', "table": 'table23'};
+	layui.use(['table','form','jquery','count'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		count = layui.count;
+		let form = layui.form;
+
+		let cols = [
+			[
+				{field: 'userId', title: '会员ID', align: 'center'},
+				{field: 'beforeScore', title: '帐变前金币金额', align: 'center'},
+				{field: 'addScore', title: '帐变金额', align: 'center'},
+				{field: 'afterScore', title: '帐变后金币金额', align: 'center'},
+				{field: 'beforeBankScore', title: '帐变前保险箱余额', align: 'center', width:120},
+				{field: 'addBankScore', title: '保险箱帐变金额', align: 'center', width:120},
+				{field: 'afterBankScore', title: '帐变后保险箱余额', align: 'center', width:120},
+				{field: 'createTime', title: '帐变时间', align: 'center', width:160},
+				{field: 'changeTypeName', title: '帐变类型' ,align:'center',width:100,templet:function (d) {
+
+						if (d.type == 20) {
+							return  '<a href="player.php?act=playerGameInfo&userid='+d.userId+'&drawid='+ d.drawid+'" target="_blank" data-name="'+d.userid+'" lay-text="ID:'+d.userid+'" style="color: red;font-weight: bold">'+d.changeTypeName+'</a>';
+						} else if (d.type == 3) {
+							return '<span style="font-weight: bold;color: blue">'+ d.changeTypeName+'</span>';
+						} else if (d.type == 4) {
+							return '<span style="font-weight: bold;color: red">'+ d.changeTypeName+'</span>';
+						} else {
+							return '<span class="">'+ d.changeTypeName+'</span>';
+						}
+					}},
+				{field: 'remark', title: '备注', align: 'center',width:200}
+			]
+		]
+
+		table.render({
+			elem: '#table23',
+			url: '/player/playerScoreChangeClub?userId='+userId,
+			page: true ,
+			limit: 20,
+			cols: cols ,
+			skin: 'line',
+			height:590,
+			//toolbar: '#toolbar',
+			// done: function(res, curr, count){
+			// 	let queryFormData = form.val("queryForm");
+			// 	let tempData = {"userId": userId};
+			// 	$.extend(tempData, queryFormData);
+			// 	//console.log(tempData);
+			// 	window.tableSummary({"submitUrl": '/player/playerScoreChangeSummary', "data": tempData, "selIds": 'beforeBankScoreSum,addBankScoreSum,afterBankScoreSum,addScoreSum'});
+			// }
+		});
+
+		form.on('submit(query)', function(data){
+			//console.log(data.field);
+			window.refresh('table23', {"data": data});
+			return false;
+		});
+
+	})
+</script>
+<script src="<?=$staticUrl ?>/static/recharge.js"></script>
+<script src="<?=$staticUrl ?>/static/laydateHisInfo.js"></script>
+<script>
+	// layui.use('laydate',function(){
+	// 	let laydate = layui.laydate;
+	// 	let initValue = new Date();
+	// 	laydate.render({
+	// 		elem: '#date23'
+	// 		, type: 'date'
+	// 		, format: 'yyyy-MM-dd'
+	// 		//, min: 'laydate.now()'
+	// 		, max: 'laydate.now()'
+	// 		, value: initValue
+	// 		, done: function (value) {
+	// 			let date23 = new Date(value).getTime();
+	// 			let date24 = new Date($('#date24').val()).getTime();
+	// 			if (date24 < date23) {
+	// 				layer.msg('结束时间不能小于开始时间');
+	// 				return;
+	// 			}
+	// 			table.reload('table23', {
+	// 				page: {curr: 1}
+	// 				, where: {"startDate": value, "endDate": $('#date24').val()}
+	// 			});
+	// 		}
+	// 	});
+	// 	laydate.render({
+	// 		elem: '#date24'
+	// 		, type: 'date'
+	// 		, format: 'yyyy-MM-dd'
+	// 		//, min: 'laydate.now()'
+	// 		//, max: +365
+	// 		, value: initValue
+	// 		, done: function (value) {
+	// 			let date24 = new Date(value).getTime();
+	// 			let date23 = new Date($('#date23').val()).getTime();
+	// 			if (date24 < date23) {
+	// 				layer.msg('结束时间不能小于开始时间');
+	// 				return;
+	// 			}
+	// 			table.reload('table23', {
+	// 				page: {curr: 1}
+	// 				, where: {"startDate": $('#date23').val(), "endDate": value}
+	// 			});
+	// 		}
+	// 	});
+	// })
+</script>
+
+<style>
+	.pear-container{
+		position: fixed;
+		width:100%;
+	}
+
+	.layui-table-box{
+		height: 580px;
+	}
+
+	.layui-table-page{
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+		height: 40px;
+		z-index: 1000;
+		background: white;
+	}
+</style>

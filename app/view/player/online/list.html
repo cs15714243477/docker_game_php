@@ -1,0 +1,196 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-tab layui-tab-card">
+			<ul class="layui-tab-title layui-tab-more2"></ul>
+			<div class="layui-tab-content">
+				<div>
+					<form class="layui-form" action="" lay-filter="queryForm">
+						<div class="layui-form-item layui-inline">
+							<div class="layui-input-inline">
+								<select name="orderType" id="orderType" class="layui-select" lay-filter="orderType" id="orderType">
+									<option value="">排序方式</option>
+									<option value="1">注册IP</option>
+									<option value="2">登录IP</option>
+									<option value="3">渠道ID</option>
+								</select>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="layui-tab-item layui-show">
+					<table style="margin-top: 10px;" id="table1" lay-filter="listTable1"></table>
+				</div>
+			</div>
+		</div>
+
+		<?php include app_path() . "/view/public/tpl_toolbar_onlineList.html"; ?>
+		<?php include app_path() . "/view/public/tpl_switch_status01.html"; ?>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl1 = '/player/onlineList';
+	layui.use(['table','form','jquery','element'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+		let element = layui.element;
+
+		let cols1 = [
+			[
+				{type: 'checkbox'}
+				, {field: 'promoterId', title: '渠道ID', align: 'center', width: 120}
+				, {field: 'promoterName', title: '注册渠道', align: 'center', width: 120}
+				, {
+				title: "会员ID", align: 'center', minWidth: 100,
+				templet: function (d) {
+					return '<a onclick="openNewTab(this)" lay-href="/player/playerInfo?userId=' + d.userId + '" data-name="' + d.userId + '" lay-text="ID:' + d.userId + '" style="color: red;font-weight: bold">' + d.userId + '</a>';
+				}
+			}
+				, {field: 'nickName', title: '昵称', align: 'center', width: 120}
+				, {field: 'score', title: '金币', align: 'center', width: 120}
+				, {field: 'bankScore', title: '银行', align: 'center', width: 120}
+				, {field: 'rechargeAmount', title: '总充值', align: 'center', width: 120}
+				, {field: 'exchangeAmount', title: '总提现', align: 'center', width: 120}
+				, {field: 'revenue', title: '总税收', align: 'center', width: 120}
+				, {field: 'winScore', title: '总输赢', align: 'center', width: 120}
+				, {field: 'totalOnlineGameTime', title: '游戏时长', align: 'center', minWidth: 80}
+				// , {field: 'lineLevel', title: '线路', align: 'center'}
+				// , {field: 'proxyid', title: '服务器id', align: 'center'}
+				// , {field: 'showLevel', title: '线路', align: 'center'}
+				// , {field: 'resVer', title: 'resVer', align: 'center'}
+				, {field: 'vip', title: 'vip', align: 'center'}
+				, {field:'status', title: '状态' ,align:'center',minWidth:60,templet:function (d) {
+					if (d.status == 1) {
+						return '<span class="layui-btn layui-btn-xs layui-btn-normal">正常</span>';
+					} else {
+						return '<span class="layui-btn layui-btn-xs layui-btn-danger">封停</span>';
+					}
+				}}
+				, {
+				field: '', title: '注册ip', align: 'center', width: 210, templet: function (d) {
+					return d.regInfo.ip + ' | ' + d.regInfo.address;
+				}
+			}
+				, {
+				field: '', title: '登录ip', align: 'center', width: 210, templet: function (d) {
+					return d.lastLogin.ip + ' | ' + d.lastLogin.address;
+				}
+			}
+				//,{field:'lastdate', title: '登录时间' ,align:'center',width:175}
+				// , {field: 'entertime', title: '进入时间', align: 'center', width: 175}
+				, {field: 'regInfoMobileType', title: '手机型号', align: 'center', width: 200}
+				, {field: 'todayAllBet', title: '今日押分', align: 'center', width: 120}
+				, {field: 'todayValidBet', title: '今日有效押分', align: 'center', width: 120}
+				, {field: 'todayWinLostScore', title: '今日得分', align: 'center', width: 120}
+				, {field: 'todayWinScore', title: '今日输赢', align: 'center', width: 120}
+				, {field: 'todayPlatformWinScore', title: '今日平台输赢', align: 'center', width: 120}
+				, {field: 'todayRevenue', title: '今日平台税收', align: 'center', width: 120}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl1,
+			page: true ,
+			limit: 20,
+			cols: cols1 ,
+			skin: 'line',
+			toolbar: '#toolbar',
+			height:700,
+			defaultToolbar: [],
+			done: function(res, curr, count){
+				//getOnlineRomm(0, 0);
+			}
+		});
+		getOnlineRomm(0, 0);
+
+		table.on('tool(listTable1)', function(obj){
+			console.log(obj);
+			if(obj.event === 'remove'){
+				window.remove(obj, {"_id": obj.data['_id'], "submitUrl": '/notice/removePublicNotice'});
+			} else if(obj.event === 'edit'){
+				window.edit('/notice/editPublicNotice?_id='+obj.data._id, {"height": '600px'});
+			} else if(obj.event === 'power'){
+				window.edit();
+			}
+		});
+
+		table.on('toolbar(listTable1)', function(obj){
+			if(obj.event === 'reopenAccount'){
+				obj.value = 1;
+				window.batchReopenAccountFrozenAccount(obj, {"submitUrl": '/player/userStatus', "tableId": 'table1'});
+			} else if(obj.event === 'refresh'){
+				window.refresh('table1');
+			} else if(obj.event === 'frozenAccount'){
+				obj.value = 0;
+				window.batchReopenAccountFrozenAccount(obj, {"submitUrl": '/player/userStatus', "tableId": 'table1'});
+			}
+		});
+
+		table.on('edit(listTable1)', function (obj) {
+			window.editTableCell(obj, {"submitUrl": '/notice/switchPublicNotice'});
+		});
+
+		form.on('select(orderType)', function (obj) {
+			var ckRoomId=$(".layui-tab-title .layui-this").attr("lay-id");
+			getOnlineRomm(ckRoomId, obj.value);
+			table.reload('table1', {
+				where: {roomId: ckRoomId,orderType: obj.value}
+				, page: {curr: 1}
+			});
+		});
+	})
+	function ckRoomId(ckRoomId,orderType,obj) {
+		console.log(obj);
+		$(obj).addClass('layui-this');
+		//getOnlineRomm(ckRoomId,orderType);
+		table.reload('table1', {
+			where: {roomId: ckRoomId,orderType: orderType}
+			, page: {curr: 1}
+		});
+		//layui.stope();
+	}
+	function getOnlineRomm(thisRoomId,orderType) {
+		$.getJSON("/player/onlineRoom", {"checkThis": thisRoomId,"orderType": orderType}, function (res) {
+			let content = "";
+			if (res.code == 0) {
+				for (let i = 0; i < res.data.length; i++) {
+					//if ((i > 0) && (i % 10 == 0)) content += "<br />";
+					content += '<li onclick="ckRoomId(' + res.data[i]['roomId'] + ', 0, this)" lay-id="' + res.data[i]['roomId'] + '">' + res.data[i]['roomName'] + '<span style="color: red; font-weight: bold;">(' + res.data[i]['count'] + ')</span></li>';
+				}
+			}
+			content += '<span className="layui-unselect layui-tab-bar" lay-stope="tabmore"><i lay-stope="tabmore" className="layui-icon"></i></span>';
+
+			$(".layui-tab-title").html(content);
+			//$(".layui-tab-bar").trigger();
+			$(".layui-tab-title").addClass('layui-tab-more');
+		});
+	}
+
+</script>
+
+<style>
+    .pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 630px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 0;
+		width: 100%;
+        height: 40px;
+        z-index: 1000;
+        background: white;		
+    }
+
+	.layui-tab-more2 {
+		padding-right: 30px;
+		height: auto!important;
+		white-space: normal!important;
+	}
+</style>
+

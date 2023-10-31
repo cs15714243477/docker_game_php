@@ -1,0 +1,74 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body"></div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+
+		<?php include app_path() . "/view/public/tpl_toolbar_add.html"; ?>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl = '/order/blockList';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		form = layui.form;
+
+		let cols = [
+			[
+				{title: '序号', field: 'Id', align:'center'},
+				{title: '会员ID', field: 'userId', align:'center', edit: 'text'},
+				{title: '银行卡号', field: 'bankCardNum', align:'center', edit: 'text'},
+				{title: '银行卡姓名', field: 'bankCardName', align:'center', edit: 'text'},
+				{title: '支付宝号', field: 'alipayAccount', align:'center', edit: 'text'},
+				{title: '支付宝名', field: 'alipayName', align:'center', edit: 'text'}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl,
+			page: true ,
+			limit: 20,
+			cols: cols ,
+			skin: 'line',
+			toolbar: '#toolbar',
+			height:790,
+			defaultToolbar: []
+		});
+		table.on('toolbar(listTable1)', function(obj){
+			if(obj.event === 'add'){
+				window.add('/order/blockAdd', {"height": '600px'});
+			}
+		});
+		table.on('edit(listTable1)', function (obj) {
+			window.editTableCell(obj, {"submitUrl": '/order/switchBlockList'});
+		});
+
+	})
+
+</script>
+<style>
+	.pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 700px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 0;
+		width: 100%;
+		height: 40px;
+		z-index: 1000;
+		background: white;
+		
+    }
+</style>

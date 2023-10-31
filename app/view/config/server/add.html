@@ -1,0 +1,49 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">IP地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="ip" lay-verify="required" autocomplete="off" placeholder="127.0.0.1" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">游戏端口</label>
+                    <div class="layui-input-block">
+                        <input type="number" name="port" lay-verify="required" autocomplete="off" placeholder="30000" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">线路等级</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="lineLevel" lay-verify="required" autocomplete="off" placeholder="0-6" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">备注信息</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="remark" lay-verify="required" autocomplete="off" placeholder="备注" class="layui-input">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <?php include app_path() . "/view/public/tpl_form_bottom_save.html"; ?>
+</form>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    dateOption = {"date1": ''};
+    layui.use(['form','jquery'],function(){
+        $ = layui.jquery;
+        let form = layui.form;
+        form.on('submit(save)', function(data){
+            window.save({"submitUrl": '/server/addServerLst', "data": data.field, "tableId": 'table1'});
+            return false;
+        });
+    })
+</script>
+<script src="/static/laydate.js"></script>

@@ -1,0 +1,39 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+
+<?php include app_path() . "/view/public/footer.html"; ?>
+
+<script>
+	let tableUrl = '/agent/levelList';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		form = layui.form;
+
+		let cols = [
+			[
+				{field: 'Id', title: '返佣等级', align: 'center'}
+				, {field: 'title', title: '代理级别', align: 'center'}
+				, {field: 'teamAmount', title: '团队总流水', align: 'center', templet: function(d){
+					return d.teamAmount + '以上';
+				}}
+				, {field: 'rate', title: '返佣比例(每万返佣)', align: 'center'}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl,
+			height:780,
+			//page: true ,
+			cols: cols ,
+			skin: 'line',
+			//toolbar: '#toolbar',
+		});
+	})
+</script>

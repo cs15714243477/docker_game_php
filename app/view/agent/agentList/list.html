@@ -1,0 +1,300 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+	.pear-container{
+		position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 670px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 0;
+		width: 100%;
+        height: 40px;
+        z-index: 1000;
+        background: white;
+    }
+
+	.under{
+		color:#00bfff;
+		cursor: pointer;
+		font-weight: bold;
+	}
+
+	.layui-table-body .layui-table-cell{
+		height: 72px !important;
+		line-height: 24px !important;
+	}
+
+	p{
+		float:left;
+	}
+
+
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<input type="number" name="channelId" id="channelId" autocomplete="off"  placeholder="渠道ID"  class="layui-input" lay-filter="promoterId">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<!--<label class="layui-form-label">账号状态</label>-->
+						<div class="layui-input-inline">
+							<select name="status" lay-filter="status">
+								<option value="">账号状态</option>
+								<!--<option value="0">禁用</option>
+								<option value="1">正常</option>-->
+								<option value="2">禁止提现</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<label class="layui-form-label">统计时间:</label>
+						<div class="layui-input-inline">
+							<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input" value="<?=$startDate?>">
+						</div>
+						<div class="layui-input-inline" style="width: 5px">-</div>
+						<div class="layui-input-inline">
+							<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input" value="<?=$endDate?>">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="searchType" id="searchType">
+								<option value="1" selected="selected">代理ID</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 250px">
+							<input type="text" id="searchValue" name="searchValue" autocomplete="off" placeholder="请输入查询内容" class="layui-input" value="<?=$searchValue?>">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 150px">
+							<select name="level" >
+								<option value="1">代理等级正序</option>
+								<option value="-1">代理等级倒序</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+						<!--<button type="reset" class="pear-btn pear-btn-md">
+							<i class="layui-icon layui-icon-refresh"></i>
+							重置
+						</button>-->
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="export">
+							<i class="pear-icon pear-icon-export"></i>
+							导出
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+		<?php include app_path() . "/view/public/tpl_toolbar_agentList.html"; ?>
+		<script type="text/html" id="releate">
+			<span class="pear-btn pear-btn-primary pear-btn-sm" lay-event="detail">详情</span><br />
+			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit" style="margin-top:4px;"><i class="layui-icon layui-icon-edit"></i></button>
+		</script>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	dateOption = {"date1": '', "date2": ''};
+	let tableUrl = '/agent/agentList';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		var startDate = $("#date1").val();
+
+		var endDate = $("#date2").val();
+
+		var promoterId = $("#searchValue").val();
+
+		if(startDate && endDate){
+			//初始化日期控件
+			dateOption = {"date1": startDate, "date2": endDate};
+		}
+		var querystring
+		if(promoterId){
+			querystring = '?startDate='+startDate+'&endDate='+endDate+'&searchType=1'+'&searchValue='+promoterId
+		}else{
+			querystring = '?startDate='+startDate+'&endDate='+endDate
+		}
+
+		let cols = [
+			[
+				{type:'checkbox', fixed: 'left',width:30,lineheight:72}
+				,{field:'channelId', title: '注册渠道',align:'center',width:90}
+				,{title:"代理ID", align:'center',width:90,
+				templet: function (d) {
+					if (d.promoterId > 10000000) {
+						return  '<a onclick="openNewTab(this)" lay-href="/player/playerInfo?userId='+d.promoterId+'" data-name="'+d.promoterId+d._id+'" lay-text="ID:'+d.promoterId+'" style="color: #00bfff;font-weight: bold">'+d.promoterId+'</a>';
+
+					} else {
+						return d.promoterId;
+					}
+				}
+			}
+				,{field:'promoterName', title: '代理名称' ,align:'center',width:90, edit: 'text'}
+				,{field:'level', title: '等级/名称/比例' ,align:'center',width:140, templet: function(d) {
+                    var html = '<p><span>代理等级：'+d.level+'</span></p>';
+                    html += '<p><span>等级名称：'+d.title+'</span></p>'
+                    return html;
+				}}
+				,{field:'URL', title: '推广链接' ,align:'left',width:105}
+				//,{field:'totalTeamFlowAmount',title: '总业绩' ,align:'center',width:60}
+
+				,{field:'score', title: '可提/已提/提成' ,align:'left',width:140,templet:function (d) {
+					 var html = '<p><span>可提佣金：'+d.score+'</span></p>';
+						 html += '<p><span>已提现佣金：'+d.totalExchange+'</span></p>'
+
+						if (d.setRate > 0) {
+                            html += '<p><span>提成比例：'+d.setRate+'</span></p>';
+						} else {
+                            html +='<p><span>提成：'+d.curRate+'</span>(每万返佣)</p>';
+						}
+					 return html;
+                }}
+				,{field:'pid', title: '上级代理' ,align:'center',width:100}
+				,{field:'myPlayerTotalCount', title: '成员/直属/团队' ,align:'left',width:120,templet:function (d) {
+				    if(typeof(d.myPlayerTotalCount) == 'undefined'){
+                        d.myPlayerTotalCount = 0;
+					}
+
+					var url = '/player/userGameStat?promoterId='+d.promoterId
+                    var html = '<p><a onclick="openNewTab(this)" lay-href="'+url+'" data-name="'+d.promoterId+'" lay-text="ID:'+d.promoterId+'" class="under">直接成员：'+d.myPlayerTotalCount+'</a></p>';
+                    html += '<p><span>直属人数：'+d.totalDirectPlayerCount_team+'</span></p>'
+                    html += '<p><span>团队人数：'+d.totalTeamPlayerCount_team+'</span></p>'
+                    return html;
+                }}
+				,{field:'rechargeAmount_direct', title: '总充值/总提现',align:'left',width:145,templet:function (d) {
+					  var html = '<p><span>直属总充值：'+d.rechargeAmount_direct +'</span></p>';
+					      html += '<p><span>直属总提现：'+d.exchangeAmount_direct +'</span></p>';
+					  return html;
+                }}
+				,{field:'totalDirectValidFlowAmount_direct', title: '业绩/收益' ,align:'left',width:140,templet:function (d) {
+					  var html = '<p><span>直属业绩：'+d.totalDirectValidFlowAmount_direct+'</span></p>';
+					      html += '<p><span>直属收益：'+d.profit_direct+'</span></p>'
+					  return html;
+                }}
+				,{field:'teamRechargeAmount_team', title: '总充值/总提现' ,align:'left',width:145,templet:function (d) {
+                      var html = '<p><span>团队总充值：'+d.teamRechargeAmount_team+'</span></p>';
+						  html += '<p><span>团队总提现：'+d.teamExchangeAmount_team+'</span></p>'
+					  return html;
+                }}
+
+                ,{field:'teamRechargeAmount_team', title: '业绩/收益' ,align:'left',width:135,templet:function (d) {
+                    var html = '<p><span>团队业绩：'+d.totalTeamValidFlowAmount_team+'</span></p>'
+                    html += '<p><span>团队收益：'+d.teamProfit_team+'</span></p>'
+                    return html;
+                }}
+				,{field:'createTime', title: '创建时间' ,align:'center',width:95, sort: true,templet:function (d) {
+					 var time = d.createTime.split(/\s+/)
+					 var html = '<p><span>'+time[0]+'</span></p>'
+                     html += '<p><span>'+time[1]+'</span></p>'
+					 return html;
+                }}
+				, {fixed: 'right', title: '关系', align: 'center', width: 80, toolbar: '#releate'}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl+ querystring,
+			page: true ,
+			cols: cols ,
+			skin: 'line',
+			toolbar: '#toolbar',
+			height:730,
+			defaultToolbar: ['filter'],
+			done: function(res, curr, count){
+				let queryFormData = form.val("queryForm");
+			}
+		});
+
+		table.on('tool(listTable1)', function(obj){
+			if(obj.event === 'detail'){
+				console.log(obj);
+				window.agentdetail('/agent/agentDetail?promoterId='+obj.data['promoterId']+'&pid='+obj.data['pid'], {"width": '800px', "height": '600px'});
+			}else if(obj.event === 'edit'){
+				window.edit('/agent/editAgent?promoterId='+obj.data.promoterId, {"height": '500px', "title": '修改代理分成比例'});
+			}
+		});
+
+		table.on('toolbar(listTable1)', function(obj){
+			if(obj.event === 'reopen'){
+				obj.value = 0;
+				window.batchReopenWithdrawFrozenWithdraw(obj, {"submitUrl": '/agent/userStatus', "tableId": 'table1'});
+			} else if(obj.event === 'refresh'){
+				window.refresh('table1');
+			} else if(obj.event === 'frozen'){
+				obj.value = 1;
+				window.batchReopenWithdrawFrozenWithdraw(obj, {"submitUrl": '/agent/userStatus', "tableId": 'table1'});
+			}
+		});
+
+		table.on('edit(listTable1)', function (obj) {
+			window.editTableCell(obj, {"submitUrl": '/agent/switchAgent'});
+		});
+
+		form.on('submit(query)', function(data){
+			//console.log(data.field);
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+		form.on('submit(export)', function(data){
+			let loading = layer.load();
+			$.ajax({
+				url: '/agent/exportAgent',
+				data: data.field,
+				type: 'post',
+				success:function(res){
+					layer.close(loading);
+					if(res.code == 0){
+						//window.open('/player/download?file='+res.file)
+						//window.open('http://47.243.92.221:8090/'+res.file);
+						window.open(res.file);
+					}else{
+						layer.msg(res.msg,{icon:2,time:1000});
+					}
+				}
+			})
+			return false;
+		});
+
+		form.on('switch(status)', function(obj){
+			//layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+			window.switch01(obj, {"submitUrl": '/admin/switchAdminUser', "field": 'status'});
+		});
+	})
+</script>
+<script src="<?=$staticUrl ?>/static/laydateUserAnalysis.js"></script>

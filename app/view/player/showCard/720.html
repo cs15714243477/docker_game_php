@@ -1,0 +1,71 @@
+<?php
+    if($gameId==720) {
+        foreach($card as $key => $vo) {
+?>
+            <div class="layui-col-xs12 layui-col-sm12">
+                <?php if($key<4){ ?>
+                    <div class="layui-status-img">
+                        <span class="thick">
+                            <?php if($key==0){ ?>庄：<?php }elseif($key==1){ ?>顺：<?php }elseif($key==2){ ?>天：<?php }elseif($key==3){ ?>地：<?php } ?>
+                        </span>
+                        <?php foreach($vo['value'] as $voo){ ?>
+                        <span >
+                            <a href="javascript:;"><img src="<?=$staticUrl ?>/cards/28/<?=$voo ?>.png" width="40px" height="70px"></a> &nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                <?php } ?>
+
+                <span class="thick">
+                    <?php
+                        if($vo['res'] > 0){
+                            echo '<font color="red">赢</font>';
+                        }
+
+                        if($vo['res'] == 0 && $vo['res'] != ""){
+                            echo '<font color="green">输</font>';
+                        }
+                    ?>
+                </span>
+
+                <span class="thick">
+                    <?php if($vo[0]==$vo[1]){ ?>
+                    <?php if($vo[0]=='05'){ ?> 金豹子<?php }else{ ?> 豹子  <?php } ?>
+                    <?php }elseif($vo['valueSum']==0 && ($vo[0]=='14' || $vo[1]=='14')){ ?>
+                        二八杠
+                    <?php }else{ ?>
+                        <?=$vo['point1'] ?>点<?php if($vo['point2']>0){ ?>半<?php } ?>
+                    <?php } ?>
+                </span>
+
+                <div class ="layui_user"  style="width:300px; height: 80px;">
+                <?php
+                     if($vo['userId']){
+                          foreach($vo['userId'] as $k => $v){
+                ?>
+                                <?php
+                                    if($v == $currentUserId){
+                                ?>
+                                        <span class="user_id" style=" color:#ff0000"><?=$v ?>(自己)</span>
+                                    <?php }else{ ?>
+                                        <span class="user_id"><?=$v ?></span>
+                                    <?php
+                                            }
+                                        }
+                                    ?>
+
+                                <?php
+                                    if(count($vo['userId']) > 8){
+                                ?>
+                                        <span class = "more" onclick="bet_user($(this))">更多</span>
+                                            <?php } ?>
+                                        <?php
+									}
+								?>
+                            </div>
+
+                    </div>
+                <?php } ?>
+            </div>
+<?php
+        }
+    }
+?>

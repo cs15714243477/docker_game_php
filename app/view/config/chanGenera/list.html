@@ -1,0 +1,120 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+					<div class="layui-form-item layui-inline">
+						<label class="layui-form-label">查询类型</label>
+						<div class="layui-input-inline">
+							<select name="searchType" lay-search>
+								<option value="">全部</option>
+								<option value="1">总代ID</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 250px">
+							<input type="text" name="searchText" autocomplete="off" placeholder="请输入查询内容" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+<!--<?php include app_path() . "/view/public/tpl_toolbar_add_batchRemove.html"; ?>-->
+
+<!--<script type="text/html" id="bar">-->
+<!--	<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>-->
+<!--</script>-->
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl1 = '/chanGenera/chanGeneraList';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols1 = [
+			[
+				//{type:'checkbox'}
+				{field: 'promoterId', title: '渠道总代ID', align: 'center'}
+				, {field: 'promoterName', title: '渠道总代昵称', align: 'center'}
+				, {field: 'channelId', title: '渠道ID', align: 'center'}
+				, {field: 'name', title: '渠道名称', align: 'center'}
+				, {field: 'account', title: '总代登录账号', align: 'center'}
+				, {field: 'rate', title: '总代分成(%)', align: 'center'}
+				, {fixed: 'right', title: "操作", align: 'center', toolbar: '#action'}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl1,
+			page: true ,
+			cols: cols1 ,
+			skin: 'line',
+			defaultToolbar: false,
+			toolbar: '#toolbar',
+			height:720,
+		});
+
+		form.on('submit(query)', function(data){
+			var valueData = data.field;
+			if (valueData.searchType == "" && valueData.searchValue != "") {
+				layer.msg('请选择查询类型！',{icon:2,time:1000});
+				return false;
+			}
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+		// table.on('tool(listTable1)', function(obj){
+		// 	if(obj.event === 'remove'){
+		// 		window.remove(obj, {"_id": obj.data['_id'], "submitUrl": '/gameVer/removeGameVer'});
+		// 	}
+		// });
+
+		// table.on('toolbar(listTable1)', function(obj){
+		// 	if(obj.event === 'add'){
+		// 		window.add('/gameVer/addGameVer', {"height": '600px'});
+		// 	} else if(obj.event === 'refresh'){
+		// 		window.refresh('table1');
+		// 	} else if(obj.event === 'batchRemove'){
+		// 		window.batchRemove(obj, {"submitUrl": '/gameVer/removegameVer', "tableId": 'table1'});
+		// 	}
+		// });
+	})
+
+</script>
+
+<style>
+    .pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 630px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 5px;
+		width: 100%;
+       height: 40px;
+       z-index: 1000;
+       background: white;
+		left:10px;
+    }
+</style>
+

@@ -1,0 +1,68 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+	.pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+	.layui-table-box{
+		height: 800px;
+	}
+
+	.layui-table-header{
+		position: fixed;
+		z-index: 1000;
+	}
+
+	.layui-table-body{
+		position:relative;
+		top:43px;
+	}
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl = '/friendsRoom/retailPrice';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+		let cols = [
+			[
+				{field:'cardNum', title: '套餐' ,align:'center',templet: '#showColour', templet: function(d){
+					return d.cardNum + "张";
+				}}
+				,{field:'score', title: '零售价' ,align:'center'}
+				,{field:'rewardNum', title: '加送' ,align:'center'}
+				,{field:'salesNum', title: '销售数量' ,align:'center'}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl,
+			limit: 20,
+			cols: cols ,
+			skin: 'line',
+			height:800
+		});
+	})
+</script>

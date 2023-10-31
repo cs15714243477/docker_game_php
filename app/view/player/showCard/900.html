@@ -1,0 +1,72 @@
+<?php
+    if($gameId==900) {
+        foreach($card as $key => $vo) {
+?>
+            <div class="layui-col-xs12 layui-col-sm12">
+                <div class="layui-status-img">
+                    <?php if($key == 0) { ?>
+                        <span class="thick" style="margin-right:52px">
+                            <?=$vo['title'] ?> &nbsp;
+                        </span>
+                    <?php  }else{ ?>
+                        <span class="thick">
+                            <?=$vo['title'] ?> &nbsp;
+                        </span>
+                    <?php  } ?>
+
+                    <?php
+                        if(isset($vo['poker']) && $vo['poker']) {
+                    ?>
+                        <a href="javascript:;">
+                            <img src="<?=$staticUrl ?>/cards/common/<?=$vo['poker'] ?>.png" width="40px" height="50px">
+                        </a>&nbsp;
+                    <?php
+                        }
+                        if($vo['res'] > 0){
+                            echo '<font color="red">赢</font>';
+                        }else{
+                            echo '<font color="green">输</font>';
+                        }
+                    ?>
+                            <div class ="layui_user" style="width:445px;">
+
+                            <?php
+                                if(isset($vo['userId']) && $vo['userId']) {
+                                    foreach($vo['userId'] as $k => $v) {
+                            ?>
+                                    <?php if($v != $bankerId){ ?>
+                                        <?php if($v == $currentUserId){  ?>
+                                            <span class="user_id" style=" color:#ff0000"><?=$v ?>(自己)</span>
+                                        <?php }else{ ?>
+                                             <span class="user_id"><?=$v ?></span>
+                                        <?php } ?>
+
+                                    <?php } ?>
+                            <?php } ?>
+
+
+                            <?php
+                                if(count($vo['userId']) > 12){
+                            ?>
+                                <span class = "more" onclick="bet_user($(this))">更多</span>
+                            <?php } ?>
+                        <?php
+                              }
+                         ?>
+                    </div>
+                </div>
+            </div>
+
+        <?php } ?>
+        <span class="thick">
+            庄:&nbsp;
+        </span>
+        <?php if($bankerId == $currentUserId){?>
+            <span>(自己)</span>
+        <?php } ?>
+        <?php if($bankerId > 0){?>
+            <span><?=$bankerId ?></span>
+        <?php } ?>
+<?php
+    }
+?>

@@ -1,0 +1,50 @@
+<?php
+	if($gameId==950) {
+
+?>
+        <div class="layui-col-xs12 layui-col-sm12">
+            <div class="layui-status-img">
+                    <span class="thick">
+                        开奖结果：<?=$cardValue ?> &nbsp;&nbsp;
+                    </span>
+            </div>
+        </div>
+
+        <?php
+                foreach($card['list'] as $k => $vo){
+        ?>
+        <div class="layui-col-xs12 layui-col-sm12">
+            <div class="layui-status-img">
+                <span class="thick">
+                    <?=$vo['name'] ?> :
+                </span>
+                <div class ="layui_user" style="width:450px">
+                    <?php
+                        if($vo['userId']){
+                            foreach($vo['userId'] as $k1 => $v1){
+                    ?>
+                    <?php
+                        if($v1 == $currentUserId){
+                    ?>
+                            <span class="user_id" style="color:#ff0000;"><?=$v1 ?>(自己)</span>
+                        <?php }else{ ?>
+                            <span class="user_id"><?=$v1 ?></span>
+                    <?php
+                            }
+                        }
+                    ?>
+                    <?php
+                         if(count($vo['userId']) > 12){
+                    ?>
+                            <span class = "more" onclick="bet_user($(this))">更多</span>
+                    <?php } ?>
+                    <?php
+                          }
+                    ?>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
+<?php
+	}
+?>

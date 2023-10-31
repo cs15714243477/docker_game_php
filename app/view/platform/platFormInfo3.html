@@ -1,0 +1,59 @@
+<style>
+	.layui-table-header th{
+		background-color: #D7D7D7 !important;
+		font-weight: bold;
+	}
+</style>
+<div>
+	<div class="layui-row layui-col-space10">
+		<div class="layui-col-md6">
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-md12">
+					<div class="layui-card">
+						<div class="layui-card-body">
+							<table id="platFormInfo3"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md6">
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-md12">
+					<div class="layui-inline" style="float:right;">
+						<button type="button" class="pear-btn pear-btn-sm">
+							<i class="layui-icon layui-icon-help" style="font-size: 30px" lay-width="500px" lay-tips="
+                                <span style='color: #000000;'><b>官方盈亏: </b>官方税收+游戏输赢-代理佣金-奖励金额</span><br/><hr />
+                                "></i>
+						</button>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	let tableUrl = '/platform/platOverView33';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let cols = [
+			[
+				{field: 'name', title: '统计字段', align: 'center'}
+				, {field: 'currentMon', title: '本月', align: 'center'}
+				, {field: 'lastMon', title: '上月', align: 'center'}
+			]
+		]
+
+		table.render({
+			elem: '#platFormInfo3',
+			url: tableUrl,
+			page: false ,
+			cols: cols ,
+			skin: 'line',
+		});
+
+	})
+</script>

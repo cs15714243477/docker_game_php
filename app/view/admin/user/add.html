@@ -1,0 +1,79 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="userName" lay-verify="required" autocomplete="off" placeholder="请输入用户名称" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">登录密码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" name="loginPass" lay-verify="required" autocomplete="off" placeholder="请输入登录密码" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">谷歌秘钥</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="googleSecret" autocomplete="off" placeholder="请输入谷歌秘钥" readonly class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">角色组</label>
+                    <div class="layui-input-inline">
+                        <select name="groupId" lay-verify="required" lay-search>
+                            <?php
+                                foreach($groupList as $k => $v) {
+                                    echo '<option value="'. $k .'">' . $v . '</option>';
+                                }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="status" value="0" title="关闭">
+                        <input type="radio" name="status" value="1" title="开启" checked>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit lay-filter="save">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button type="reset" class="pear-btn pear-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    layui.use(['form','jquery','dtree'],function(){
+        $ = layui.jquery;
+        let form = layui.form
+            ,dtree = layui.dtree;
+
+        //form.verify()
+        form.on('submit(save)', function(data){
+            /*let roleIds = "";
+            $('input[type=checkbox]:checked').each(function() {
+                roleIds += $(this).val()+",";
+            });
+            roleIds = roleIds.substr(0,roleIds.length-1);
+            data.field.roleIds = roleIds;*/
+            window.save({"submitUrl": '/admin/addAdminUser', "data": data.field, "tableId": 'table1'});
+            return false;
+        });
+    })
+</script>

@@ -1,0 +1,288 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+
+
+					<div class="layui-form" lay-filter="androidListFrom">
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="batchAction" id="androidList_tool_batchAction" lay-filter="androidList_tool_batchAction" lay-search>
+								<option value="">批量操作</option>
+								<option value="1">批量删除</option>
+								<option value="2">批量启用</option>
+								<option value="3">批量禁用</option>
+								<option value="4">携带金额</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="roomId" id="androidList_tool_roomId" lay-filter="androidList_tool_roomId">
+								<option value="">房间名称</option>
+								<?php
+                                foreach($roomList as $k => $v) {
+								echo '<option value="'. $v['roomId'] .'">' . $v['roomId'] . '-' . $v['roomName'] . '</option>';
+								}
+								?>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="status" id="androidList_tool_status" lay-filter="androidList_tool_status">
+								<option value="">状态</option>
+								<option value="1">启用</option>
+								<option value="0">禁用</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="actived" id="androidList_tool_actived" lay-filter="androidList_tool_actived">
+								<option value="">游戏状态</option>
+								<option value="1">游戏中</option>
+								<option value="0">休息中</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+					</div>
+					</div>
+
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+		<script type="text/html" id="toolbar">
+			<button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
+				<i class="layui-icon layui-icon-add-1"></i>
+				新增
+			</button>
+
+<!--			<button class="pear-btn pear-btn-primary pear-btn-md" lay-event="config">-->
+<!--				配置-->
+<!--			</button>-->
+		</script>
+
+
+		<div id="androidListEditScore" style="display: none">
+			<form id="androidEdit" class="layui-form layui-form-pane newbody">
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">最小金额</label>
+					<div class="layui-input-block">
+						<input type="text" name="editMinScore" id="editMinScore" lay-verify="editMinScore" lay-verify="required" placeholder="机器人上桌最小携带金额" class="layui-input">
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">最大金额</label>
+					<div class="layui-input-block">
+						<input type="text" name="editMaxScore" id="editMaxScore" lay-verify="editMaxScore" lay-verify="required" placeholder="机器人上桌最大携带金额" class="layui-input">
+					</div>
+				</div>
+			</form>
+		</div>
+
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl1 = '/android/androidData';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols1 = [
+			[
+				{type:'checkbox'}
+				,{field:'userId',title: '机器人ID' ,align:'center'}
+				,{field:'roomId', title: '房间ID' ,align:'center'}
+				,{field:'roomName', title: '房间名称' ,align:'center'}
+				,{field: 'takeMinScore',title:'携带最小金币', align:'center'}
+				,{field: 'takeMaxScore',title:'携带最大金币', align:'center'}
+				,{field: 'status',title:'工作状态', align:'center',
+				templet:function (d) {
+					if (d.status == 1) {return '<span style="color: #0000FF">已启用</span>';} else {return '<span style="color: red">已禁用</span>';}
+				}}
+				,{field: 'actived',title:'游戏状态', align:'center',
+				templet:function (d) {
+					if (d.actived == 1) {return '<span style="color: #0000FF">游戏中</span>';} else {return '<span style="color: red">休息中</span>';}
+				}
+			}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl1,
+			page: true ,
+			cols: cols1 ,
+			skin: 'line',
+			defaultToolbar: false,
+			toolbar: '#toolbar',
+			height:730
+		});
+
+
+
+		//批量操作
+		form.on('select(androidList_tool_batchAction)',function (obj) {
+			form.val('androidListFrom', {batchAction: ""});
+			form.render('select');
+			if (obj.value < 1) {
+				return;
+			}
+			var check = table.checkStatus('table1'), data = check.data;
+			if (check.data.length < 1 && obj.value > 0) {
+				layer.msg("未选中数据", {offset: 'auto', icon: 0, time: 1000});
+				return;
+			}
+			var roomId = "";
+			var userId = "";
+			for (var i = 0; i < data.length; i++) {
+				userId += data[i].userId + ',';
+				roomId += data[i].roomId + ',';
+			}
+			userId = userId.substr(0, userId.length - 1);
+			roomId = roomId.substr(0, roomId.length - 1);
+			userId = userId.split(',');
+			roomId = roomId.split(',');
+			roomId = uniq(roomId);
+			//删除
+			if (obj.value == 1) {
+				$.post('/android/removeAndroid', {"userId": userId, "roomId": roomId}, function (res) {
+					if (res.code == 0) {
+						layer.msg(res.msg, {offset: 'auto', icon: 1, time: 1000});
+						reload_table();
+					} else {
+						layer.msg(res.msg, {offset: 'auto', icon: 2, time: 1000});
+					}
+				})
+			}
+			//启用
+			if (obj.value == 2) {
+				$.post('/android/androidListStatus', {"userId": userId, "roomId": roomId, "type":1}, function (res) {
+					if (res.code == 0) {
+						layer.msg(res.msg, {offset: 'auto', icon: 1, time: 1000});
+						reload_table();
+					} else {
+						layer.msg(res.msg, {offset: 'auto', icon: 2, time: 1000});
+					}
+				})
+			}
+			//禁用
+			if (obj.value == 3) {
+				$.post('/android/androidListStatus', {"userId": userId, "roomId": roomId, "type":2}, function (res) {
+					if (res.code == 0) {
+						layer.msg(res.msg, {offset: 'auto', icon: 1, time: 1000});
+						reload_table();
+					} else {
+						layer.msg(res.msg, {offset: 'auto', icon: 2, time: 1000});
+					}
+				})
+			}
+			//修改上桌金额
+			if (obj.value == 4) {
+				var index = layer.open({
+					type: 1,
+					title: '修改机器人上桌金额',
+					area: ['450px', '220px'],
+					maxmin: true,
+					content: $("#androidListEditScore"),
+					btn: ['保存', '关闭']
+					,yes: function () {
+						var editMinScore    =   $('#editMinScore').val();
+						var editMaxScore    =   $('#editMaxScore').val();
+
+						if(editMinScore == "" || editMaxScore == "" || editMinScore < 1 || editMaxScore < 1 || isNaN(editMinScore) || isNaN(editMaxScore) ) {
+							layer.msg('金额填写不正确！');
+							return;
+						}
+						$.post("/android/androidListEditScore",{"userId": userId, "roomId": roomId,"minScore":editMinScore,"maxScore":editMaxScore},function(res){
+							if (res.code == 0) {
+								layer.closeAll();
+								reload_table();
+								layer.msg(res.msg, {offset: 'auto',icon: 1,time: 1000});
+							} else {
+								layer.msg(res.msg, {offset: 'auto',icon: 2,time: 1000});
+							}
+						},"json");
+					}
+					, btn2: function () {
+						layer.closeAll();
+					},
+					success: function (layero, homeIndex) {
+					}
+				});
+			}
+		});
+
+		form.on('submit(query)', function(data){
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+		table.on('toolbar(listTable1)', function(obj){
+			if(obj.event === 'add'){
+				window.add('/android/addAndroid', {"height": '600px',"title": '添加机器人'});
+			} else if(obj.event === 'config'){
+				window.add('/android/androidTakeOn', {"width": '750px',"height": '600px',"title": '机器人上桌配置'});
+			}  else if(obj.event === 'refresh'){
+				window.refresh('table1');
+			}
+		});
+		table.on('edit(listTable1)', function(obj){
+			window.editTableCell(obj, {"submitUrl": '/gameVer/editGameVer'});
+		});
+		function reload_table() {
+			table.reload('table1', {
+				page: {
+					curr: 1
+				},
+				where: {
+					roomId:$('#androidList_tool_roomId').val(),
+					status:$('#androidList_tool_status').val(),
+					actived:$('#androidList_tool_actived').val()
+				}
+			});
+		};
+	})
+	function uniq(array) {
+		var temp = [];
+		for(var i = 0; i < array.length; i++){
+			if(temp.indexOf(array[i]) == -1){
+				temp.push(array[i]);
+			}
+		}
+		return temp;
+	}
+</script>
+<style>
+    .pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 670px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 5px;
+		width: 100%;
+       height: 40px;
+       z-index: 1000;
+       background: white;
+    }
+</style>
+

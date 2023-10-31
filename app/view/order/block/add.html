@@ -1,0 +1,71 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">会员ID</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userId" lay-verify="required" autocomplete="off" placeholder="" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">银行卡号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="bankCardNum" autocomplete="off" placeholder="" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">银行卡姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="bankCardName" autocomplete="off" placeholder="" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">支付宝号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="alipayAccount" autocomplete="off" placeholder="" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">支付宝名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="alipayName" autocomplete="off" placeholder="" class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit lay-filter="save">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button type="reset" class="pear-btn pear-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    layui.use(['form','jquery'],function(){
+        $ = layui.jquery;
+        let form = layui.form;
+
+        //form.verify()
+        form.on('submit(save)', function(data){
+            /*let roleIds = "";
+            $('input[type=checkbox]:checked').each(function() {
+                roleIds += $(this).val()+",";
+            });
+            roleIds = roleIds.substr(0,roleIds.length-1);
+            data.field.roleIds = roleIds;*/
+            window.save({"submitUrl": '/order/blockAdd', "data": data.field, "tableId": 'table1'});
+            return false;
+        });
+    })
+</script>

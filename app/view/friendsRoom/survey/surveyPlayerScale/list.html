@@ -1,0 +1,194 @@
+<style>
+	.layui-table-header th{
+		background-color: #D7D7D7 !important;
+		font-weight: bold;
+	}
+	.pear-btn-selected {
+		color: #fff !important;
+		background-color: #000000 !important;
+		border: #5FB878;
+	}
+</style>
+<div>
+	<div class="layui-row layui-col-space10">
+		<div class="layui-col-md10">
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-md12">
+					<div class="layui-card">
+						<div class="layui-card-body">
+							<div class="layui-form " style="margin-bottom: 5px" lay-filter="platForm2">
+								<div class="layui-inline">
+									<input class="layui-input" id="dateValue" name="dateValue" placeholder="时间" type="text" value="">
+									<input class="layui-input" id="type" name="type" type="hidden" value="3">
+								</div>
+								<div class="layui-inline">
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn3" onclick="getEcharts(3);">好友房新增</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn4" onclick="getEcharts(4);">游戏人数</button>
+									<!--<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn5" onclick="getEcharts(5);">最高同时在线</button>-->
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn6" onclick="getEcharts(6);">累计玩牌用户</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn7" onclick="getEcharts(7);">玩牌次日留存</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn19" onclick="getEcharts(19);">玩牌3日留存</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn8" onclick="getEcharts(8);">玩牌7日留存</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn9" onclick="getEcharts(9);">玩牌15日留存</button>
+									<button class="pear-btn pear-btn-primary pear-btn-md" id="searchBtn10" onclick="getEcharts(10);">玩牌30日留存</button>
+								</div>
+
+							</div>
+							<div id="container" style="width:100%;height:400px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md2">
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-md12">
+					<div class="layui-inline" style="float:right;">
+						<button type="button" class="pear-btn pear-btn-sm">
+							<i class="layui-icon layui-icon-help" style="font-size: 30px"  lay-width="500px" lay-tips="
+                                <span style='color: #000000;'><b>新增用户（好友房）: </b>首次进入好友房产生对局记录的用户</span><br/><hr />
+                                <span style='color: #000000;'><b>游戏人数: </b>统计时间段内，好友房游玩人数（去重统计）</span><br/><hr />
+                                <span style='color: #000000;'><b>最高同时在线: </b>统计时间段内，好友房的最高同时在线人数</span><br/><hr />
+                                <span style='color: #000000;'><b>累计玩牌用户: </b>截止到统计时间，好友房最新的累计玩牌用户数（去重统计）</span><br/><hr />
+                                <span style='color: #000000;'><b>玩牌次日留存: </b>今天玩过好友房的用户中，明天再次进入好友房玩牌的比例</span><br/><hr />
+                                <span style='color: #000000;'><b>玩牌3日留存: </b>今天玩过好友房的用户中，往后第3天再次进入好友房玩牌的比例</span><br/><hr />
+                                <span style='color: #000000;'><b>玩牌7日留存: </b>今天玩过好友房的用户中，往后第7天再次进入好友房玩牌的比例</span><br/><hr />
+                                <span style='color: #000000;'><b>玩牌15日留存: </b>今天玩过好友房的用户中，往后第15天再次进入好友房玩牌的比例</span><br/><hr />
+                                <span style='color: #000000;'><b>玩牌30日留存: </b>今天玩过好友房的用户中，往后第30天再次进入好友房玩牌的比例</span><br/><hr />
+                                "></i>
+						</button>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	Highcharts.SVGRenderer.prototype.symbols.download = function (x, y, w, h) {
+		var path = [
+			// Arrow stem
+			'M', x + w * 0.5, y,
+			'L', x + w * 0.5, y + h * 0.7,
+			// Arrow head
+			'M', x + w * 0.3, y + h * 0.5,
+			'L', x + w * 0.5, y + h * 0.7,
+			'L', x + w * 0.7, y + h * 0.5,
+			// Box
+			'M', x, y + h * 0.9,
+			'L', x, y + h,
+			'L', x + w, y + h,
+			'L', x + w, y + h * 0.9
+		];
+		return path;
+	};
+	dateOption = {"dateId": 'dateValue', "callback": getEcharts};
+	let options = {
+		chart: {
+			type: 'line'                          //指定图表的类型，默认是折线图（line）
+		},
+		title: {
+			text: '新增用户'                 // 标题
+		},
+		xAxis: {
+			title: {
+				text: '日期'
+			},
+			categories: []   // x 轴分类
+		},
+		yAxis: {
+			title: {
+				text: '数量'                // y 轴标题
+			}
+		},
+		series: [
+			{                              // 数据列
+				name: '新增用户',                        // 数据列名
+				data: []                     // 数据
+			}
+		],
+		exporting: {
+			buttons: {
+				exportButton: {
+					text: '导出excel',
+					onclick: function () {
+						this.downloadXLS();
+					},
+					symbol:'download',
+				},
+				contextButton: {
+					enabled: false
+				},
+				// contextButton: {
+				//     onclick: function () {
+				//         this.downloadXLS();
+				//     },
+				//     //symbolStroke: "red",
+				//     text: '导出excel',
+				//     //symbol:'download',
+				//     //symbol: 'url(http://geodev.grid.unep.ch/images/button_download.png)'
+				//     // x:10,
+				//     // y:10
+				//    // {
+				//     //    textKey: 'downloadXLS',
+				//     //     onclick: function () {
+				//     //         this.downloadXLS();
+				//     //     }
+				//     //},
+				//     // {
+				//     //     textKey: 'downloadCSV',
+				//     //     onclick: function () {
+				//     //         this.downloadCSV();
+				//     //     }
+				//     // }
+				//
+				// }
+			}
+		},
+		// navigation: {
+		//     buttonOptions: {
+		//         enabled: true,
+		//         height: 40,
+		//         width: 48,
+		//         symbolSize: 24,
+		//         symbolX: 23,
+		//         symbolY: 21,
+		//         symbolStrokeWidth: 2
+		//     }
+		// },
+		credits : {
+			enabled : false
+		},
+	};
+	getEcharts(0, '');
+	function getEcharts(type, dateRange = '') {
+		let loading = layer.load(1, {
+			shade: false,
+			time: 2*1000
+		});
+		if (type == 0) {
+			type = $("#type").val();
+		} else {
+			$("#type").val(type);
+		}
+		if (dateRange == '') {
+			dateRange = $("#dateValue").val();
+		}
+		console.log(dateRange);
+		$.get('/friendsRoom/surveyPlayerScale',{"type":type, "dateRange":dateRange},function (res) {
+			console.log(res);
+			layer.close(loading);
+			options.title.text = res.data.title;
+			options.xAxis.categories = res.data.categories;
+			options.series[0].name = res.data.series_name;
+			options.series[0].data = res.data.series_data;
+			options.yAxis.title.text = res.data.ytitle;
+			let chart = Highcharts.chart('container',options);
+
+			$("#searchBtn"+type).addClass("pear-btn-selected");
+			$("#searchBtn"+type).siblings().removeClass("pear-btn-selected");
+		},'json')
+	};
+</script>
+<script src="<?=$staticUrl ?>/static/laydateYmdRange.js"></script>

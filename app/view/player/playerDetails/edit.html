@@ -1,0 +1,563 @@
+<style>
+    input[disabled] {
+        color: #000;
+        opacity: 1;
+    }
+
+    input {
+        color: #FD482C;
+        font-weight: bold
+    }
+    .layui-form-label{
+        width: 150px;
+        padding: 9px 2px;
+    }
+    .layui-form-item .layui-input-inline{
+        width: 250px;
+        margin-right: 0px;
+    }
+
+    .layui-border{
+        border:none;
+    }
+</style>
+<form class="layui-form" action="" lay-filter="editForm">
+    <input type="hidden" name="_id" id="_id" value="">
+    <div class="layui-row">
+        <div class="layui-col-xs12"><h3>基础资料:</h3></div>
+    </div>
+    <div class="layui-row">
+        <table class="layui-table">
+            <colgroup>
+                <col width="150">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>会员ID</th>
+                <th>VIP等级</th>
+                <th>代理名称</th>
+                <th>金币余额</th>
+                <th>房卡余额</th>
+                <th>保险箱余额</th>
+                <th>税收</th>
+                <th>金币场输赢</th>
+                <th>俱乐部输赢</th>
+                <th>充值</th>
+                <th>提现</th>
+                <th>游戏局数</th>
+                <th>游戏总时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td id="userId"></td>
+                <td id="vip"></td>
+                <td id="promoterName"></td>
+                <td id="score"></td>
+                <td id="roomCard"></td>
+                <td id="bankScore"></td>
+                <td id="revenue"></td>
+                <td id="winScore"></td>
+                <td id="clubWinScore"></td>
+                <td id="rechargeAmount"></td>
+                <td id="exchangeAmount"></td>
+                <td id="gameCount"></td>
+                <td id="gameTime"></td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+
+<!--    <div class="layui-row">-->
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">会员ID</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="userId" id="userId" disabled="disabled" value="" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">代理名称</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="promoterName" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">房卡余额</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="number" name="roomCard" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="layui-row ">-->
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">vip等级</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="vip" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">金币余额</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="score" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">银行余额</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="bankScore" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="layui-row ">-->
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">总充值</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="rechargeAmount" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">总提现</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="exchangeAmount" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">总输赢</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="winScore" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="layui-row ">-->
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">游戏局数</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="gameCount" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">总税收</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="revenue" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <div class="layui-row">
+        <div class="layui-col-xs3" style="width: 370px;">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="text-align: left;width: 100px;">上级代理ID</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="promoterId" id="promoterId" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs1 saveEdit">
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <a class="pear-btn pear-btn-primary pear-btn-sm" onclick="saveEdit('promoterId')">保存修改</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs3" style="width: 370px;">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="text-align: left;width: 100px;">真实姓名</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="trueName" id="trueName" value="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs1 saveEdit">
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <a class="pear-btn pear-btn-primary pear-btn-sm" onclick="saveEdit('trueName')">保存修改</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs3" style="width: 370px;">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="text-align: left;width: 100px;">重置登录密码为</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="password" id="password" value="123456" autocomplete="off" class="layui-input layui-border">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs1 saveEdit">
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <a class="pear-btn pear-btn-primary pear-btn-sm" onclick="saveEdit('password')">重置</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-row ">
+        <div class="layui-col-xs3" style="width: 370px;">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="text-align: left;width: 100px;">昵称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="nickName" id="nickName" value="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs1 saveEdit">
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <a class="pear-btn pear-btn-primary pear-btn-sm" onclick="saveEdit('nickName')">保存修改</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs3" style="width: 370px;">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="text-align: left;width: 100px;">手机号</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="mobile" id="mobile" value="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs3 saveEdit">
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <a class="pear-btn pear-btn-primary pear-btn-sm" onclick="saveEdit('mobile')">保存修改</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br/>
+    <div class="layui-row">
+        <div class="layui-col-xs12"><h3>账户信息:</h3></div>
+    </div>
+    <div class="layui-row ">
+        <div class="layui-col-xs3" style="width: 370px;">
+            <div class="layui-form-item" pane="">
+                <label class="layui-form-label" style="text-align: left;width: 100px;">帐号状态</label>
+                <div class="layui-input-inline">
+                    <input type="checkbox" checked="checked" name="status" lay-skin="switch" lay-filter="userStatus" lay-text="正常|冻结">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-row">
+        <div class="layui-col-xs3" style="width: 370px;">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="text-align: left;width: 100px;">USDT账号</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="address" id="address" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs1 saveEdit">
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <a class="pear-btn pear-btn-primary pear-btn-sm" onclick="saveEdit('address')">保存修改</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs3" style="width: 390px;">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="text-align: left;width: 120px;">支付宝姓名,账号</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="alipayName_alipayAccount" id="alipayName_alipayAccount" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs1">
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <a class="pear-btn pear-btn-primary pear-btn-sm" onclick="saveEdit('alipayName_alipayAccount')">保存修改</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-row ">
+        <div class="layui-col-xs3" style="width: 370px;">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="text-align: left;width: 100px;">银行,姓名,账号</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="bankName_bankCardName_bankCardNum" id="bankName_bankCardName_bankCardNum" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs1">
+            <div class="layui-form-item">
+                <div class="layui-input-inline">
+                    <a class="pear-btn pear-btn-primary pear-btn-sm" onclick="saveEdit('bankName_bankCardName_bankCardNum')">保存修改</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="layui-row">
+        <div class="layui-col-xs12"><h3>注册登入信息:</h3></div>
+    </div>
+    <div class="layui-row">
+        <table class="layui-table">
+            <colgroup>
+                <col width="150">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>注册时间</th>
+                <th>最后登录时间</th>
+                <th>登录次数</th>
+                <th>手机型号</th>
+                <th>注册IP</th>
+                <th>注册机器码</th>
+                <th>登录IP</th>
+                <th>登录机器码</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td id="regDate"></td>
+                <td id="lastDate"></td>
+                <td id="loginCount"></td>
+                <td id="regMachineType"></td>
+                <td id="regIp"></td>
+                <td id="regSerial"></td>
+                <td id="lastIp"></td>
+                <td id="lastSerial"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+<!--    <div class="layui-row ">-->
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">注册时间</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="regDate" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">最后登录</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="lastDate" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="layui-row ">-->
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">登录次数</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="loginCount" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">手机型号</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="regMachineType" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="layui-row ">-->
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">注册ip</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="regIp" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">注册机器码</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="regSerial" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="layui-row ">-->
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">登录ip</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="lastIp" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="layui-col-xs3">-->
+<!--            <div class="layui-form-item">-->
+<!--                <label class="layui-form-label">登录机器码</label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" name="lastSerial" disabled="disabled" autocomplete="off" class="layui-input layui-border">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+</form>
+<script>
+    josnData = '<?php echo $formData; ?>';
+    formData= JSON.parse(josnData);
+    dateOption = {"date1": formData.expireTime};
+    layui.use(['form','jquery'],function(){
+        $ = layui.jquery;
+
+        let form = layui.form;
+        let winScore = formData.winScore > 0 ? "+"+formData.winScore:formData.winScore;
+        let clubWinScore = formData.clubWinScore > 0 ? "+"+formData.clubWinScore:formData.clubWinScore;
+        $("#userId").html(formData.userId);
+        $("#vip").html(formData.vip);
+        $("#promoterName").html(formData.promoterName);
+        $("#score").html(formData.score);
+        $("#roomCard").html(formData.roomCard);
+        $("#bankScore").html(formData.bankScore);
+        $("#revenue").html(formData.revenue);
+        $("#winScore").html(winScore);
+        $("#clubWinScore").html(clubWinScore);
+
+        $("#rechargeAmount").html(formData.rechargeAmount);
+        $("#exchangeAmount").html(formData.exchangeAmount);
+        $("#gameCount").html(formData.gameCount);
+        $("#gameTime").html(formData.totalOnlineGameTime);
+
+        $("#regDate").html(formData.regInfo.time);
+        $("#lastDate").html(formData.lastLogin.time);
+        $("#loginCount").html(formData.loginCount);
+        $("#regMachineType").html(formData.regInfo.mobileType);
+        $("#regIp").html(formData.regInfo.ip);
+        $("#regSerial").html(formData.regInfo.mobileSerial);
+        $("#lastIp").html(formData.lastLogin.ip);
+        $("#lastSerial").html(formData.lastLogin.mobileSerial);
+
+
+
+
+
+        form.val('editForm', {
+            //"userId": formData.userId
+            "nickName": formData.nickName
+            ,"trueName": formData.trueName
+            //,"promoterName": formData.promoterName
+            ,"promoterId": formData.promoterId
+            //,"vip": formData.vip
+            //,"roomCard": formData.roomCard
+            //,"score": formData.score
+            //,"bankScore": formData.bankScore
+            ,"mobile": formData.mobile
+            ,"status": formData.status
+            //,"rechargeAmount": formData.rechargeAmount
+            //,"exchangeAmount": formData.exchangeAmount
+            //,"winScore": formData.winScore > 0 ? "+"+formData.winScore:formData.winScore
+            //,"gameCount": formData.gameCount
+            //,"revenue": formData.revenue
+            //,"regDate": formData.regInfo.time
+            //,"lastDate": formData.lastLogin.time
+            //,"loginCount": formData.loginCount
+            //,"regMachineType": formData.regInfo.mobileType
+            //,"regIp": formData.regInfo.ip
+            //,"regSerial": formData.regInfo.mobileSerial
+            //,"lastIp": formData.lastLogin.ip
+            //,"lastSerial": formData.lastLogin.mobileSerial
+            ,"address": formData.usdt.address
+            ,"alipayName_alipayAccount": formData.alipay.alipayName+","+formData.alipay.alipayAccount
+            ,"bankName_bankCardName_bankCardNum": formData.bank.bankName+","+formData.bank.bankCardName+","+formData.bank.bankCardNum
+            ,"_id": formData._id
+        });
+
+        form.on('submit(save)', function(data){
+            /* let roleIds = "";
+             $('input[type=checkbox]:checked').each(function() {
+                 roleIds += $(this).val()+",";
+             });
+             roleIds = roleIds.substr(0,roleIds.length-1);
+             data.field.roleIds = roleIds;*/
+            /*let powerAll = dtree.getCheckbarNodesParam("power");
+            let powerStr = '';
+            $.each(powerAll,function(index,value){
+                powerStr += value.nodeId;
+                powerStr += ','
+            });
+            powerStr = powerStr.substring(0,powerStr.length-1);
+            console.log(powerStr);
+            data.field.menuPurview = powerStr;
+            console.log(data);*/
+            //window.save({"submitUrl": '/notice/editPublicNotice', "data": data.field});
+            return false;
+        });
+        form.on('switch(userStatus)', function (obj) {
+            let _id = $('#_id').val();
+            var value = 0;
+            if (obj.elem.checked === true) {
+                value = 1;
+            }
+            window.save({"submitUrl": '/player/playerDetailsEditSave', "data": {"field": "status", "value": value, "_id": _id}});
+            return false;
+        });
+    })
+    function saveEdit(field) {
+        let value = $('#' + field).val();
+        let _id = $('#_id').val();
+        if (value == "") {
+            layer.msg('修改信息不能为空！');
+            return;
+        }
+        window.save({"submitUrl": '/player/playerDetailsEditSave', "data": {"field": field, "value": value, "_id": _id}});
+        return false;
+    }
+</script>

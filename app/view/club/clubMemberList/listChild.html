@@ -1,0 +1,138 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+
+	.pear-container{
+		position: fixed;
+		width:100%;
+	}
+
+	.layui-table-box{
+		height: 715px;
+	}
+
+	.layui-table-page{
+		position: fixed;
+		bottom: 5px;
+		width: 100%;
+		height: 40px;
+		z-index: 1000;
+		background: white;
+		left:10px;
+	}
+
+	.layui-table-body .layui-table-cell{
+		height: 63px !important;
+		line-height: 21px !important;
+	}
+</style>
+<body class="pear-container">
+<div class="layui-card">
+	<div class="layui-card-body">
+		<form class="layui-form" action="" lay-filter="queryForm">
+			<div class="layui-form-item layui-inline">
+				<input type="hidden" name="status" id="status" value="<?=$status?>"/>
+				<input type="hidden" name="startDate" id="date1" value="<?=$startDate?>"/>
+				<input type="hidden" name="endDate" id="date2" value="<?=$endDate?>"/>
+				<input type="hidden" name="clubName" id="clubName" value="<?=$clubName?>"/>
+				<input type="hidden" name="promoterId" id="promoterId" value="<?=$promoterId?>"/>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="layui-card">
+	<div class="layui-card-body">
+		<table id="table1" lay-filter="listTable1"></table>
+	</div>
+</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    let tableUrl = '/club/memberChild';
+    layui.use(['table','form','jquery'],function () {
+        $ = layui.jquery;
+        table = layui.table;
+        let form = layui.form;
+
+        var startDate = $("#date1").val();
+        var endDate = $("#date2").val();
+        var promoterId = $("#promoterId").val();
+        var clubName = $("#clubName").val();
+        var status = $("#status").val();
+
+        var querystring
+        querystring = '?startDate='+startDate+'&endDate='+endDate+'&status='+status+'&clubName='+clubName+'&promoterId='+promoterId;
+		//querystring = '?status='+status+'&clubName='+clubName+'&promoterId='+promoterId;
+
+        let cols = [
+            [
+                {type:'checkbox', fixed: 'left'}
+                //,{field:'channelId', title: '职位',align:'center'}
+                ,{title:"代理ID", align:'center',
+                templet: function (d) {
+                    if (d.promoterId > 10000000) {
+                        return  '<a onclick="openNewTab(this)" lay-href="/player/playerInfo?userId='+d.promoterId+'" data-name="'+d.promoterId+'" lay-text="ID:'+d.promoterId+'" style="color: #00bfff;font-weight: bold">'+d.promoterId+'</a>';
+                    } else {
+                        return d.promoterId;
+                    }
+                }
+            }
+                ,{field:'score', title: '可提佣金 / 已提现佣金 / 预计佣金' ,align:'center',width:230,templet:function (d){
+                    return '<p><span>'+d.score+'</span></p><p><span>'+d.totalExchange+'</span></p><p><span>' +d.totalMyTeamProfit+ '</span></p>'
+                }}
+                ,{field:'myPlayerTotalCount', title: '合伙人 / 会员' ,align:'center',width:150,templet:function (d){
+                    var url = '/club/userGameStat?&promoterId='+d.promoterId
+                    var html = '<p><a onclick="openNewTab(this)" lay-href="'+url+'" data-name="'+d.promoterId+'直属数据" lay-text="ID:'+d.promoterId+'直属数据" style="color: #00bfff;font-weight: bold">'+d.myPlayerTotalCount+'</a></p>';
+                    html += '<p><span>'+d.myPlayerMemberCount+'</span></p>'
+                    return html;
+                }}
+                //,{field:'totalMySelfAgentRevenue', title: '自营税收' ,align:'center'}
+                ,{field:'totalAgentRevenue', title: '会员税收' ,align:'center'}
+                ,{field:'totalMyProfit', title: '分成佣金' ,align:'center'}
+                ,{field:'totalTeamAgentRevenue', title: '代理团队税收' ,align:'center'}
+                ,{field:'totalTeamProfit', title: '合伙人团队分成' ,align:'center'}
+                ,{field:'totalTeamContri', title: '团队贡献' ,align:'center',templet:function (d){
+                    return  '<a onclick="openNewTab(this)" lay-href="/club/memberChild?&promoterId='+d.promoterId+'" data-name="'+d.promoterId+'团队数据123" lay-text="ID:'+d.promoterId+'团队数据" style="color: #00bfff;font-weight: bold">'+d.totalTeamContri+'</a>';
+                }}
+                ,{field:'clubsNameStr', title: '俱乐部(分成)' ,align:'center'}
+            ]
+        ]
+
+        table.render({
+            elem: '#table1',
+            url: tableUrl+ querystring,
+            page: true ,
+            cols: cols ,
+            skin: 'line',
+            //toolbar: '#toolbar',
+            //defaultToolbar: ['filter'],
+            height:750,
+            done: function(res, curr, count){
+                let queryFormData = form.val("queryForm");
+            }
+        });
+
+        table.on('toolbar(listTable1)', function(obj){
+            if(obj.event === 'reopen'){
+                obj.value = 0;
+                window.batchReopenWithdrawFrozenWithdraw(obj, {"submitUrl": '/club/userStatus', "tableId": 'table1'});
+            } else if(obj.event === 'refresh'){
+                window.refresh('table1');
+            } else if(obj.event === 'frozen'){
+                obj.value = 1;
+                window.batchReopenWithdrawFrozenWithdraw(obj, {"submitUrl": '/club/userStatus', "tableId": 'table1'});
+            }
+        });
+    })
+</script>
+<script src="<?=$staticUrl ?>/static/laydateClub.js"></script>

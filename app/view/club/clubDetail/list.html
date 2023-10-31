@@ -1,0 +1,104 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+					<input id="clubId" name="clubId" type="hidden" value="<?=$clubId ?>">
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 250px">
+							<input type="number" id="userId" name="userId" autocomplete="off" placeholder="用户ID搜索" class="layui-input" value="">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 250px">
+							<input type="number" id="promoterId" name="promoterId" autocomplete="off" placeholder="上级ID搜索" class="layui-input" value="">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl = '/club/clubDetail?1=1';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+
+		var clubId = $("#clubId").val();
+		var userId = $("#userId").val();
+		var promoterId = $("#promoterId").val();
+
+		var querystring
+		if(clubId){
+			querystring = '&clubId='+clubId;
+		}
+
+		if(userId){
+			querystring = '&userId='+userId;
+		}
+
+		if(promoterId){
+			querystring = '&promoterId='+promoterId;
+		}
+
+		let cols = [
+			[
+				{field:'userId',title:"用户ID", align:'center'}
+				,{field:'invitationCode',title:"邀请码", align:'center'}
+				,{field:'level', title: '级别' ,align:'center'}
+				,{field:'contribute', title: '俱乐部代理总税收' ,align:'center'}
+				,{field:'promoterId', title: '上级ID' ,align:'center', templet: function (d) {
+					if (d.promoterId == d.userId) {
+						return '/';
+					} else {
+						return d.promoterId;
+					}
+				}}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl+ querystring,
+			page: true ,
+			cols: cols ,
+			skin: 'line',
+			toolbar: '#toolbar',
+			defaultToolbar: null
+		});
+
+		form.on('submit(query)', function(data){
+			console.log(data.field);
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+	})
+</script>

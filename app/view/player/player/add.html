@@ -1,0 +1,115 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">真实姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="trueName" lay-verify="required" autocomplete="off" placeholder="" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">代理ID</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="promoterId" lay-verify="required" autocomplete="off" placeholder="" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" name="password" autocomplete="off" placeholder=""  class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">手机号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="mobile" autocomplete="off" placeholder=""  class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">支付宝账号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="alipayAccount" autocomplete="off" placeholder=""  class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">支付宝姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="alipayName" autocomplete="off" placeholder=""  class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">USDT地址</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="address" autocomplete="off" placeholder=""  class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">银行名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="bankName" autocomplete="off" placeholder=""  class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">银行卡账号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="bankCardNum" autocomplete="off" placeholder=""  class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">银行卡姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="bankCardName" autocomplete="off" placeholder=""  class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">账号类型</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="accountType" value="0" title="普通账号" checked>
+                        <input type="radio" name="accountType" value="1" title="官方账号">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">账号状态</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="status" value="0" title="冻结">
+                        <input type="radio" name="status" value="1" title="正常" checked>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit lay-filter="save">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button type="reset" class="pear-btn pear-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    layui.use(['form','jquery'],function(){
+        $ = layui.jquery;
+        let form = layui.form;
+
+        //form.verify()
+        form.on('submit(save)', function(data){
+            /*let roleIds = "";
+            $('input[type=checkbox]:checked').each(function() {
+                roleIds += $(this).val()+",";
+            });
+            roleIds = roleIds.substr(0,roleIds.length-1);
+            data.field.roleIds = roleIds;*/
+            window.save({"submitUrl": '/player/addPlayer', "data": data.field, "tableId": 'table1'});
+            return false;
+        });
+    })
+</script>

@@ -1,0 +1,149 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="">
+					<div class="layui-form-item">
+						<div class="layui-form-item layui-inline">
+							<label class="layui-form-label">用户名称</label>
+							<div class="layui-input-inline">
+								<input type="text" name="userName" autocomplete="off" placeholder="" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item layui-inline">
+							<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+								<i class="layui-icon layui-icon-search"></i>
+								查询
+							</button>
+							<button type="reset" class="pear-btn pear-btn-md">
+								<i class="layui-icon layui-icon-refresh"></i>
+								重置
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+
+		<?php include app_path() . "/view/public/tpl_toolbar_add.html"; ?>
+		
+		<script type="text/html" id="bar">
+			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></button>
+			<!--<button class="pear-btn pear-btn-warming pear-btn-sm" lay-event="power"><i class="layui-icon layui-icon-vercode"></i></button>-->
+			<!--<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>-->
+		</script>
+
+		<?php include app_path() . "/view/public/tpl_switch_status01.html"; ?>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl = '/admin/adminUserList';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols = [
+			[
+				{type:'checkbox'},
+				{title: '用户ID', field: 'userId', align:'center', width:100},
+				{title: '用户名称', field: 'userName', align:'center'},
+				{title: '谷歌秘钥', field: 'googleSecret', align:'center'},
+				{field: 'qrCode', title: '谷歌二维码',
+					align: 'center',
+					templet: function(d){
+						return '<div onclick="show_img(this)" ><img src="'+d.qrCode+'" alt="" width="50px" height="50px"></a></div>';
+					}
+				},
+				{title: '角色组', field: 'name', align:'center'},
+				{title: '状态', field: 'status', align:'center', templet:'#status'},
+				{title: '操作', toolbar: '#bar', align:'center', width:195}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl,
+			page: true ,
+			limit: 20,
+			cols: cols ,
+			skin: 'line',
+			toolbar: '#toolbar',
+            height:720,
+			defaultToolbar: [{
+				title: '刷新',
+				layEvent: 'refresh',
+				icon: 'layui-icon-refresh',
+			}, 'filter', 'print', 'exports']
+		});
+
+		table.on('tool(listTable1)', function(obj){
+			console.log(obj);
+			if(obj.event === 'remove'){
+				window.remove(obj, {"_id": obj.data['_id'], "submitUrl": '/admin/removeAdminUser'});
+			} else if(obj.event === 'edit'){
+				window.edit('/admin/editAdminUser?userId='+obj.data.userId, {"height": '600px'});
+			} else if(obj.event === 'power'){
+				window.edit('/admin/editAdminRole?groupId='+obj.data.groupId, {"height": '700px'});
+			}
+		});
+
+		table.on('toolbar(listTable1)', function(obj){
+			if(obj.event === 'add'){
+				window.add('/admin/addAdminUser', {"height": '600px'});
+			} else if(obj.event === 'refresh'){
+				window.refresh('table1');
+			} else if(obj.event === 'batchRemove'){
+				window.batchRemove(obj, {"submitUrl": '/admin/removeAdminUser', "tableId": 'table1'});
+			}
+		});
+
+		form.on('submit(query)', function(data){
+			console.log(data.field);
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+		form.on('switch(status)', function(obj){
+			//layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+			window.switch01(obj, {"submitUrl": '/admin/switchAdminUser', "field": 'status'});
+		});
+	})
+	function show_img(t) {
+		let tt = $(t).find("img");
+		layer.open({
+			type: 1,
+			area: ['30%', '30%'],
+			shadeClose: true,
+			end: function (index, layero) {
+				return false;
+			},
+			content: '<div style="text-align:center"><img src="' + $(tt).attr('src') + '" /></div>'
+		});
+	}
+</script>
+
+<style>
+    .pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 630px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 0;
+		width: 100%;
+       height: 40px;
+       z-index: 1000;
+       background: white;
+		left:10px;
+    }
+</style>

@@ -1,0 +1,67 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+<script type="text/html" id="status">
+	<input type="checkbox" name="status" value="{{d._id}}" lay-skin="switch" lay-text="开|关" lay-filter="status" {{ d.status== 1 ? 'checked' : '' }}>
+</script>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl1 = '/game/gameList';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols1 = [
+			[
+				  {field: 'gameName', title: '游戏', align: 'left', width: 200}
+				, {field: 'gameId', title: '游戏id', align: 'left', width: 200}
+				, {field: 'status', title: '状态', align: 'left', width: 200, toolbar: '#status'}
+				//, {fixed: 'right', title: "操作", align: 'left', toolbar: '#bar', width: 150}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl1,
+			//page: true ,
+			cols: cols1 ,
+			skin: 'line',
+			defaultToolbar: false,
+			//toolbar: '#toolbar',
+			height:780,
+		});
+
+		form.on('submit(query)', function(data){
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+		/*table.on('tool(listTable1)', function(obj){
+			if(obj.event === 'remove'){
+				window.remove(obj, {"_id": obj.data['_id'], "submitUrl": '/gameVer/removeGameVer'});
+			}
+		});
+
+		table.on('toolbar(listTable1)', function(obj){
+			if(obj.event === 'add'){
+				window.add('/gameVer/addGameVer', {"height": '600px'});
+			} else if(obj.event === 'refresh'){
+				window.refresh('table1');
+			} else if(obj.event === 'batchRemove'){
+				window.batchRemove(obj, {"submitUrl": '/gameVer/removegameVer', "tableId": 'table1'});
+			}
+		});
+		table.on('edit(listTable1)', function(obj){
+			window.editTableCell(obj, {"submitUrl": '/gameVer/editGameVer'});
+		});*/
+		form.on('switch(status)', function(obj){
+			//layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+			window.switch21(obj, {"submitUrl": '/game/switchGame', "field": 'status'});
+		});
+	})
+</script>

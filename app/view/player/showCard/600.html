@@ -1,0 +1,77 @@
+<?php
+    if($gameId==600) {
+        foreach($card as $key => $vo) {
+?>
+            <div class="layui-col-xs12 layui-col-sm12">
+                <div class="layui-status-img">
+                    <span class="thick">
+                        座位：<?=$key+1 ?> &nbsp;&nbsp;
+                    </span>
+                    <?php if($vo['division'] > 1){ ?>
+                         <span>分牌</span>
+                    <?php }?>
+                    <?php if(!isset($vo['op'])){ ?>
+                    <?php foreach($vo as $key_arr => $vo_arr){ ?>
+                    <?php
+                        if(isset($vo_arr['card_str'])){
+                    ?>
+                        <?php
+                            foreach($vo_arr['card_str'] as $key1 => $voo){
+                        ?>
+                             <a href="javascript:;"><img src="<?=$staticUrl ?>/cards/common/<?=$voo ?>.png" width="40px" height="50px"></a>
+                        <?php
+                            }
+                        ?>
+                    <?php } ?>
+
+                    <?php
+                        if(isset($vo_arr['points'])){
+                    ?>
+                        点数:<?=$vo_arr['points'] ?>
+                    <?php } ?>
+                    &nbsp;&nbsp;
+                    <?php
+                        if(isset($vo_arr['op'])){
+                    ?>
+                        <?php if($vo_arr['op']==1){ ?>买保险 <?php }elseif($vo_arr['op']==2){ ?>双倍<?php } ?>
+                        <?php } ?>
+
+                    <?php } ?>
+
+                    <?php }else{ ?>
+                    <?php foreach($vo['card_str'] as $key2 => $voo){ ?>
+                    <a href="javascript:;"><img src="<?=$staticUrl ?>/cards/common/<?=$voo ?>.png" width="40px" height="50px"></a>
+                    <?php } ?>
+                    点数:<?=$vo['points'] ?>
+                    &nbsp;&nbsp;
+                    <?php if($vo['op']==1){ ?>买保险 <?php }elseif($vo['op']==2){ ?>双倍<?php } ?>
+                    <?php } ?>
+                    <span class="thick" style="color: red">
+                        <?php if($key=='5'){ ?>庄<?php } ?>
+                    </span>
+                    <span class="thick"><?php if(in_array($key, $betPosition)){ ?><img src="<?=$staticUrl ?>/cards/houtaitoux.png" width="32px" height="32px"><?php } ?></span>
+
+                    <?php 
+                        if($vo['userId']){
+                            foreach($vo['userId'] as $k1 => $v1){
+                    ?>                        	
+                                <div style="float:right; width:200px">
+                                    <?php
+                                        if($v1 == $currentUserId){
+                                    ?>
+                                        <span class="user_id" style="color:#ff0000; line-height: 50px;"><?=$v1 ?>(自己)</span>
+                                    <?php }else{ ?>
+                                        <span class="user_id" style="line-height: 50px;"><?=$v1 ?></span>
+                                    <?php } ?>		                                   
+                                </div>
+                    <?php
+                            }
+                        } 
+                    ?>
+                </div>
+
+            </div>
+<?php
+        }
+    }
+?>

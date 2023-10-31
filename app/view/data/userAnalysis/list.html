@@ -1,0 +1,214 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+
+	.pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 600px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 0;
+		width: 100%;
+        height: 40px;
+        z-index: 1000;
+        background: white;
+    }
+
+</style>
+<body class="pear-container">
+<div class="layui-card">
+	<div class="layui-card-body">
+		<form class="layui-form" action="" lay-filter="queryForm">
+			<div class="layui-form-item layui-inline">
+				<div class="layui-input-inline">
+					<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input" value="<?=$startDate?>">
+				</div>
+				<div class="layui-input-inline" style="width: 5px">-</div>
+				<div class="layui-input-inline">
+					<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input" value="<?=$endDate?>">
+				</div>
+			</div>
+			<div class="layui-form-item layui-inline">
+				<div class="layui-input-inline" style="width: 250px">
+					<input type="number" name="promoterId" id="promoterId" autocomplete="off" placeholder="请输入代理ID" class="layui-input" value="<?=$promoterId?>">
+				</div>
+			</div>
+			<div class="layui-form-item layui-inline">
+				<div class="layui-input-inline" style="width: 250px">
+					<input type="number" name="userId" id="userId" autocomplete="off" placeholder="请输入会员ID,或者注册IP" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item layui-inline">
+				<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+					<i class="layui-icon layui-icon-search"></i>
+					查询
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="layui-card">
+	<div class="layui-card-body">
+		<div class="layui-row layui-col-space10">
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">总充值汇总</div>
+					<div class="count pear-text" id="rechargeAmountSum"></div>
+				</div>
+			</div>
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">总提现汇总</div>
+					<div class="count pear-text" id="exchangeAmountSum"></div>
+				</div>
+			</div>
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">总下注汇总</div>
+					<div class="count pear-text" id="allBetSum"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="layui-card">
+	<div class="layui-card-body">
+		<table id="table1" lay-filter="listTable1"></table>
+	</div>
+</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script src="<?=$staticUrl ?>/static/recharge.js"></script>
+
+<script>
+	let dateOption = {"date1": '', "date2": ''};
+	let tableUrl = '/userAnalysisCon/userAnalysis';
+	layui.use(['table','form','jquery','count'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		count = layui.count;
+		let form = layui.form;
+
+
+		let startDate = $("#date1").val();
+		let endDate = $("#date2").val();
+		let promoterId = $("#promoterId").val();
+		let querystring
+		if(promoterId){
+			querystring = '?startDate='+startDate+'&endDate='+endDate+'&promoterId='+promoterId
+		}else{
+			querystring = '?startDate='+startDate+'&endDate='+endDate
+		}
+
+		let cols = [
+			[
+				{field:'regInfoTimeFom', title: '注册时间' ,align:'center'}
+				,{field:'channelId', title: '注册渠道' ,align:'center',width:100,templet: function(d){
+					return d.channelId ;
+				}}
+				,{field:'userId', title:"会员ID", align:'center',
+					templet: function (d) {
+						var ids = '<a onclick="openNewTab(this)" lay-text="ID:'+d.userId+'"lay-href="/player/playerInfo?userId='+d.userId+'" data-name="'+d.userId+'" lay-text="ID:'+d.userId+'" style="color: red;font-weight: bold">'+d.userId+'</a><br />';
+						return ids ;
+					}
+				}
+				,{field:'promoterId',title:"上级代理(ID/名称)", align:'center',
+					templet: function (d) {
+						if(d.promoterId >= 10000000){
+							var ids = '<a onclick="openNewTab(this)" lay-text="ID:'+d.promoterId+'"lay-href="/player/playerInfo?userId='+d.promoterId+'" data-name="'+d.promoterId+'" lay-text="ID:'+d.promoterId+'" style="color: red;font-weight: bold">'+d.promoterId+'</a>';
+						}else{
+							var ids = d.promoterId;
+						}
+						return ids + '<br />' + d.promoterName + '<br />';
+					}
+				}
+				,{field:'gameCount', title: '游戏局数',width:100,align:'center'}
+				,{field:'rechargeAmount', title: '总(充值/提现)' ,align:'center',templet: function (d) {
+					return d.rechargeAmount + '<br />' + d.exchangeAmount + '<br />';
+				}}
+				,{field:'allBet', title: '总下注' ,align:'center'}
+
+
+				,{field:'regInfoTime', title: '注册(时间/ip)' ,align:'center',templet: function(d){
+					if(d.regInfoTime == -1){
+						return '/';
+					}else{
+						return d.regInfoTime + '<br />' + d.ip + '<br />';
+					}
+				}}
+
+				,{field:'lastGameTime', title: '最后(登录/游戏)时间' ,align:'center',templet: function(d){
+					if(d.lastGameTime == -1){
+						return '/';
+					}else{
+						return d.lastLoginTime + '<br />' + d.lastGameTime + '<br />';
+					}
+				}}
+				,{field:'regInfoMobileType', title: '注册设备' ,align:'center'}
+				, {field:'gamelogs',fixed: 'right', title: '游戏记录', align: 'center', width: 80, toolbar: '#gamelogs'}
+		]];
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl + querystring,
+			page: true ,
+			limit: 20
+			, limits: [10, 20, 30, 45, 60, 75, 90, 100],
+			cols: cols ,
+			skin: 'line',
+			height:650,
+			done: function (res, curr, count) {
+				var that = this.elem.next();
+				res.data.forEach(function (item, index) {
+					if (item.userId >= 100000 && item.userId < 100000) {
+						var tr = that.find(".layui-table-box tbody tr[data-index='" + index + "']");
+						tr.css("background-color", "yellow");
+						tr.find(".laytable-cell-1-0-9").css("color","red");
+					}
+				});
+				$(".layui-table-fixed").remove();
+
+				let queryFormData = form.val("queryForm");
+				window.tableSummary({"submitUrl": '/userAnalysisCon/summary', "data": queryFormData, "selIds": 'rechargeAmountSum,exchangeAmountSum,allBetSum'});
+			}
+		});
+
+		form.on('submit(query)', function(data){
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+		table.on('tool(listTable1)', function (obj) {
+			let data = obj.data;
+			let userId = data.userId;
+			let startDate = $("#date1").val();
+			let endDate = $("#date2").val();
+			if (obj.event == 'detail') {
+				//edit(data.userId);
+				window.add('/userAnalysisCon/playRecords?userId='+userId+'&startDate='+startDate+'&endDate='+endDate, {"width": '1200px',"height": '800px',"title": '游戏记录'});
+			}
+		});
+
+	})
+	console.log(dateOption);
+</script>
+<script src="<?=$staticUrl ?>/static/laydateUserAnalysis.js"></script>
+<script type="text/html" id="gamelogs">
+	<span class="layui-btn layui-btn-xs layui-btn-danger" lay-event="detail">详情</span>
+</script>

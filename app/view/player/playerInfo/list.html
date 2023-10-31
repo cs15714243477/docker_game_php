@@ -1,0 +1,165 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<div class="layui-tab layui-tab-brief" lay-filter="demo">
+					<ul class="layui-tab-title">
+						<li class="layui-this">资料详情</li>
+						<li>金币变化</li>
+						<li>俱乐部金币变化</li>
+						<li>充值记录</li>
+						<li>奖励订单</li>
+						<li>提现记录</li>
+						<li>游戏记录</li>
+						<li>俱乐部游戏记录</li>
+						<li>每日输赢</li>
+						<li>俱乐部每日输赢</li>
+						<li>房卡变化</li>
+						<li>俱乐部奖励订单</li>
+					</ul>
+					<div class="layui-tab-content">
+						<div class="layui-tab-item layui-show tab0">0</div>
+						<div class="layui-tab-item tab1">1</div>
+						<div class="layui-tab-item tab2">2</div>
+						<div class="layui-tab-item tab3">3</div>
+						<div class="layui-tab-item tab4">4</div>
+						<div class="layui-tab-item tab5">5</div>
+						<div class="layui-tab-item tab6">6</div>
+						<div class="layui-tab-item tab7">7</div>
+						<div class="layui-tab-item tab8">8</div>
+						<div class="layui-tab-item tab9">9</div>
+						<div class="layui-tab-item tab10">10</div>
+						<div class="layui-tab-item tab11">11</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<input type="hidden" id="userId" value="<?=$userId ?>">
+		<input type="hidden" id="groupId" value="<?=$groupId ?>">
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let userId = '<?=$userId ?>';
+	let tempTabArr = new Array();
+	tempTabArr[0] = "/player/playerDetails";
+	tempTabArr[1] = "/player/playerScoreChange";
+	tempTabArr[2] = "/player/playerScoreChangeClub";//俱乐部金币变化
+	tempTabArr[3] = "/player/playerRechargeRecord";
+	tempTabArr[4] = "/player/playerRewardOrder";
+	tempTabArr[5] = "/player/playerExchangeRecord";
+	tempTabArr[6] = "/player/playerGameRecord";
+	tempTabArr[7] = "/player/playerGameRecordClub";//俱乐部游戏记录
+	tempTabArr[8] = "/player/playerEverydayWinLose";
+	tempTabArr[9] = "/player/playerEverydayWinLoseClub";//俱乐部每日输赢
+	tempTabArr[10] = "/player/roomCardChange";
+	tempTabArr[11] = "/player/playerClubRewardOrder";
+	function openTabs(index) {
+		$('.tab' + index).load(tempTabArr[index], {"userId": userId});
+	}
+	layui.use(['table','form','jquery','element'],function () {
+		$ = layui.jquery;
+		let table = layui.table;
+		let form = layui.form;
+		let element = layui.element;
+
+		let isTab1
+			,isTab2
+			,isTab3
+			,isTab4
+			,isTab5
+			,isTab6
+			,isTab7
+			,isTab8
+			,isTab9
+			,isTab10
+			,isTab11
+			,isThis;
+		openTabs(0);
+		element.on('tab(demo)', function (data) {
+			let index = data.index;
+			console.log(index);
+			/*if (index !== 0) {
+				openTabs(index);
+			}*/
+			switch (index) {
+				case 1:
+					if (isTab1 !== 1 && isThis !== index) {
+						isTab1 = 1;
+						isThis = index;
+						openTabs(index);
+					}
+					break;
+				case 2:
+					if (isTab2 !== 1 && isThis !== index) {
+						isTab2 = 1;
+						isThis = index;
+						openTabs(index);
+					}
+					break;
+				case 3:
+					if (isTab3 !== 1 && isThis !== index) {
+						isTab3 = 1;
+						isThis = index;
+						openTabs(index);
+					}
+					break;
+				case 4:
+					if (isTab4 !== 1 && isThis !== index) {
+						isTab4 = 1;
+						isThis = index;
+						openTabs(index);
+					}
+					break;
+				case 5:
+					if (isTab5 !== 1 && isThis !== index) {
+						isTab5 = 1;
+						isThis = index;
+						openTabs(index);
+					}
+					break;
+				case 6:
+					if (isTab6 !== 1 && isThis !== index) {
+						isTab6 = 1;
+						isThis = index;
+						openTabs(index);
+					}
+					break;
+				case 7:
+					if (isTab7 !== 1 && isThis !== index) {
+						isTab7 = 1;
+						isThis = index;
+						openTabs(index);
+					}
+					break;
+				case 8:
+					if (isTab8 !== 1 && isThis !== index) {
+						isTab8 = 1;
+						isThis = index;
+						openTabs(index);
+					}
+					break;
+				case 9:
+					if (isTab9 !== 1 && isThis !== index) {
+						isTab9 = 1;
+						isThis = index;
+						openTabs(index);
+					}
+					break;
+				case 10:
+					if (isTab10 !== 1 && isThis !== index) {
+						isTab10 = 1;
+						isThis = index;
+						openTabs(index);
+					}
+					break;
+				case 11:
+					if (isTab11 !== 1 && isThis !== index) {
+						isTab11 = 1;
+						isThis = index;
+						openTabs(index);
+					}
+					break;
+			}
+		});
+
+	})
+</script>

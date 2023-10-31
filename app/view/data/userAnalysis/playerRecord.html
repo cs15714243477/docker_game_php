@@ -1,0 +1,148 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+</style>
+<body class="pear-container">
+<div class="layui-card">
+	<div class="layui-card-body">
+		<form class="layui-form" action="" lay-filter="queryForm">
+			<input type="hidden" name="userId" id="userId" value="<?=$userId?>">
+			<div class="layui-form-item layui-inline">
+				<div class="layui-input-inline">
+					<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input" value="<?=$startDate?>">
+				</div>
+				<div class="layui-input-inline" style="width: 5px">-</div>
+				<div class="layui-input-inline">
+					<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input" value="<?=$endDate?>">
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="layui-card">
+	<div class="layui-card-body">
+		<div class="layui-row layui-col-space10">
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">压注汇总</div>
+					<div class="count pear-text" id="allBetSum"></div>
+				</div>
+			</div>
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">输赢金额汇总</div>
+					<div class="count pear-text" id="winScoreSum"></div>
+				</div>
+			</div>
+			<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+				<div class="pear-card2">
+					<div class="title">税收汇总</div>
+					<div class="count pear-text" id="revenueSum"></div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+<div class="layui-card">
+	<div class="layui-card-body">
+		<table id="table108" lay-filter="listTable108"></table>
+	</div>
+</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	dateOption = {"date1": 'date9', "date2": 'date10', "tableId": 'table108'};
+	let tableUrl = '/player/playerGameRecord';
+	layui.use(['table','form','jquery','count','laydate'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		count = layui.count;
+		let form = layui.form;
+		let laydate = layui.laydate;
+		let startDate = $("#date1").val();
+		let endDate = $("#date2").val();
+		let userId = $("#userId").val();
+
+
+		let cols = [
+			[
+				{field:'endTime', title: '时间' ,align:'center',width:200}
+				,{field:'gameInfoId', title: '游戏记录编号' ,align:'center',width:200}
+				,{field:'roomId', title: '房间ID' ,align:'center'}
+				,{field:'roomName', title: '房间名称' ,align:'center'}
+				,{field:'allBet', title: '压注' ,align:'center'}
+				,{field:'playTime', title: '游戏时长' ,align:'center'}
+				,{field:'winScore',title: '输赢金额' ,align:'center'}
+				,{field:'revenue', title: '税收' ,align:'center'}
+		]];
+
+		table.render({
+			elem: '#table108',
+			url: tableUrl+'?userId='+userId+'&startDate='+$("#date1").val()+'&endDate='+$("#date2").val(),
+			page: true ,
+			limit: 20,
+			cols: cols ,
+			skin: 'line',
+			done: function(res, curr, count){
+				let queryFormData = form.val("queryForm");
+				let tempData = {"userId": userId};
+				$.extend(tempData, queryFormData);
+				window.tableSummary({"submitUrl": '/player/playerGameRecordSummary', "data": tempData, "selIds": 'allBetSum,winScoreSum,revenueSum'});
+			}
+		});
+
+
+		laydate.render({
+			elem: '#date1'
+			, type: 'date'
+			, format: 'yyyy-MM-dd'
+			//, min: 'laydate.now()'
+			, max: 'laydate.now()'
+			, value: startDate
+			, done: function () {
+				if (endDate < startDate) {
+					layer.msg('结束时间不能小于开始时间');
+					return;
+				}
+				table.reload('table108', {
+					page: {curr: 1},
+					where: {"startDate": $('#date1').val(), "endDate": $('#date2').val()}
+				});
+			}
+		});
+		laydate.render({
+			elem: '#date2'
+			, type: 'date'
+			, format: 'yyyy-MM-dd'
+			//, min: 'laydate.now()'
+			//, max: +365
+			, value: endDate
+			, done: function () {
+				if (endDate < startDate) {
+					layer.msg('结束时间不能小于开始时间');
+					return;
+				}
+				table.reload('table108', {
+					page: {curr: 1},
+					where: {"startDate": $('#date1').val(), "endDate": $('#date2').val()}
+				});
+			}
+		});
+
+
+	})
+</script>
+<script src="/static/recharge.js"></script>
+<script>
+
+</script>

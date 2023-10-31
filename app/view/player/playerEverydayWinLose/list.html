@@ -1,0 +1,136 @@
+
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 150px">
+							<input type="text" name="startDate" id="date11" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-input-inline" style="width: 5px">-</div>
+						<div class="layui-input-inline" style="width: 150px">
+							<input type="text" name="endDate" id="date12" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table100" lay-filter="listTable100"></table>
+			</div>
+		</div>
+
+<script>
+	dateOption = {"date1": 'date11', "date2": 'date12', "table": 'table100'};
+	layui.use(['table','form','jquery','count'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		count = layui.count;
+		let form = layui.form;
+
+		let cols = [
+			[
+				{field:'_id', title: '日期' ,align:'center', totalRowText:'合计'}
+				,{field:'gameRound',title: '游戏局数' ,align:'center', totalRow:true}
+				,{field:'playTime', title: '游戏时长' ,align:'center'}
+				,{field:'winScore', title: '输赢金额' ,align:'center', totalRow:true}
+				,{field:'revenue', title: '税收' ,align:'center', totalRow:true}
+			]
+		]
+
+		table.render({
+			elem: '#table100',
+			url: '/player/playerEverydayWinLose?userId='+userId,
+			page: true ,
+			limit: 20,
+			totalRow:true,
+			cols: cols ,
+			skin: 'line',
+			height:710,
+			//toolbar: '#toolbar',
+			done: function(res, curr, count){
+				let queryFormData = form.val("queryForm");
+				let tempData = {"userId": userId};
+				$.extend(tempData, queryFormData);
+				//console.log(tempData);
+				//window.tableSummary({"submitUrl": '/player/playerEverydayWinLoseSummary', "data": tempData, "selIds": 'allBetSum,winScoreSum,revenueSum'});
+			}
+		});
+
+		form.on('submit(query)', function(data){
+			//console.log(data.field);
+			window.refresh('table100', {"data": data});
+			return false;
+		});
+
+	})
+</script>
+<script src="<?=$staticUrl ?>/static/recharge.js"></script>
+		<script src="<?=$staticUrl ?>/static/laydateHisInfo.js"></script>
+<!--		<script>-->
+<!--			layui.use('laydate',function(){-->
+<!--				let laydate = layui.laydate;-->
+<!--				let initValue = new Date();-->
+<!--				laydate.render({-->
+<!--					elem: '#date11'-->
+<!--					, type: 'date'-->
+<!--					, format: 'yyyy-MM-dd'-->
+<!--					//, min: 'laydate.now()'-->
+<!--					, max: 'laydate.now()'-->
+<!--					, value: initValue-->
+<!--					, done: function (value) {-->
+<!--						let date1 = new Date(value).getTime();-->
+<!--						let date2 = new Date($('#date12').val()).getTime();-->
+<!--						if (date2 < date1) {-->
+<!--							layer.msg('结束时间不能小于开始时间');-->
+<!--							return;-->
+<!--						}-->
+<!--						table.reload('table100', {-->
+<!--							page: {curr: 1}-->
+<!--							, where: {"startDate": value, "endDate": $('#date12').val()}-->
+<!--						});-->
+<!--					}-->
+<!--				});-->
+<!--				laydate.render({-->
+<!--					elem: '#date12'-->
+<!--					, type: 'date'-->
+<!--					, format: 'yyyy-MM-dd'-->
+<!--					//, min: 'laydate.now()'-->
+<!--					//, max: +365-->
+<!--					, value: initValue-->
+<!--					, done: function (value) {-->
+<!--						let date2 = new Date(value).getTime();-->
+<!--						let date1 = new Date($('#date11').val()).getTime();-->
+<!--						if (date2 < date1) {-->
+<!--							layer.msg('结束时间不能小于开始时间');-->
+<!--							return;-->
+<!--						}-->
+<!--						table.reload('table100', {-->
+<!--							page: {curr: 1}-->
+<!--							, where: {"startDate": $('#date11').val(), "endDate": value}-->
+<!--						});-->
+<!--					}-->
+<!--				});-->
+<!--			})-->
+<!--		</script>-->
+
+		<style>
+			.pear-container{
+				position: fixed;
+				width:100%;
+			}
+
+			.layui-table-box{
+				height: 620px;
+			}
+
+			.layui-table-page{
+				position: fixed;
+				bottom: 0;
+				width: 100%;
+				height: 40px;
+				z-index: 1000;
+				background: white;
+			}
+		</style>

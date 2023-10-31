@@ -1,0 +1,68 @@
+<?php
+    if($gameId==100) {
+        foreach($card as $key => $vo) {
+?>
+            <div class="layui-col-xs12 layui-col-sm12">
+                <?php if($key<3){ ?>
+                <div class="layui-status-img">
+                    <span class="thick">
+                        座位:<?=$key ?> <?php if($key==$card['999']){ ?><span
+                            style="color: #CF1900">(地主)</span><?php } ?>
+                    </span>
+                    <?php 
+                         foreach($vo as $key1 => $voo){ 
+                            if($key1 != 'userId'){
+                    ?>                        
+                                <?php if($key1==0){ ?>
+                                    初始牌：
+                                    <?php foreach($voo as $vooo){ ?>
+                                    <a href="javascript:;"><img src="<?=$staticUrl ?>/cards/common/<?=$vooo ?>.png" width="40px" height="50px"></a>
+                                    <?php } ?>
+                                    <span class="thick"><?php if(in_array($key, $betPosition)){ ?><img src="<?=$staticUrl ?>/cards/houtaitoux.png" width="32px" height="32px"><?php } ?></span>
+                                <?php } ?>
+                                <br/>
+                                <?php if($key1==1){ ?>
+                                    结束牌：
+                                    <?php foreach($voo as $vooo){ ?>
+                                        <a href="javascript:;"><img src="<?=$staticUrl ?>/cards/common/<?=$vooo ?>.png" width="40px" height="50px"></a>
+                                    <?php } ?>
+                                <?php } ?>
+
+                            <?php } ?>
+                            
+                            <div style="float:right; width:100px">
+                                <?php                                                                                                
+                                    if($key1 == 'userId'){
+                                        foreach($voo as $k1 => $v1){                                                                                                                                           
+                                    ?>                                                                             
+                                            <?php
+                                                if($v1 == $currentUserId){
+                                            ?>
+                                                <span class="thick" style="color:#ff0000; line-height: 50px; position: relative; bottom:125px; right:20px"><?=$v1 ?>(自己)</span>
+                                            <?php }else{ ?>
+                                                <span class="thick" style="line-height: 50px;position: relative; bottom:125px;right:20px;"><?=$v1 ?></span>
+                                            <?php } ?>                                                                                                                         
+                                <?php                                         
+                                        }
+                                    } 
+                                ?>
+                            </div> 
+                    <?php } ?>
+                    <span class="thick"></span>
+                </div>
+                <?php }else{ ?>
+                <span class="thick"></span>
+                <?php } ?>
+            </div>
+<?php
+        }
+?>
+<div class="layui-status-img">
+    底牌：
+    <?php foreach($card['9999'] as $voooo){ ?>
+    <a href="javascript:;"><img src="<?=$staticUrl ?>/cards/common/<?=$voooo ?>.png" width="40px" height="50px"></a>
+    <?php } ?>
+</div>
+<?php
+        }
+?>

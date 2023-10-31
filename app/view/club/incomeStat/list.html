@@ -1,0 +1,242 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+	.pear-container{
+		position: fixed;
+		width:100%;
+	}
+
+	.explain{
+		position: absolute;
+		right: 70px;
+		z-index: 10000;
+		top:28px;
+	}
+
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+
+					<input type="hidden" id="userId" value="<?=$userId?>">
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input" value="<?=$startDate?>">
+						</div>
+						<div class="layui-input-inline" style="width: 5px">-</div>
+						<div class="layui-input-inline">
+							<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input" value="<?=$endDate?>">
+						</div>
+					</div>
+
+
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+						<!--<button type="reset" class="pear-btn pear-btn-md">
+							<i class="layui-icon layui-icon-refresh"></i>
+							重置
+						</button>-->
+					</div>
+				</form>
+
+				<button type="button" class="pear-btn pear-btn-sm explain">
+					<i class="layui-icon layui-icon-help" style="font-size: 30px"  lay-width="500px" lay-tips="
+					<span style='color: #000000;'><b>会员押分:</b> 会员下注的总金额（对压的部分不算） </span><br/><hr />
+					<span style='color: #000000;'><b>会员输赢: </b>会员得分 - 平台税收</span><br/><hr />
+					<span style='color: #000000;'><b>游戏输赢: </b>会员得分相反数，比如：会员得分是-2000，则游戏输赢是2000</span><br/><hr />
+					<span style='color: #000000;'><b>税收: </b>会员每次娱乐的税收5%</span><br/><hr />
+					<span style='color: #000000;'><b>代理税收: </b>平台抽水百分之5分给代理的钱，比如平台抽水100，按代理点位90%计算的话，代理抽水可以得到90</span><br/><hr />
+					<span style='color: #000000;'><b>官方盈亏: </b>游戏输赢 + 平台税收 - 代理税收*0.90</span><br/><hr />
+					"></i>
+				</button>
+			</div>
+		</div>
+		<div class="layui-card">
+
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+		<script>
+			dateOption = {"date1": '', "date2": ''};
+			layui.use(['table','form','jquery','treetable'],function () {
+				let table = layui.table;
+				let form = layui.form;
+				let $ = layui.jquery;
+				let treetable = layui.treetable;
+
+
+				var startDate = $("#date1").val();
+				var endDate = $("#date2").val();
+
+
+				//初始化日期控件
+				dateOption = {"date1": startDate, "date2": endDate};
+
+
+				let userId = $("#userId").val();
+				let querystring = "";
+				if(userId){
+					querystring = '?startDate='+startDate+'&endDate='+endDate+'&userId='+userId
+				}
+
+				if(userId){
+					window.render = function(sDate, eDate){
+						treetable.render({
+							treeColIndex: 0,
+							treeSpid: 0,
+							treeIdName: 'id',
+							treePidName: 'pid',
+							skin:'line',
+							method:'post',
+							treeDefaultClose: true,
+							//toolbar:'#power-toolbar',
+							elem: '#table1',
+							url: '/club/userIncomeStat' + querystring,
+							page: false,
+							height:740,
+							where: {'startDate': sDate, 'endDate': eDate},
+							cols: [
+								[
+									{field: 'title', title: '游戏名称',width: 230},
+									{field: 'gameRound', title: '游戏局数',width: 100, align: 'left'},
+									{field: 'allBet', title: '会员押分',width: 100, align: 'left'},
+									{field: 'winScore', title: '会员输赢',width: 100, align: 'left', templet: function (d) {
+											if (d.winScore > 0) {
+												return '<span style="color:red;font-weight: bold">' + d.winScore + '</span>';
+											}else{
+												return '<span style="color:#333;">' + d.winScore + '</span>';
+											}
+										}},
+									{field: 'platformWinScore', title: '游戏输赢',width: 100, align: 'left',templet: function (d) {
+											if (d.platformWinScore >= 0) {
+												return d.platformWinScore;
+											}else{
+												return '<span style="color:red;font-weight: bold">' + d.platformWinScore + '</span>';
+											}
+										}},
+									{field: 'revenue', title: '税收',width: 100, align: 'left'},
+									{field: 'agentRevenue', title: '代理税收',width: 100, align: 'left'},
+									{field: 'ptIncome', title: '官方盈亏',width: 100, align: 'left',templet: function (d) {
+											if (d.ptIncome < 0) {
+												return '<span style="color:red;font-weight: bold">' + d.ptIncome + '</span>';
+											}else{
+												return '<span style="color:#333;">' + d.ptIncome + '</span>';
+											}
+										}},
+								]
+							],
+							done: function (e){
+								if (e.count > 0) {
+									var num = 0;
+									$.each(e.data, function (i, v) {
+										if (parseInt(v["pid"]) == 0) {
+											$(".layui-table tbody tr").eq(num).css("background-color", "#f3f3f3");
+											$(".layui-table tbody tr").eq(num).css("color", "#333");
+										} else {
+											$(".layui-table tbody tr").eq(num).css("background-color", "#9AFF9A");
+										}
+										num++;
+									});
+								}
+							}
+						});
+					}
+				}else{
+					window.render = function(sDate, eDate){
+						treetable.render({
+							treeColIndex: 0,
+							treeSpid: 0,
+							treeIdName: 'id',
+							treePidName: 'pid',
+							skin:'line',
+							method:'post',
+							treeDefaultClose: true,
+							//toolbar:'#power-toolbar',
+							elem: '#table1',
+							url: '/club/userIncomeStat' + querystring,
+							page: false,
+							height:740,
+							where: {'startDate': sDate, 'endDate': eDate},
+							cols: [
+								[
+									{field: 'title', title: '游戏名称',width: 230},
+									{field: 'onlineCount', title: '当前游戏人数',width: 110, align: 'center'},
+									{field: 'userCount', title: '游戏人数',width: 100, align: 'center'},
+									{field: 'gameRound', title: '游戏局数',width: 100, align: 'center'},
+									{field: 'allBet', title: '会员押分',width: 100, align: 'center'},
+									{field: 'winScore', title: '会员输赢',width: 100, align: 'center', templet: function (d) {
+											if (d.winScore > 0) {
+												return '<span style="color:red;font-weight: bold">' + d.winScore + '</span>';
+											}else{
+												return '<span style="color:#333;">' + d.winScore + '</span>';
+											}
+										}},
+									{field: 'platformWinScore', title: '游戏输赢',width: 100, align: 'center',templet: function (d) {
+											if (d.platformWinScore >= 0) {
+												return d.platformWinScore;
+											}else{
+												return '<span style="color:red;font-weight: bold">' + d.platformWinScore + '</span>';
+											}
+										}},
+									{field: 'revenue', title: '税收',width: 100, align: 'center'},
+									{field: 'agentRevenue', title: '代理税收',width: 100, align: 'center'},
+									{field: 'ptIncome', title: '官方盈亏',width: 100, align: 'center',templet: function (d) {
+											if (d.ptIncome < 0) {
+												return '<span style="color:red;font-weight: bold">' + d.ptIncome + '</span>';
+											}else{
+												return '<span style="color:#333;">' + d.ptIncome + '</span>';
+											}
+										}},
+									{field: 'ptIncomeRate', title: '营收占比',width: 100, align: 'center'},
+									{field: 'winTimes', title: '会员赢次',width: 100, align: 'center'},
+									{field: 'lostTimes', title: '会员输次',width: 100, align: 'center'},
+									{field: 'lostWinRate', title: '会员赢输比例',width: 110, align: 'center'},
+								]
+							],
+							done: function (e){
+								if (e.count > 0) {
+									var num = 0;
+									$.each(e.data, function (i, v) {
+										if (parseInt(v["pid"]) == 0) {
+											$(".layui-table tbody tr").eq(num).css("background-color", "#f3f3f3");
+											$(".layui-table tbody tr").eq(num).css("color", "#333");
+										} else {
+											$(".layui-table tbody tr").eq(num).css("background-color", "#9AFF9A");
+										}
+										num++;
+									});
+								}
+							}
+						});
+					}
+				}
+
+
+				render();
+				form.on('submit(query)', function(data){
+					console.log(data.field);
+					render(data.field['startDate'], data.field['endDate']);
+					return false;
+				});
+
+			})
+		</script>
+<!--<script src="/static/laydateYmd.js"></script>-->
+<script src="/static/laydateUserAnalysis.js"></script>

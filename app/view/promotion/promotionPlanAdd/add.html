@@ -1,0 +1,66 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+    .longspan260{
+        width: 260px;
+        text-align: left;
+    }
+    .longspan130{
+        width: 130px;
+        text-align: left;
+    }
+</style>
+<body class="pear-container">
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <form class="layui-form edit-form" lay-filter="editForm">
+                <div class="layui-tab layui-tab-brief" lay-filter="TabBrief">
+                    <div class="layui-tab-content">
+                        <div class="layui-tab-item layui-show">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                    方案名称
+                                </label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="planTitle" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                    方案说明
+                                </label>
+                                <div class="layui-input-inline">
+                                    <textarea name="planExplain" class="layui-textarea" style="height: 400px;width: 600px;"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label longspan130">
+                                </label>
+                                <div class="layui-input-inline">
+                                    <button id="saveButton" type="submit" class="pear-btn pear-btn-primary" lay-submit lay-filter="save">保存</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    layui.use(['form','layer'], function () {
+        $ = layui.jquery;
+        let form = layui.form;
+        //监听提交
+        form.on('submit(save)', function(data){
+            window.save({"submitUrl": '/promotion/promotionPlanAdd', "data": data.field});
+            $("#saveButton").addClass("layui-btn-disabled").prop("disabled", true);
+            setTimeout(function(){
+                window.location.reload();
+            },2000)
+            return false;
+        });
+    });
+</script>

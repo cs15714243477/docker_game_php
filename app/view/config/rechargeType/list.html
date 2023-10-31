@@ -1,0 +1,365 @@
+<?php include app_path() . "/view/public/header.html"; ?>  
+	<body class="pear-container">
+	<input type="hidden" id="groupId" value="<?php echo session('groupId')?>">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<div class="layui-tab layui-tab-brief">
+					<ul class="layui-tab-title">
+						<li class="layui-this">线上充值</li>
+						<li>线下充值</li>
+					</ul>
+					<div class="layui-tab-content">
+						<div class="layui-tab-item layui-show">
+							<div class="layui-form " style="" lay-filter="queryForm">
+								<div class="layui-input-inline">
+									<select name="type" >
+										<option value="">充值分类</option>
+										<option value="2">支付宝</option>
+										<option value="3">微信</option>
+										<option value="1">银行卡</option>
+										<option value="6">翼支付</option>
+										<option value="7">QQ</option>
+									</select>
+								</div>
+								<div class="layui-input-inline">
+									<select name="inputSw">
+										<option value="">输入框状态</option>
+										<option value="0">关闭</option>
+										<option value="1">开启</option>
+									</select>
+								</div>
+								<div class="layui-input-inline">
+									<select name="status">
+										<option value="">通道状态</option>
+										<option value="0">关闭</option>
+										<option value="1">开启</option>
+									</select>
+								</div>
+								<div class="layui-inline">
+									<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query1">
+										<i class="layui-icon layui-icon-search"></i>
+										查询
+									</button>
+								</div>
+							</div>
+							<table style="margin-top: 10px;" id="table1" lay-filter="listTable1"></table>
+						</div>
+						<div class="layui-tab-item">
+							<div class="layui-form " style="" lay-filter="queryForm">
+								<div class="layui-input-inline">
+									<select name="type" >
+										<option value="">充值分类</option>
+										<option value="2">支付宝</option>
+										<option value="3">微信</option>
+										<option value="1">银行卡</option>
+										<option value="5">USDT</option>
+									</select>
+								</div>
+								<div class="layui-input-inline">
+									<select name="inputSw">
+										<option value="">输入框状态</option>
+										<option value="0">关闭</option>
+										<option value="1">开启</option>
+									</select>
+								</div>
+								<div class="layui-input-inline">
+									<select name="status">
+										<option value="">通道状态</option>
+										<option value="0">关闭</option>
+										<option value="1">开启</option>
+									</select>
+								</div>
+								<div class="layui-inline">
+									<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query2">
+										<i class="layui-icon layui-icon-search"></i>
+										查询
+									</button>
+								</div>
+							</div>
+							<table style="margin-top: 10px;" id="table2" lay-filter="listTable2"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	<script type="text/html" id="toolbar">
+		<button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
+			<i class="layui-icon layui-icon-add-1"></i>
+			新增
+		</button>
+	</script>
+		<?php include app_path() . "/view/public/tpl_switch_status01.html"; ?>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl1 = '/rechargeType/rechargeType?online=1';
+	let tableUrl2 = '/rechargeType/rechargeType?offline=1';
+	layui.use(['table','form','jquery','upload'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		upload = layui.upload;
+		let form = layui.form;
+		let groupId = $('#groupId').val();
+		let cols1 = [
+			[
+				{field: 'rechargeTypeId', title: '通道编号', width:90, align: 'center'}
+				, {field: 'type', title: '充值分类', align: 'center', toolbar: '#type'}
+				, {field: 'rechargeTypeIcon', title: '图标', width:200, align: 'center', toolbar: '#upload'}
+				, {field: 'rechargeTypeName', title: '充值类型', width:150, align: 'center', edit: 'text'}
+				, {field: 'rechargeMoney', title: '充值金额按钮(元)', align: 'center', width: 300, edit: 'text'}
+				, {field: 'minMoneyLimit', title: '最小金额(元)', width:120, align: 'center', edit: 'text'}
+				, {field: 'maxMoneyLimit', title: '最大金额(元)', width:120, align: 'center', edit: 'text'}
+				, {field: 'inputSw', title: '输入框状态', align: 'center', toolbar: '#inputSwitch'}
+				, {field: 'sortId', title: '排序', width:80, align: 'center', edit: 'text'}
+				, {field: 'status', title: '通道状态', align: 'center', toolbar: '#serviceSwitch'}
+				//, {field: 'topUp', title: '单笔充值满足金额(元)', width:150, align: 'center', edit: 'text'}
+				//, {field: 'giveRate', title: '赠送比例(%)', width:90, align: 'center', edit: 'text'}
+			]
+		]
+
+		let cols2 = [
+			[
+				{field: 'rechargeTypeId', title: '通道编号', width:90, align: 'center'}
+				, {field: 'type', title: '充值分类', align: 'center', toolbar: '#type'}
+				, {field: 'rechargeTypeIcon', title: '图标', width:200, align: 'center', toolbar: '#upload'}
+				, {field: 'rechargeTypeName', title: '充值类型',width:150, align: 'center', edit: 'text'}
+				, {field: 'rechargeMoney', title: '充值金额按钮(元)', align: 'center', width: 300, edit: 'text'}
+				, {field: 'account', title: '账户', align: 'center', width: 300, edit: 'text'}
+				, {field: 'minMoneyLimit', title: '最小金额(元)', width:120, align: 'center', edit: 'text'}
+				, {field: 'maxMoneyLimit', title: '最大金额(元)', width:120, align: 'center', edit: 'text'}
+				, {field: 'inputSw', title: '输入框状态', align: 'center', toolbar: '#inputSwitch'}
+				, {field: 'sortId', title: '排序', width:80, align: 'center', edit: 'text'}
+				, {field: 'status', title: '通道状态', align: 'center', toolbar: '#serviceSwitch'}
+				//, {field: 'topUp', title: '单笔充值满足金额(元)', width:150, align: 'center', edit: 'text'}
+				//, {field: 'giveRate', title: '赠送比例(%)', width:90, align: 'center', edit: 'text'}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl1,
+			page: true ,
+			limit: 20,
+			cols: cols1 ,
+			skin: 'line',
+			defaultToolbar: false,
+			height:720,
+			done: function(){
+				let tableElem = this.elem;
+				let tableViewElem = tableElem.next();
+				upload.render({
+					elem: tableViewElem.find('.test-upload-size')
+					,url: '/rechargeType/rechargeTypeIconUpload'
+					,accept: 'file'
+					,before: function(){
+						//console.log(this.item);
+						//console.log(this.item.attr('id'));
+						this.url += '?rechargeTypeId=' + this.item.attr('id');
+						//layer.tips('接口地址：'+ this.url, this.item, {tips: 1});
+						layer.load();
+					}
+					,done: function(res, index, upload){
+						//console.log(res);
+						//var item = this.item;
+						//console.log(item);
+						layer.msg(res.msg);
+						layer.closeAll('loading');
+						layui.table.reload('table1');
+					}
+					,error: function(index, upload){
+						layer.closeAll('loading');
+					}
+				})
+			}
+		});
+
+		table.render({
+			elem: '#table2',
+			url: tableUrl2,
+			page: true ,
+			limit: 20,
+			cols: cols2 ,
+			skin: 'line',
+			defaultToolbar: false,
+			toolbar: '#toolbar',
+            height:720,
+			done: function(){
+				let tableElem = this.elem;
+				let tableViewElem = tableElem.next();
+				upload.render({
+					elem: tableViewElem.find('.test-upload-size')
+					,url: '/rechargeType/rechargeTypeIconUpload'
+					,accept: 'file'
+					,before: function(){
+						//console.log(this.item);
+						//console.log(this.item.attr('id'));
+						this.url += '?rechargeTypeId=' + this.item.attr('id');
+						//layer.tips('接口地址：'+ this.url, this.item, {tips: 1});
+						layer.load();
+					}
+					,done: function(res, index, upload){
+						//console.log(res);
+						//var item = this.item;
+						//console.log(item);
+						layer.msg(res.msg);
+						layer.closeAll('loading');
+						layui.table.reload('table2');
+					}
+					,error: function(index, upload){
+						layer.closeAll('loading');
+					}
+				})
+			}
+
+		});
+		table.on('toolbar(listTable2)', function(obj){
+			if(obj.event === 'add'){
+				window.add('/rechargeType/rechargeTypeAdd', {"height": '600px'});
+			}
+		});
+		//监听单元格编辑
+		table.on('edit(listTable1)', function (obj) {
+			editRechargeData(obj,groupId);
+		});
+
+		//监听单元格编辑
+		table.on('edit(listTable2)', function (obj) {
+			editRechargeData(obj,groupId);
+		});
+
+		form.on('submit(query1)', function(data){
+			console.log(data.field);
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+		form.on('submit(query2)', function(data){
+			console.log(data.field);
+			window.refresh('table2', {"data": data});
+			return false;
+		});
+
+		form.on('switch(inputSwitch)', function(obj){
+			window.switch01(obj, {"submitUrl": '/rechargeType/rechargeTypeInputSw', "field": 'inputSw'});
+		});
+		form.on('switch(serviceSwitch)', function(obj){
+			window.switch01(obj, {"submitUrl": '/rechargeType/rechargeTypeStatus', "field": 'status'});
+		});
+	})
+	function NumberTest(val) {
+		if (parseFloat(val).toString() == "NaN") {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	function editRechargeData (obj,groupId){
+		var data = obj.data;
+		if (obj.field == 'giveRate') {
+			if ((groupId != 1) && (groupId != 8)) {
+				layer.msg("没有操作权限！");
+				return;
+			}
+			if (!NumberTest(obj.value)) {
+				layer.msg("必须输入数字");
+				//this.value='';
+				return;
+			}
+			if (parseFloat(obj.value) > 5) {
+				layer.msg("赠送比例配置范围为0%-5%");
+				//this.value='';
+				return;
+			}
+		}
+		if (obj.field == 'topUp') {
+			if ((groupId != 1) && (groupId != 8)) {
+				layer.msg("没有操作权限！");
+				return;
+			}
+			if (!NumberTest(obj.value)) {
+				layer.msg("必须输入数字");
+				//this.value='';
+				return;
+			}
+		}
+		$.post('/rechargeType/editChargeType', {"rechargeTypeId": data.rechargeTypeId, "field": obj.field, "value": obj.value}, function (res) {
+			layer.msg(res.msg);
+		}, 'json');
+	}
+</script>
+<script type="text/html" id="type">
+	{{#  if(d.type == 1){ }}
+	<span style="color:Coral">银行卡</span>
+	{{#  } else if(d.type == 2) { }}
+	<span style="color:blue">支付宝</span>
+	{{#  } else if(d.type == 3) { }}
+	<span style="color:green">微信</span>
+	{{#  } else if(d.type == 4) { }}
+	<span style="color:DarkGray">京东金融</span>
+	{{#  } else if(d.type == 5) { }}
+	<span style="color:DarkGray">USDT</span>
+	{{#  } else if(d.type == 6) { }}
+	<span style="color: #a71d5d">翼支付</span>
+	{{#  } else if(d.type == 7) { }}
+	<span style="color: #a71d5d">QQ</span>
+	{{#  } else { }}
+	<span style="color:red">未知</span>
+	{{#  } }}
+</script>
+<script type="text/html" id="onlineOffline">
+	{{#  if(d.onlineOffline == 1){ }}
+	<span style="color:green">线下</span>
+	{{#  } else if(d.onlineOffline == 2) { }}
+	<span style="color:blue">线上</span>
+	{{#  } else { }}
+	<span style="color:red">未知</span>
+	{{#  } }}
+</script>
+
+<script type="text/html" id="inputSwitch">
+	<input type="checkbox" name="inputSwitch" value="{{d._id}}" lay-skin="switch" lay-text="开启|关闭" lay-filter="inputSwitch" {{ d.inputSw== 1 ? 'checked' : '' }}>
+</script>
+
+<script type="text/html" id="serviceSwitch">
+	<input type="checkbox" name="serviceSwitch" value="{{d._id}}" lay-skin="switch" lay-text="开启|关闭" lay-filter="serviceSwitch" {{ d.status== 1 ? 'checked' : '' }}>
+</script>
+
+<script type="text/html" id="upload">
+	<img src="{{d.rechargeTypeIcon}}" width="30" height="30" />
+	<button class="layui-btn layui-btn-danger test-upload-size" id="{{d.rechargeTypeId}}">
+		<i class="layui-icon"></i>上传图片
+	</button><input class="layui-upload-file" type="file" accept="" name="file">
+</script>
+
+<style>
+
+    .pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 730px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 5px;
+		width: 100%;
+       height: 40px;
+       z-index: 1000;
+       background: white;
+    }
+
+	.layui-card-body{
+		position: fixed;
+		width: 100%;
+	}
+	#content{
+		position: fixed;
+	}
+
+	.layui-table-body .layui-table-cell{
+		height: 40px !important;
+		line-height: 38px !important;
+	}
+
+</style>

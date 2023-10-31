@@ -1,0 +1,361 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+
+	.pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 600px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 0;
+		width: 100%;
+        height: 40px;
+        z-index: 1000;
+        background: white;
+    }
+
+	.under{
+		color:deepskyblue;
+		cursor: pointer;
+		font-weight: bold;
+	}
+
+	.win{
+		cursor: pointer;
+		color:#ff0000;
+		font-weight: bold;
+	}
+
+	.transport{
+		cursor: pointer;
+		color:#333;
+		font-weight: bold;
+	}
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+
+					<?php if($promoterId > 0){ ?>
+						<div class="layui-form-item layui-inline">
+							<div class="layui-input-inline" style="width: 150px">
+								<input type="text" name="promoterId" id="promoterId" autocomplete="off" placeholder="代理ID" class="layui-input" value="<?=$promoterId ?>">
+							</div>
+						</div>
+					<?php }?>
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 150px">
+							<input type="number" name="userId" id="userId" autocomplete="off" placeholder="会员ID" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="type" >
+								<option value=''>会员类型</option>
+								<option value='1'>代理</option>
+								<option value='2'>会员</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="isSys" >
+								<?php
+								foreach($isSys as $k => $v) {
+								$selected = '';
+								if($k==2) $selected='selected';
+								echo "<option value='{$k}' {$selected}>{$v}</option>";
+								}
+								?>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 160px">
+							<select name="gameId" id="gameId" lay-filter="gameId">
+								<option value="">选择游戏</option>
+								<?php
+									foreach($gameList as $k => $v) {
+										echo '<option value="'. $v['gameId'] .'">' . $v['gameId'] . '-' . $v['gameName'] . '</option>';
+									}
+								?>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 200px">
+							<select name="roomId" id="roomId" lay-search>
+								<option value="">选择房间</option>
+								<?php
+									foreach($gameList as $k => $v) {
+										foreach($v['rooms'] as $vv) {
+											echo '<option value="'. $vv['roomId'] .'">' . $vv['roomId'] . '-' . $vv['roomName'] . '</option>';
+										}
+									}
+								?>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 150px;">
+							<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-input-inline" style="width: 5px">-</div>
+						<div class="layui-input-inline" style="width: 150px;">
+							<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="orderType" lay-search>
+								<?php
+									foreach($orderType as $k => $v) {
+										echo '<option value="'. $k .'">' . $v . '</option>';
+									}
+								?>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="export">
+							<i class="pear-icon pear-icon-export"></i>
+							导出
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<div class="layui-row layui-col-space10">
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">会员押分汇总</div>
+							<div class="count pear-text" id="allBetSum"></div>
+						</div>
+					</div>
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">会员得分汇总</div>
+							<div class="count pear-text" id="earnScoreSum"></div>
+						</div>
+					</div>
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">会员输赢汇总</div>
+							<div class="count pear-text" id="winScoreSum"></div>
+						</div>
+					</div>
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">游戏输赢汇总</div>
+							<div class="count pear-text" id="platformWinScoreSum"></div>
+						</div>
+					</div>
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">平台税收汇总</div>
+							<div class="count pear-text" id="revenueSum"></div>
+						</div>
+					</div>
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">平台营收汇总</div>
+							<div class="count pear-text" id="ptIncomeSum"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+		<script src="<?=$staticUrl ?>/static/recharge.js"></script>
+<script>
+	dateOption = {"date1": '', "date2": ''};
+	let tableUrl = '/player/userGameStat';
+	layui.use(['table','form','jquery','count'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		count = layui.count;
+		let form = layui.form;
+        let promoterId = $("#promoterId").val();
+		let startDate = $("#date1").val();
+		let endDate = $("#date2").val();
+        let querystring = "";
+        if(promoterId){
+            //querystring = '?promoterId='+promoterId
+			querystring = '?promoterId='+promoterId+'&startDate='+startDate+'&endDate='+endDate;
+        }else{
+			querystring = '?startDate='+startDate+'&endDate='+endDate;
+		}
+
+		let cols = [
+			[
+				{field: 'userId', title: '会员Id', align: 'center', minWidth: 100,templet:function (d) {
+                        var startDate = $("#date1").val();
+                        var endDate = $("#date2").val();
+				        var url = '/player/userIncomeStat?startDate='+startDate+'&endDate='+endDate+'&userId='+d.userId
+                        return  '<a onclick="openNewTab(this)" lay-href="'+url+'" data-name="'+d.userId+'盈利统计" lay-text="ID:'+d.userId+'盈利统计" class="under">'+d.userId+'</a>';
+                    }}
+                , {field: 'type', title: '会员类型', align: 'left', minWidth: 80}
+				, {field: 'score', title: '账户余额', align: 'left', minWidth: 80}
+				, {field: 'bankScore', title: '保险箱余额', align: 'left', minWidth: 80}
+				, {field: 'rechargeAmount', title: '充值金额', align: 'left', minWidth: 80}
+				, {field: 'exchangeAmount', title: '提现金额', align: 'left', minWidth: 80}
+				, {field: 'roomName', title: '游戏名称',totalRowText:'/', align: 'left', minWidth: 150, templet: function (d) {
+					if (d.roomName) {
+						return d.roomName;
+					} else if(d.gameName) {
+						return d.gameName;
+					} else {
+						return "-"
+					}
+				}}
+				, {field: 'allBet', title: '会员押分', align: 'left', minWidth: 80}
+				, {field: 'validBet', title: '会员有效押分', align: 'left', minWidth: 80}
+				, {field: 'earnScore', title: '会员得分', align: 'left', minWidth: 80}
+				, {field: 'winScore', title: '会员输赢', align: 'left', minWidth: 100, templet: function (d) {
+                    var startDate = $("#date1").val();
+                    var endDate = $("#date2").val();
+                    var url = '/player/userGameDetail?startDate='+startDate+'&endDate='+endDate+'&userId='+d.userId;
+                    if (d.winScore >= 0) {
+                        return '<a onclick="openNewTab(this)" lay-href="'+url+'" data-name="'+d.userId+'明细" lay-text="ID:'+d.userId+'明细" class="win">'+d.winScore+'</a>';
+                    } else {
+                        return  '<a onclick="openNewTab(this)" lay-href="'+url+'" data-name="'+d.userId+'明细" lay-text="ID:'+d.userId+'明细" class="transport" >'+d.winScore+'</a>';
+                    }
+				}}
+				, {field: 'platformWinScore', title: '游戏输赢', align: 'left', minWidth: 150}
+				, {field: 'revenue', title: '平台税收', align: 'left', minWidth: 150}
+				, {
+				field: 'ptIncome', title: '平台营收', align: 'left', minWidth: 150, templet: function (d) {
+					if (d.ptIncome < 0) {
+						return '<span style="color:red;font-weight: bold">' + d.ptIncome + '</span>';
+					} else {
+						return '<span style="color:#333;">' + d.ptIncome + '</span>';
+					}
+				}
+			}
+				/*, {field: 'playTime', title: '会员时长', align: 'left', minWidth: 80}
+				, {field: 'gameRound', title: '会员局数', align: 'left', minWidth: 80}*/
+				, {field: 'agentRevenue', title: '代理税收', align: 'left', minWidth: 80}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl  + querystring,
+			page: true ,
+			limit: 20,
+			cols: cols ,
+			skin: 'line',
+			height: 600,
+			//toolbar: '#toolbar',
+			done: function(res, curr, count){
+				let queryFormData = form.val("queryForm");
+				//console.log(queryFormData);
+				window.tableSummary({"submitUrl": '/player/userGameStatSummary', "data": queryFormData, "selIds": 'platformWinScoreSum,earnScoreSum,ptIncomeSum,allBetSum,revenueSum,winScoreSum'});
+			}
+		});
+
+		form.on('submit(query)', function(data){
+			//console.log(data.field);
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+		form.on('submit(export)', function(data){
+			let loading = layer.load();
+			$.ajax({
+				url: '/player/exportGameStat',
+				data: data.field,
+				type: 'post',
+				success:function(res){
+					layer.close(loading);
+					if(res.code == 0){
+						window.open('/player/download?file='+res.file);
+					}else{
+						layer.msg(res.msg,{icon:2,time:1000});
+					}
+				}
+			})
+			return false;
+		});
+
+		form.on('select(gameId)', function (data) {
+			var url = "/player/userGameDetailselected";
+			$.ajax({
+				type: "post",
+				url: url,
+				dataType: 'json',
+				data: {
+					'gameId': data.value,
+				},
+				success: function (e) {
+					/*成功*/
+					if (e.code == 0) {
+						$("#roomId").html("");
+						$('#roomId').append(new Option("选择房间", 0));//往下拉菜单里添加元素
+						$.each(e.data, function (i, v) {
+							console.log(v);
+							$('#roomId').append(new Option(v.roomId.toString()+"-"+v.roomName, v.roomId));//往下拉菜单里添加元素
+						});
+						var form = layui.form;
+						form.render();//菜单渲染 把内容加载进去
+					} else if(e.code == -1) {
+						$("#roomId").html("");
+						$('#roomId').append(new Option("选择房间", 0));//往下拉菜单里添加元素
+						var form = layui.form;
+						form.render();//菜单渲染 把内容加载进去
+					} else {
+						return false;
+					}
+				}
+			});
+		});
+
+	})
+	function showCard(obj) {
+		let id = $(obj).text();
+		let gameId = $(obj).attr('gameId');
+		let oid = $(obj).attr('oid');
+		let w = '600px';
+		let h = '500px';
+		if (gameId == 300 || gameId == 100 || gameId == 550) {
+			w = '1000px';
+			h = '800px';
+		}
+		window.agentdetail('/player/showCard?oid=' + oid, {"width": w, "height": h});
+	}
+</script>
+<script src="<?=$staticUrl ?>/static/laydateClubHis.js"></script>

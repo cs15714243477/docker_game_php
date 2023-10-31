@@ -1,0 +1,100 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="">
+					<div class="layui-form-item">
+						<div class="layui-form-item layui-inline">
+							<label class="layui-form-label">电话查询:</label>
+							<div class="layui-input-inline">
+								<input type="text" name="phone" autocomplete="off" placeholder="请输入电话号码" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item layui-inline">
+							<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+								<i class="layui-icon layui-icon-search"></i>
+								查询
+							</button>
+							<button type="reset" class="pear-btn pear-btn-md">
+								<i class="layui-icon layui-icon-refresh"></i>
+								重置
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+
+		<?php include app_path() . "/view/public/tpl_toolbar_add_batchRemove.html"; ?>
+		
+		<script type="text/html" id="bar">
+			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></button>
+			<!--<button class="pear-btn pear-btn-warming pear-btn-sm" lay-event="power"><i class="layui-icon layui-icon-vercode"></i></button>-->
+			<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
+		</script>
+
+		<?php include app_path() . "/view/public/tpl_switch_status01.html"; ?>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl = '/player/smsList';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols = [
+			[
+				{field: 'Id', title: 'Id', align: 'center'}
+				, {field: 'name', title: '提供商', align: 'center'}
+				, {field: 'phone', title: '电话', align: 'left',width: 150}
+				, {field: 'verifyCode', title: '验证码', align: 'left',width: 100}
+				, {field: 'status', title: '错误码', align: 'left',width: 100}
+				, {field: 'reason', title: '错误原因', align: 'left'}
+				, {field: 'createTime', title: '创建时间', align: 'center'}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl,
+			page: true ,
+			limit: 20,
+			cols: cols ,
+			skin: 'line',
+			height: 720,
+			//toolbar: '#toolbar',
+		});
+
+		form.on('submit(query)', function(data){
+			console.log(data.field);
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+	})
+
+</script>
+
+<style>
+    .pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 670px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 0;
+		width: 100%;
+        height: 40px;
+        z-index: 1000;
+        background: white;
+    }
+</style>

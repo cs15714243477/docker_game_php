@@ -1,0 +1,59 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">选择房间</label>
+                    <div class="layui-input-inline">
+                        <select name="roomId" lay-verify="required" lay-search>
+                            <?php
+                                foreach($roomList as $k => $v) {
+                            echo '<option value="'. $v['roomId'] .'">' . $v['roomId'] . '-' . $v['roomName'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">添加数量</label>
+                    <div class="layui-input-block">
+                        <input type="number" name="addNum" lay-verify="required" placeholder="需要增加的机器人数量" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">最小金额</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="minScore" id="minScore" lay-verify="required" placeholder="机器人上桌最小携带金额" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">最大金额</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="maxScore" id="maxScore" lay-verify="required" placeholder="机器人上桌最大携带金额" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php include app_path() . "/view/public/tpl_form_bottom_save.html"; ?>
+</form>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    layui.use(['form','jquery'],function(){
+        $ = layui.jquery;
+        let form = layui.form;
+
+        form.on('submit(save)', function(data){
+            let minScore    =   $('#minScore').val();
+            let maxScore    =   $('#maxScore').val();
+            if(minScore == "" || maxScore == "" || minScore < 1 || maxScore < 1 || isNaN(minScore) || isNaN(maxScore) ) {
+                layer.msg('金额填写不正确！',{icon:2,time:1000});
+                return false;
+            }
+            window.save({"submitUrl": '/android/addAndroid', "data": data.field, "tableId": 'table1'});
+            return false;
+        });
+    })
+</script>

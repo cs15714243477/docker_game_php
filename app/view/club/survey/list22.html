@@ -1,0 +1,110 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<link rel="stylesheet" href="<?=$staticUrl ?>/static/admin/css/other/console2.css" />
+<body class="pear-container">
+<div class="layui-row layui-col-space10">
+	<div class="layui-col-md12">
+		<div class="layui-row layui-col-space10">
+			<!--<div class="layui-col-md6">
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        快捷菜单
+                    </div>
+                    <div class="layui-card-body">
+                        <div class="layui-row layui-col-space10">
+                            <div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                                <div class="pear-card" data-id="home1" data-title="主页" data-url="http://www.baidu.com">
+                                    <i class="layui-icon layui-icon-home"></i>
+                                </div>
+                                <span class="pear-card-title">主页</span>
+                            </div>
+                            <div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                                <div class="pear-card" data-id="home2" data-title="弹层" data-url="http://www.baidu.com">
+                                    <i class="layui-icon layui-icon-camera"></i>
+                                </div>
+                                <span class="pear-card-title">弹层</span>
+                            </div>
+                            <div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                                <div class="pear-card" data-id="home2" data-title="聊天" data-url="http://www.baidu.com">
+                                    <i class="layui-icon layui-icon-star"></i>
+                                </div>
+                                <span class="pear-card-title">聊天</span>
+                            </div>
+                            <div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                                <div class="pear-card" data-id="home3" data-title="相机" data-url="http://www.baidu.com">
+                                    <i class="layui-icon layui-icon-camera"></i>
+                                </div>
+                                <span class="pear-card-title">相机</span>
+                            </div>
+                            <div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                                <div class="pear-card" data-id="home4" data-title="表单" data-url="http://www.baidu.com">
+                                    <i class="layui-icon layui-icon-console"></i>
+                                </div>
+                                <span class="pear-card-title">表单</span>
+                            </div>
+                            <div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                                <div class="pear-card" data-id="home5" data-title="安全" data-url="http://www.baidu.com">
+                                    <i class="layui-icon layui-icon-auz"></i>
+                                </div>
+                                <span class="pear-card-title">安全</span>
+                            </div>
+                            <div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                                <div class="pear-card" data-id="home6" data-title="公告" data-url="http://www.baidu.com">
+                                    <i class="layui-icon layui-icon-cart"></i>
+                                </div>
+                                <span class="pear-card-title">公告</span>
+                            </div>
+                            <div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                                <div class="pear-card" data-id="home7" data-title="更多" data-url="http://www.baidu.com">
+                                    <i class="layui-icon layui-icon-app"></i>
+                                </div>
+                                <span class="pear-card-title">更多</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>-->
+			<div class="layui-col-md12">
+				<div class="layui-card">
+					<div class="layui-card-body">
+						<div class="layui-row layui-col-space10">
+							<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+								<div class="pear-card2">
+									<div class="title">新增用户</div>
+									<div class="count pear-text"><?=$newPlayers ?></div>
+								</div>
+							</div>
+							<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+								<div class="pear-card2">
+									<div class="title">游戏人数</div>
+									<div class="count pear-text"><?=$gamePlayers ?></div>
+								</div>
+							</div>
+							<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+								<div class="pear-card2">
+									<div class="title">俱乐部</div>
+									<div class="count pear-text"><?=$newClubs ?></div>
+								</div>
+							</div>
+							<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+								<div class="pear-card2">
+									<div class="title">合伙人</div>
+									<div class="count pear-text"><?=$newPromoters ?></div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+	})
+</script>

@@ -1,0 +1,82 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body" style="padding: 0px;">
+				<table class="layui-table"
+					   lay-data="{url:'/stock/stockConfig', id:'androidTakeOn', totalRow:true}"
+					   lay-filter="androidTakeOn"
+					   >
+					<thead>
+					<tr>
+						<th lay-data="{fixed:'left', field:'gameId',align:'center', width:80, totalRowText:'合计'}">游戏ID</th>
+						<th lay-data="{fixed:'left', field:'gameName',align:'center', width:100}">游戏名称</th>
+						<th lay-data="{fixed:'left', field:'roomId',align:'center', width:80}">房间ID</th>
+						<th lay-data="{fixed:'left', field:'roomName', minWidth: 160}">房间名称</th>
+						<th lay-data="{fixed:'left', field:'totalStock', minWidth:120, totalRow:true}">系统库存</th>
+						<th lay-data="{field:'totalStockSecondLowerLimit', minWidth:120, edit: 'text'}">系统二级库存下限</th>
+						<th lay-data="{field:'totalStockLowerLimit', minWidth:120, edit: 'text'}">系统库存下限</th>
+						<th lay-data="{field:'totalStockHighLimit', minWidth:120, edit: 'text'}">系统库存上限</th>
+						<th lay-data="{field:'totalStockSecondHighLimit', minWidth:120, edit: 'text'}">系统二级库存上限</th>
+						<!--<th lay-data="{field:'systemKillAllRatio', minWidth:90, edit: 'text'}">通杀概率(‰)</th>
+						<th lay-data="{field:'changeCardRatio', minWidth:90, edit: 'text'}">换牌概率(‰)</th>-->
+						<th lay-data="{field:'systemReduceRatio', minWidth:90, edit: 'text'}">衰减概率(‰)</th>
+					</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		//监听单元格编辑
+		table.on('edit(androidTakeOn)', function(obj){
+			var data = obj.data;
+			$.post('/stock/stockConfigEdit',{"gameId":data.gameId,"roomId":data.roomId,"field":obj.field,"value":obj.value},
+					function (res) {
+						if(res.code == 0){
+							layer.msg(res.msg, {offset: 'auto',icon: 1,time: 1000});
+						}else{
+							layer.msg(res.msg, {offset: 'auto',icon: 2,time: 1000});
+						}
+					},'json');
+		});
+
+		table.on('tool(androidTakeOn)', function (obj) {
+			console.log(obj);
+			var event   =   obj.event;
+			var data = obj.data;
+			console.log(event);
+			if (event === 'updateStock') {
+				$.post('/stock/stockConfigUpdate',{"gameId":data.gameId,"roomId":data.roomId},
+						function (res) {
+							layer.msg(res.msg);
+						},'json')
+			}
+		})
+	})
+</script>
+<style>
+	.layui-table-header{
+	   position: fixed;
+	   z-index: 10;
+	   top:-2px;
+	}
+	.layui-table-box {
+		height: 5220px;
+		overflow: hidden;
+	}
+
+	.layui-table-body{
+		position: relative;
+		top:29px;
+	}
+</style>

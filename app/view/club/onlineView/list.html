@@ -1,0 +1,137 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+
+	.pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 720px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 0;
+		width: 100%;
+       height: 40px;
+       z-index: 1000;
+       background: white;
+		left:10px;
+    }
+	.layui-table-body .layui-table-cell{
+		height: 33px !important;
+		line-height: 33px !important;
+	}
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-input-inline" style="width: 5px">-</div>
+						<div class="layui-input-inline">
+							<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+						<!--<button type="reset" class="pear-btn pear-btn-md">
+							<i class="layui-icon layui-icon-refresh"></i>
+							重置
+						</button>-->
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+		<?php include app_path() . "/view/public/tpl_toolbar_agentList.html"; ?>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	dateOption = {"date1": new Date(new Date().getTime() - 24*14*60*60*1000), "date2": ''};
+	let tableUrl = '/club/onlineView';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols = [
+			[
+				{field:'statTime', title: '日期',align:'center',width:120}
+				,{field:'avgV', title: '平均' ,align:'center',width:80}
+				,{field:'minV', title: '最低' ,align:'center',width:80}
+				,{field:'maxV', title: '最高' ,align:'center',width:80}
+				,{field:'H00', title: 'H00' ,align:'center'}
+				,{field:'H01', title: 'H01' ,align:'center'}
+				,{field:'H02', title: 'H02' ,align:'center'}
+				,{field:'H03', title: 'H03' ,align:'center'}
+				,{field:'H04', title: 'H04' ,align:'center'}
+				,{field:'H05', title: 'H05' ,align:'center'}
+				,{field:'H06', title: 'H06' ,align:'center'}
+				,{field:'H07', title: 'H07' ,align:'center'}
+				,{field:'H08', title: 'H08' ,align:'center'}
+				,{field:'H09', title: 'H09' ,align:'center'}
+				,{field:'H10', title: 'H10' ,align:'center'}
+				,{field:'H11', title: 'H11' ,align:'center'}
+				,{field:'H12', title: 'H12' ,align:'center'}
+				,{field:'H13', title: 'H13' ,align:'center'}
+				,{field:'H14', title: 'H14' ,align:'center'}
+				,{field:'H15', title: 'H15' ,align:'center'}
+				,{field:'H16', title: 'H16' ,align:'center'}
+				,{field:'H17', title: 'H17' ,align:'center'}
+				,{field:'H18', title: 'H18' ,align:'center'}
+				,{field:'H19', title: 'H19' ,align:'center'}
+				,{field:'H20', title: 'H20' ,align:'center'}
+				,{field:'H21', title: 'H21' ,align:'center'}
+				,{field:'H22', title: 'H22' ,align:'center'}
+				,{field:'H23', title: 'H23' ,align:'center'}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl,
+			page: true ,
+			limit: 20,
+			cols: cols ,
+			skin: 'line',
+			toolbar: false,
+			height:730,
+			done: function(res, curr, count){
+				let queryFormData = form.val("queryForm");
+			}
+		});
+
+		form.on('submit(query)', function(data){
+			//console.log(data.field);
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+	})
+</script>
+<script src="<?=$staticUrl ?>/static/laydateYmd.js"></script>

@@ -1,0 +1,93 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+
+<body class="pear-container">
+<div class="layui-row">
+	<div class="layui-col-md2">
+		<ul class="layui-nav layui-nav-tree">
+			<?php
+					foreach($gameList as $k => $v) {
+			echo "<li class='layui-nav-item'>";
+			echo "<a href='javascript:;' value='{$v['gameId']}'>{$v['gameName']}</a>";
+			echo "<dl class='layui-nav-child'>";
+				foreach($v['rooms'] as $kk => $vv) {
+				echo "<dd><a href='javascript:;' onclick='getEcharts({$vv['roomId']})'>{$vv['roomName']}</a></dd>";
+				}
+				echo "</dl>";
+			echo "</li>";
+			}
+			?>
+		</ul>
+	</div>
+	<div class="layui-col-md10">
+		<div class="layui-card">
+			<div class="layui-card-header">在线人数</div>
+			<div class="layui-card-body">
+				<div class="layui-form ">
+					<div class="layui-inline">
+						<input class="layui-input" id="gameId" name="gameId" type="hidden" value="" >
+					</div>
+
+				</div>
+				<div class="layui-carousel layadmin-carousel layadmin-dataview" data-anim="fade" lay-filter="LAY-index-pagetwo">
+					<div id="container" style="width:100%;height:400px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script src="/static/highcharts.js"></script>
+<script>
+
+	let options = {
+		chart: {
+			type: 'line'                          //指定图表的类型，默认是折线图（line）
+		},
+		title: {
+			text: null                 // 标题
+		},
+		xAxis: {
+			title: {
+				text: '时间单位(小时)'
+			},
+			categories: []   // x 轴分类
+		},
+		yAxis: {
+			title: {
+				text: '数量'                // y 轴标题
+			}
+		},
+		series: [
+			{                              // 数据列
+				name: '今天',                        // 数据列名
+				data: []                     // 数据
+			}
+		],
+		credits : {
+			enabled : false
+		},
+	};
+	layui.use(['form','jquery'],function () {
+		$ = layui.jquery;
+		let form = layui.form;
+
+		getEcharts(999);
+	});
+	function getEcharts(roomId) {
+		let loading = layer.load(1, {
+			shade: false,
+			time: 2*1000
+		});
+		$.get('/club/overViewEcharts',{"roomId":roomId},function (res) {
+			//console.log(res);
+			layer.close(loading);
+			options.title.text = res.data.title;
+			options.xAxis.categories = res.data.categories;
+			//options.series[0].name = res.data.series_name;
+			options.series[0].data = res.data.series_data;
+			//options.yAxis.title.text = res.data.ytitle;
+			let chart = Highcharts.chart('container',options);
+		},'json')
+	};
+</script>

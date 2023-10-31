@@ -1,0 +1,65 @@
+<?php
+    if($gameId==800) {
+        foreach($card as $key => $vo) {
+?>
+            <div class="layui-col-xs12 layui-col-sm12">
+                <?php if($key<=3){ ?>
+                    <div class="layui-status-img">
+                        <span class="thick">座位<?=$key ?>：</span>
+
+                    <?php foreach($vo as $k1 => $v1){ ?>
+                        <?php if($k1 != 'userId'){ ?>
+                            <a href="javascript:;"><img src="<?=$staticUrl ?>/cards/28/<?=$v1 ?>.png" width="40px" height="50px"></a>
+                        <?php }?>
+                    <?php } ?>
+
+                    <?php if($key==$card['999']['zhuang']){ ?>
+                        <span class="thick"><font color="red">庄</font>  </span>
+                        <span class="thick">结算倍数：<?=$card['999']['grabBetMultiple'][$key] ?></span>&nbsp;&nbsp;
+                    <?php } else { ?>
+                        <span class="thick"><font color="red">闲</font>  </span>
+                        <span class="thick">下注倍数：<?=$card['999']['grabBetMultiple'][$key] ?></span>&nbsp;&nbsp;
+                    <?php } ?>
+
+                    <?php if(isset($card['999']['winOrLose'][$key])){ ?>
+                        <span class="thick">
+                            <?php if(1==$card['999']['winOrLose'][$key]){ ?> <font color="red">赢</font>  <?php } ?>
+                            <?php if(2==$card['999']['winOrLose'][$key]){ ?> <font color="green">输</font>  <?php } ?>
+                        </span>
+                    <?php } ?>
+                    <span class="thick">
+                        <?php if(in_array($key, $betPosition)){ ?><img src="<?=$staticUrl ?>/cards/houtaitoux.png" width="32px" height="32px"><?php } ?>
+                    </span>
+
+                    <?php foreach($vo as $k1 => $v1){ ?>
+                    <?php if($k1 == 'userId'){ ?>
+                        <div style="float:right; width:120px">
+                            <?php
+                                if($v1) {
+                                    foreach($v1 as $k2 => $v2) {
+                            ?>
+                            <?php
+                                        if($v2 == $currentUserId){
+                                    ?>
+                                            <span class="user_id" style=" color:#ff0000;line-height:50px;"><?=$v2 ?>(自己)</span>
+                                            <?php }else{ ?>
+                                            <span class="user_id" style="line-height:50px;"><?=$v2 ?></span>
+                                            <?php } ?>
+                            <?php
+                                                                }
+                                                            }
+                                                        ?>
+                        </div>
+                    <?php
+                                                }
+                                            }
+                                        ?>
+                </div>
+                <?php }else{ ?>
+                <span class="thick"></span>
+                <?php } ?>
+            </div>
+<?php
+        }
+    }
+?>

@@ -1,0 +1,59 @@
+<?php
+    if($gameId==550) {
+        $win = $card["win"];
+        unset($card["win"]);
+        foreach($card as $key => $vo) {
+?>
+            <div class="layui-col-xs12 layui-col-sm12">
+
+                <div class="layui-status-img">
+                    <span class="thick">
+                        座位：<?=$key ?> &nbsp;&nbsp;
+                    </span>
+                    <?php foreach($vo as $key1 => $voo){ ?>
+                        <?php if($key1==0){ ?>头墩 <?php }elseif($key1==1){ ?>中墩 <?php }elseif($key1==2){ ?>尾墩 <?php } ?>
+                        <?php if($key1 != 'userId'){  ?>
+                            <?php foreach($voo as $key2 => $vooo){ ?>
+                                <a href="javascript:;"><img src="<?=$staticUrl ?>/cards/common/<?=$vooo ?>.png" width="40px" height="50px"></a>
+                            <?php } ?>
+                        <?php } ?>    
+                    <?php } ?>
+                    <span class="thick">
+                        <?php if($key == $win){ ?><span style="color: #CF1900">(赢)</span> <?php } ?>
+                    </span>
+                    <span class="thick">
+                        <?php if(in_array($key, $betPosition)){ ?><img src="<?=$staticUrl ?>/cards/houtaitoux.png" width="32px" height="32px"><?php } ?>
+                    </span>
+
+                    <?php 
+                        foreach($vo as $key1 => $v1){ 
+                            if($key1 == 'userId'){
+                    ?>
+                                <div style="float:right; width:140px">
+                                    <?php 
+                                        if($v1) {
+                                            foreach($v1 as $k2 => $v2) {     
+                                    ?>
+                                            <?php
+                                                if($v2 == $currentUserId){
+                                            ?>
+                                                <span class="user_id" style=" color:#ff0000;line-height:50px;"><?=$v2 ?>(自己)</span>
+                                            <?php }else{ ?>
+                                                <span class="user_id" style="line-height:50px;"><?=$v2 ?></span>
+                                            <?php } ?>		
+                                    <?php 
+                                            }
+                                        }
+                                    ?>
+                                </div>
+                    <?php 
+                            } 
+                        } 
+                    ?>   
+                </div>
+
+            </div>
+<?php
+        }
+    }
+?>

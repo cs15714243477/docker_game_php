@@ -1,0 +1,82 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">盟主ID</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="clubId" autocomplete="off" placeholder="请输入ID"  class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">俱乐部名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="clubName" lay-verify="required" autocomplete="请输入俱乐部名称" placeholder="" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">联系QQ</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="qq" autocomplete="off" placeholder="请输入QQ" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">手机号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="tel" autocomplete="off" placeholder="请输入手机号" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">机器人</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="enableAndroid" value="0" title="禁用">
+                        <input type="radio" name="enableAndroid" value="1" title="启用" checked>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">最小桌数</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="minAndroidTable" lay-verify="required" placeholder="" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">最大桌数</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="maxAndroidTable" lay-verify="required" placeholder="" class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit lay-filter="save">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button type="reset" class="pear-btn pear-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    layui.use(['form','jquery'],function(){
+        $ = layui.jquery;
+        let form = layui.form;
+        form.on('submit(save)', function(data){
+            window.save({"submitUrl": '/club/addClub', "data": data.field, "tableId": 'table1'});
+            return false;
+        });
+    })
+</script>

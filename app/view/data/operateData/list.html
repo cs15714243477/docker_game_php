@@ -1,0 +1,119 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+	.pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 680px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 10px;
+		width: 100%;
+        height: 40px;
+        z-index: 1000;
+        background: white;
+    }
+
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-input-inline" style="width: 5px">-</div>
+						<div class="layui-input-inline">
+							<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+						<!--<button type="reset" class="pear-btn pear-btn-md">
+							<i class="layui-icon layui-icon-refresh"></i>
+							重置
+						</button>-->
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+		<?php include app_path() . "/view/public/tpl_toolbar_agentList.html"; ?>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	dateOption = {"date1": new Date(new Date().getTime() - 24*7*60*60*1000), "date2": ''};
+	let tableUrl = '/data/operateData';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols = [
+			[
+				{field:'date', title: '日期',align:'center',width:100}
+				,{field:'teamRegPeople', title: '注册会员人数' ,align:'center'}
+				/*,{field:'teamRegBindPeople', title: '注绑会员人数' ,align:'center'}
+				,{field:'teamRegValidNewBetPeople', title: '有效会员人数' ,align:'center'}*/
+				,{field:'todayRechargeAmount', title: '会员充值' ,align:'center'}
+				,{field:'todayExchangeAmount', title: '会员提现' ,align:'center'}
+				,{field:'todayRechargeTimes', title: '会员总充值次数' ,align:'center'}
+				,{field:'todayExchangeTimes', title: '会员总提现次数' ,align:'center'}
+				,{field:'platformWinScore', title: '官方游戏输赢' ,align:'center'}
+				,{field:'todayAllBetScore', title: '用户下注流水' ,align:'center'}
+				,{field:'todayValidBetScore', title: '用户有效下注流水' ,align:'center'}
+				,{field:'teamProfit', title: '代理提成' ,align:'center'}
+				,{field:'revenue', title: '系统税收' ,align:'center'}
+				,{field:'pureRevenue', title: '税收纯利润' ,align:'center'}
+				,{field:'platformProfit', title: '官方盈亏' ,align:'center'}
+				,{field:'rewardScore', title: '奖励金额' ,align:'center'}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl,
+			page: false ,
+			limit: 20,
+			cols: cols ,
+			skin: 'line',
+			toolbar: false,
+			height:700,
+			done: function(res, curr, count){
+				let queryFormData = form.val("queryForm");
+			}
+		});
+
+		form.on('submit(query)', function(data){
+			//console.log(data.field);
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+	})
+</script>
+<script src="<?=$staticUrl ?>/static/laydateYmd.js"></script>

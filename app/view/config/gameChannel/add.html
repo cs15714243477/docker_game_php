@@ -1,0 +1,63 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">渠道名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name" lay-verify="required" autocomplete="off" class="layui-input" placeholder="渠道名称">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">总代ID</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="agentId" lay-verify="required" autocomplete="off" class="layui-input" placeholder="对应的总代ID">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">代理后台网址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="webURL" value='https://' autocomplete="off" class="layui-input" placeholder="代理后台访问网址">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">跳转地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="QRCodeURL" value='https://' autocomplete="off" class="layui-input" placeholder="二维码跳转网址">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">落地页地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="downloadURL" value='https://' autocomplete="off" class="layui-input" placeholder="落地页地址">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">热更地址ID</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="updateUrlId" value='1' value='https://' lay-verify="updateUrlId" autocomplete="off" class="layui-input" placeholder="热更地址ID">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <?php include app_path() . "/view/public/tpl_form_bottom_save.html"; ?>
+</form>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    dateOption = {"date1": ''};
+    layui.use(['form','jquery'],function(){
+        $ = layui.jquery;
+        let form = layui.form;
+
+        //form.verify()
+        form.on('submit(save)', function(data){
+            window.save({"submitUrl": '/gameChannel/addGameChannel', "data": data.field, "tableId": 'table1'});
+            return false;
+        });
+    })
+</script>
+<script src="<?=$staticUrl ?>/static/laydate.js"></script>

@@ -1,0 +1,236 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<link rel="stylesheet" href="<?=$staticUrl ?>/static/admin/serverstatus.css" media="all">
+	<body class="pear-container">
+		<div class="layui-card" style="position: fixed; z-index: 999; top:0px; height: 100px; width: 100%;">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 250px">
+							<input type="text" name="searchText" autocomplete="off" placeholder="输入IP进行检索" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+					</div>
+					<!--<div class="layui-inline" style="float: right;padding-left: 10px;">
+						<button class="pear-btn pear-btn-md pear-btn-primary change_servlst" value="v1">刷新服务器列表(V1)</button>
+					</div>-->
+					<div class="layui-inline" style="float: right;padding-left: 10px;">
+						<button class="pear-btn pear-btn-md pear-btn-primary change_servlst" value="v2">刷新服务器列表(V2)</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card" style="position: relative; top:60px;">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<div class="layui-form layuiadmin-card-header-auto">
+					<div class="layui-form-item layui-inline">
+						.local本地   .test测试  .preview预发布   .prod生产
+					</div>
+
+					<!--<div class="layui-form-item layui-inline" style="float: right;">
+						<button class="pear-btn pear-btn-md pear-btn-primary" id="change_servlst1">
+							刷新到云端
+						</button>
+					</div>-->
+				</div>
+				<table id="table2" lay-filter="listTable2"></table>
+			</div>
+		</div>
+
+
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<!--<div class="layui-form layuiadmin-card-header-auto">
+					<div class="layui-form-item layui-inline" style="width: 800px">
+						<input type="text" name="searchValue2" id="searchValue1" autocomplete="off" value="https://qiqioss.oss-accelerate.aliyuncs.com/rechargeTypeIcon/72ec7af9205b3618140951bcb7cf1f1b.local" class="layui-input">
+					</div>
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" id="view_file1">查看加密数据(V1)</button>
+					</div>
+				</div>-->
+				<div class="layui-form layuiadmin-card-header-auto">
+					<div class="layui-form-item layui-inline" style="width: 800px">
+						<input type="text" name="searchValue2" id="searchValue2" autocomplete="off" value="https://qiqioss.oss-accelerate.aliyuncs.com/rechargeTypeIcon/df46df825eff82fbffe70fcaa1b86234.local" class="layui-input">
+					</div>
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" id="view_file2">查看加密数据(V2)</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+<?php include app_path() . "/view/public/tpl_toolbar_add_batchRemove.html"; ?>
+
+<script type="text/html" id="bar">
+	<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
+</script>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl1 = '/server/serverHaList';
+	let tableUrl2 = '/server/serverStaticList';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols1 = [
+			[
+				{type:'checkbox'},
+				{field: 'haListId', title: 'ID', align: 'center', width: 80},
+				{field: 'serverStatus', title: '服务状态', align: 'center', width: 100, toolbar: '#serverStatus'},
+				{field: 'connectionTime', title: '连接时长', align: 'center', toolbar: '#connectionTime'},
+				{field: 'ip', title: 'ip地址', align: 'center', edit: 'text'},
+				{field: 'port', title: '端口', align: 'center', edit: 'text'},
+				{field: 'lineLevel', title: '线路等级', align: 'center', edit: 'text'},
+				// {field: 'promoterChannelIdx', title: '使用渠道', align: 'center'},
+				{field: 'remark', title: '备注', align: 'center', minWidth: 400, edit: 'text'},
+				{
+					title: '操作',
+					align: 'center',
+					templet: function (d) {
+						$.ajax({
+							url: "/server/checkServerStatus?ip=" + d.ip + "&port=" + d.port,
+							dataType: "json",
+							success: function (res) {
+								if (res.msg == 1) {
+									$('#serverStatus_' + d.haListId).html('<div class="breathe-btn-normal"></div>');
+									$('#connectionTime_' + d.haListId).html(res.data);
+								} else {
+									$('#serverStatus_' + d.haListId).html('<div class="breathe-btn-error"></div>');
+									$('#connectionTime_' + d.haListId).html(res.data);
+								}
+							}
+						});
+						var htmlContent = '<a onclick="redrawIpList(' + d.haListId + ',\'' + d.ip + '\',\'' + d.port + '\')"><i style="cursor:pointer;font-size: 14px; font-weight: bold" class="layui-icon">&#xe669;</i></a>&nbsp;&nbsp;' +
+								'<button class="pear-btn pear-btn-danger pear-btn-sm"  lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>';
+						return htmlContent;
+					}
+				}
+			]
+		];
+
+		let cols2 = [
+			[
+				{field: 'type', title: '类型', align: 'center',width:100},
+				{field: 'level', title: '等级', align: 'center',width:200},
+				{field: 'url', title: '地址', align: 'left'},
+			]
+		];
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl1,
+			page: true ,
+			limit: 20,
+			cols: cols1 ,
+			skin: 'line',
+			defaultToolbar: false,
+			toolbar: '#toolbar',
+			height:700
+		});
+
+		table.render({
+			elem: '#table2',
+			url: tableUrl2,
+			page: true ,
+			cols: cols2 ,
+			skin: 'line',
+            height:400
+		});
+
+		form.on('submit(query)', function(data){
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+		table.on('tool(listTable1)', function(obj){
+			if(obj.event === 'remove'){
+				window.remove(obj, {"_id": obj.data['_id'], "submitUrl": '/server/removeServerlist'});
+			}
+		});
+
+		table.on('toolbar(listTable1)', function(obj){
+			if(obj.event === 'add'){
+				window.add('/server/addServerLst', {"height": '600px'});
+			}else if(obj.event === 'batchRemove'){
+				window.batchRemove(obj, {"submitUrl": '/server/removeServerlist', "tableId": 'table1'});
+			}
+		});
+		//切换服务器
+		$('.change_servlst').on('click', function () {
+			let obj = $(this);
+			let v= obj.attr('value');
+			console.log(v);
+			obj.html('HA服务器正在刷新中,请稍候...');
+			obj.attr('disabled', 1);
+			$.ajax({
+				url: "/server/loginProxy?v="+v,
+				dataType: "json",
+				success: function (res) {
+					if (res.code == -1) {
+						console.log(res);
+						layer.msg(res.msg, {offset: '15px', icon: 0, time: 3000});
+						obj.html('刷新服务器列表(V2)');
+						obj.removeAttr('disabled');
+						return false;
+					}
+					layer.msg(res.msg, {offset: '15px', icon: 1, time: 3000});
+					obj.html('刷新服务器列表(V2)');
+					obj.removeAttr('disabled');
+				}
+			});
+			return false;
+		});
+		$('#view_file1').on('click', function () {
+			let s = $("#searchValue1").val();
+			$.get('/server/viewFile?v=v1&s='+s);
+		});
+		$('#view_file2').on('click', function () {
+			let s = $("#searchValue2").val();
+			$.get('/server/viewFile?v=v2&s='+s);
+		});
+		table.on('edit(listTable1)', function(obj){
+			window.editTableCell(obj, {"submitUrl": '/server/serverEdit'});
+		});
+	})
+	function redrawIpList(haListId, ip, port) {
+		$('#serverStatus_' + haListId).html('检测中...');
+		$('#connectionTime_' + haListId).html('检测中...');
+		$.ajax({
+			url: "/server/checkServerStatus?ip=" + ip + "&port=" + port,
+			dataType: "json",
+			success: function (res) {
+				if (res.msg == 1) {
+					$('#serverStatus_' + haListId).html('<div class="breathe-btn-normal"></div>');
+					$('#connectionTime_' + haListId).html(res.data);
+				} else {
+					$('#serverStatus_' + haListId).html('<div class="breathe-btn-error"></div>');
+					$('#connectionTime_' + haListId).html(res.dara);
+				}
+			}
+		});
+	}
+
+
+</script>
+<script type="text/html" id="serverStatus">
+	<div><span id="serverStatus_{{d.haListId}}">检测中...</span></div>
+</script>
+<script type="text/html" id="connectionTime">
+	<div><span id="connectionTime_{{d.haListId}}">连接中...</span></div>
+</script>
+
+<style>
+     .pear-container{
+        width:100%;
+    }
+</style>

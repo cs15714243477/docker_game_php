@@ -1,0 +1,135 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+	.table-header-fixed {
+		top: 0;
+		position: fixed;
+		z-index: 999;
+	}
+
+	.pear-container{
+		position: fixed;
+		width:100%;
+	}
+
+	.layui-table-header{
+		position: fixed;
+		z-index: 1000;
+	}
+
+	.layui-table-body{
+		position:relative;
+		top:43px;
+	}
+
+	.layui-table-box{
+		height: 800px;
+	}
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl = '/friendsRoom/agentPrice';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+		let cols = [
+			[
+				{field:'level', title: '等级' ,align:'center'}
+				,{field:'levelName', title: '代理级别' ,align:'center'}
+				,{field:'score_10',title: '10张' ,align:'center',templet: '#showColour', templet: function(d){
+					if(d.level == 5 || d.level == 11 || d.level == 16 || d.level == 21 || d.level == 26){
+						return '<span style="color: dodgerblue;font-weight: bold">'+  d.score_10 + '</span>';
+					} else {
+						return d.score_10;
+					}
+				}}
+				,{field:'score_30',title: '30张' ,align:'center',templet: '#showColour', templet: function(d){
+					if(d.level == 5 || d.level == 11 || d.level == 16 || d.level == 21 || d.level == 26){
+						return '<span style="color: dodgerblue;font-weight: bold">'+  d.score_30 + '</span>';
+					} else {
+						return d.score_30;
+					}
+				}}
+				,{field:'score_60',title: '60张' ,align:'center',templet: '#showColour', templet: function(d){
+					if(d.level == 5 || d.level == 11 || d.level == 16 || d.level == 21 || d.level == 26){
+						return '<span style="color: dodgerblue;font-weight: bold">'+  d.score_60 + '</span>';
+					} else {
+						return d.score_60;
+					}
+				}}
+				,{field:'score_100', title: '100张' ,align:'center',templet: '#showColour', templet: function(d){
+					if(d.level == 5 || d.level == 11 || d.level == 16 || d.level == 21 || d.level == 26){
+						return '<span style="color: dodgerblue;font-weight: bold">'+  d.score_100 + '</span>';
+					} else {
+						return d.score_100;
+					}
+				}}
+				,{field:'score_200', title: '200张' ,align:'center',templet: '#showColour', templet: function(d){
+					if(d.level == 5 || d.level == 11 || d.level == 16 || d.level == 21 || d.level == 26){
+						return '<span style="color: dodgerblue;font-weight: bold">'+  d.score_200 + '</span>';
+					} else {
+						return d.score_200;
+					}
+				}}
+				,{field:'score_500', title: '500张' ,align:'center',templet: '#showColour', templet: function(d){
+					if(d.level == 5 || d.level == 11 || d.level == 16 || d.level == 21 || d.level == 26){
+						return '<span style="color: dodgerblue;font-weight: bold">'+  d.score_500 + '</span>';
+					} else {
+						return d.score_500;
+					}
+				}}
+				,{field:'score_1000', title: '1000张' ,align:'center',templet: '#showColour', templet: function(d){
+					if(d.level == 5 || d.level == 11 || d.level == 16 || d.level == 21 || d.level == 26){
+						return '<span style="color: dodgerblue;font-weight: bold">'+  d.score_1000 + '</span>';
+					} else {
+						return d.score_1000;
+					}
+				}}
+				,{field:'score_2000', title: '2000张' ,align:'center',templet: '#showColour', templet: function(d){
+					if(d.level == 5 || d.level == 11 || d.level == 16 || d.level == 21 || d.level == 26){
+						return '<span style="color: dodgerblue;font-weight: bold">'+  d.score_2000 + '</span>';
+					} else {
+						return d.score_2000;
+					}
+				}}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl,
+			limit: 20,
+			cols: cols ,
+			skin: 'line',
+			height:800,
+			done:function(res, curr, count) {
+				let headerTop = $('.layui-table-header').offset().top; //获取表格头到文档顶部的距离
+				$(window).scroll(function () {
+					if ((headerTop - $(window).scrollTop()) < 0) { //超过了
+						$('.layui-table-header').addClass('table-header-fixed'); //添加样式，固定住表头
+					} else { //没超过
+						$('.layui-table-header').removeClass('table-header-fixed'); //移除样式
+					}
+				});
+			}
+		});
+	})
+</script>

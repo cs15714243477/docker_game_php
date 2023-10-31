@@ -1,0 +1,153 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+
+	.pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 700px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 5px;
+		width: 100%;
+       height: 40px;
+       z-index: 1000;
+       background: white;
+    }
+</style>
+<body class="pear-container">
+<div class="layui-card">
+	<div class="layui-card-body">
+		<form class="layui-form" action="" lay-filter="queryForm">
+			<div class="layui-form-item layui-inline">
+				<div class="layui-input-inline">
+					<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+				<div class="layui-input-inline" style="width: 5px">-</div>
+				<div class="layui-input-inline">
+					<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item layui-inline">
+				<div class="layui-input-inline" style="width: 250px">
+					<input type="number" name="searchText" autocomplete="off" placeholder="渠道ID" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item layui-inline">
+				<label class="layui-form-label">会员类型</label>
+				<div class="layui-input-inline">
+					<select name="searchType" lay-search>
+						<option value="1">全部</option>
+						<option value="2" selected>普通会员</option>
+						<option value="3">官方账号</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item layui-inline">
+				<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+					<i class="layui-icon layui-icon-search"></i>
+					查询
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="layui-card">
+	<div class="layui-card-body">
+		<table id="table1" lay-filter="listTable1"></table>
+	</div>
+</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	dateOption = {"date1": '', "date2": ''};
+	let tableUrl = '/rechargeRankCon/rechargeRank';
+	layui.use(['table','form','jquery','count'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		count = layui.count;
+		let form = layui.form;
+
+		let cols = [
+			[
+				{field:'promoterId',title:'渠道ID',align:'center'}
+				,{field:'promoterName',title:'渠道名称',align:'center'}
+				,{field:'userId',title:'会员ID',align:'center',toolbar:'#rechargeRankTool'}
+				,{field:'roomCard',title:'房卡余额',align:'center',sort:true}
+				,{field:'score',title:'金币余额',align:'center',sort:true}
+				,{field:'bankScore',title:'保险箱余额',align:'center',sort:true}
+				// ,{field:'score',title:'当前(金币/银行)',align:'center',templet: function(d){
+				// 	return  d.score+'<br />' +d.bankScore+'<br />';
+				// }}
+				,{field:'todayRechargeTotal',title:'充值金额',align:'center',sort:true}
+				,{field:'todayExchangeTotal',title:'提现金额',align:'center'}
+				,{field:'totalRechargeyNum',title:'充值次数',align:'center',sort:true}
+				,{field:'minRecharge',title:'金额最小值',align:'center',sort:true}
+				,{field:'maxRecharge',title:'金额最大值',align:'center',sort:true}
+
+				// ,{field:'todayRechargeTotal',title:'今日(总充/充次)',align:'center',templet: function(d){
+				// 	return  d.todayRechargeTotal+'<br />' +d.totalRechargeyNum+'<br />';
+				// }}
+				// ,{field:'minRecharge',title:'金额(最小/最大)',align:'center',templet: function(d){
+				// 	return  d.minRecharge+'<br />' +d.maxRecharge+'<br />';
+				// }}
+				,{field:'avgRecharge',title:'平均每笔',align:'center',sort:true}
+				,{field:'rechargeTotal',title:'总充值',align:'center',sort:true}
+				,{field:'exchangeTotal',title:'总提现',align:'center',sort:true}
+				// ,{field:'rechargeTotal',title:'总(充值/提现)',align:'center',templet: function(d){
+				// 	return  d.rechargeTotal+'<br />' +d.exchangeTotal+'<br />';
+				// }}
+				,{field:'regDateTime',title:'时间(注册/最后登录)',align:'center',minWidth:175,templet: function(d){
+					return  ''+d.regDateTime+'<br />' + ''+d.lastDateTime+'<br />';
+				}}
+			]
+		];
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl,
+			page: true ,
+			limit: 30
+			, limits: [10, 20, 30, 45, 60, 75, 90, 100],
+			cols: cols ,
+			totalRow: true,
+			skin: 'line',
+			height:770,
+			autoSort:false,
+		});
+
+		table.on('sort(listTable1)', function(obj){
+			let queryFormData = form.val("queryForm");
+			console.log(queryFormData);
+			table.reload('table1', {
+				initSort: obj
+				,where: $.extend(queryFormData, {field: obj.field, order: obj.type})
+			});
+		});
+
+		form.on('submit(query)', function(data){
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+	})
+</script>
+<script src="/static/laydateYmd.js"></script>
+<script type="text/html" id="rechargeRankTool">
+	<a onclick="openNewTab(this)" lay-href="/player/playerInfo?userId={{d.userId}}" data-name="{{d.userId}}" lay-text="ID:{{d.userId}}" style="color: red;font-weight: bold">{{d.userId}}</a>
+</script>

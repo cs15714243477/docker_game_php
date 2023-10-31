@@ -1,0 +1,411 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+	.pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 650px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 0px;
+		width: 100%;
+		height: 40px;
+		z-index: 1000;
+		background: white;
+		left:10px;
+    }
+
+	.line{
+		line-height: 25px;
+		height: 25px;
+	}
+	.font-word{
+		color: #cc0000;
+		font-size: larger
+	}
+	.font-number{
+		color: green;
+		font-size: larger
+	}
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<input type="number" name="promoterId" autocomplete="off"  placeholder="代理ID"  class="layui-input" >
+
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 200px">
+							<input class="layui-input" id="dateValue" name="dateValue" autocomplete="off" placeholder="注册时间" type="text" value="">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="isSys" >
+								<?php
+								foreach($isSys as $k => $v) {
+								$selected = '';
+								if($k==2) $selected='selected';
+								echo "<option value='{$k}' {$selected}>{$v}</option>";
+								}
+								?>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="isBindMoble" >
+								<option value="">是否绑定</option>
+								<option value="1">是</option>
+								<option value="2">否</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="isGame" >
+								<option value="">有无游戏</option>
+								<option value="1">是</option>
+								<option value="2">否</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="isPay" >
+								<option value="">是否付费</option>
+								<?php
+								foreach($isPay as $k => $v) {
+								echo '<option value="'. $k .'">' . $v . '</option>';
+								}
+								?>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="isActive" >
+								<option value="">是否活跃</option>
+								<?php
+								foreach($isActive as $k => $v) {
+								echo '<option value="'. $k .'">' . $v . '</option>';
+								}
+								?>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="isNormal" >
+								<option value="">是否正常</option>
+								<?php
+								foreach($isNormal as $k => $v) {
+								echo '<option value="'. $k .'">' . $v . '</option>';
+								}
+								?>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="searchType" >
+								<option value="1" selected="selected">会员ID</option>
+								<option value="7">昵称</option>
+								<option value="2">姓名</option>
+								<option value="3">手机号码</option>
+								<option value="4">手机型号</option>
+								<option value="5">注册ip</option>
+								<option value="6">登录ip</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 250px">
+							<input type="text" name="searchValue" autocomplete="off" placeholder="请输入查询内容" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="pear-icon pear-icon-search"></i>
+							查询
+						</button>
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="export">
+							<i class="pear-icon pear-icon-export"></i>
+							导出
+						</button>
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="add">
+							<i class="pear-icon pear-icon-add"></i>
+							添加
+						</button>
+
+					</div>
+				</form>
+			</div>
+		</div>
+<!--		<div class="layui-card">-->
+<!--			<div class="layui-card-body">-->
+<!--				<div class="layui-row layui-col-space10">-->
+<!--					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">-->
+<!--						<div class="pear-card2">-->
+<!--							<div class="title">金币汇总</div>-->
+<!--							<div class="count pear-text" id="scoreSum"></div>-->
+<!--						</div>-->
+<!--					</div>-->
+
+<!--					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">-->
+<!--						<div class="pear-card2">-->
+<!--							<div class="title">房卡汇总</div>-->
+<!--							<div class="count pear-text" id="roomCardSum"></div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">-->
+<!--						<div class="pear-card2">-->
+<!--							<div class="title">保险箱汇总</div>-->
+<!--							<div class="count pear-text" id="bankScoreSum"></div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--		</div>-->
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+		<script type="text/html" id="toolbar">
+			<button class="pear-btn pear-btn-primary pear-btn-md" lay-event="reopenAccount" value="1">
+				<i class="layui-icon layui-icon-add-1"></i>
+				解封账号
+			</button>
+			<button class="pear-btn pear-btn-danger pear-btn-md" lay-event="frozenAccount" value="0">
+				<i class="layui-icon layui-icon-delete"></i>
+				冻结账号
+			</button>&nbsp;&nbsp;&nbsp;&nbsp;
+			<span class="font-word">金币汇总:</span><span class="font-number" id="scoreSum"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+			<span class="font-word">保险箱汇总:</span><span class="font-number" id="bankScoreSum"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+			<span class="font-word">房卡汇总:</span><span class="font-number" id="roomCardSum"></span>
+
+		</script>
+<!--		<?php include app_path() . "/view/public/tpl_toolbar_onlineList.html"; ?>-->
+
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script src="/static/recharge.js"></script>
+<script>
+	let tableUrl = '/player/playerList';
+	layui.use(['table','form','jquery','laydate','count'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+		let laydate = layui.laydate;
+		count = layui.count;
+
+		let cols = [
+			[
+				{type:'checkbox',width:30}
+				,{field:'regPromoterName', title: '代理ID|名称' ,align:'center',minWidth:100}
+				,{title:"会员ID/状态", align:'center', minWidth:100,
+				templet: function (d) {
+					var ids = '<a onclick="openNewTab(this)" lay-href="/player/playerInfo?userId='+d.userId+'" data-name="'+d.userId+'" lay-text="ID:'+d.userId+'" style="color: red;font-weight: bold">'+d.userId+'</a><br />';
+
+					if (d.status == 1) {
+						return ids + '<span class="layui-btn layui-btn-xs layui-btn-normal">正常</span>';
+					} else {
+						return ids + '<span class="layui-btn layui-btn-xs layui-btn-danger">封停</span><br />' + '<span lay-event="viewReason" class="layui-btn layui-btn-xs layui-btn-danger">查看原因</span>';
+					}
+
+				}
+			}
+				,{field:'nickName', title: '昵称/真实姓名' ,align:'center',minWidth:120,templet: function(d){
+					return  '昵称:'+d.nickName+'<br />' + '姓名:'+d.trueName+'<br />';
+				}}
+				//,{field:'trueName', title: '真实姓名' ,align:'center',minWidth:80}
+				,{field:'mobile', title: '手机号' ,align:'center',minWidth:120}
+				,{field:'roomCard', title: '房卡' ,align:'center',sort:true}
+				,{field:'score',title: '金币' ,align:'center',minWidth:100,sort:true}
+				,{field:'bankScore', title: '保险箱' ,align:'center',minWidth:100}
+				,{field:'rechargeAmount', title: '累充/累提/税收' ,align:'center',minWidth:120,templet: function(d){
+					return '累充:'+ d.rechargeAmount + '<br />' +  '累提:'+ d.exchangeAmount + '<br />' +  '税收:'+ d.revenue + '<br />';
+				}}
+				//,{field:'exchangeAmount', title: '累兑' ,align:'center',minWidth:100}
+				//,{field:'revenue', title: '税收' ,align:'center',minWidth:100}
+				,{field:'winScore', title: '金币场/俱乐部/输赢' ,align:'center',minWidth:160,sort:true,templet:function (d) {
+                    var html = '<p class = "line"><span>'+d.winScore+'</span></p>'
+                    html += '<p class = "line"><span>'+d.clubWinScore+'</span></p>'
+                    html += '<p class = "line"><span>'+d.totalScore+'</span></p>'
+                    return html;
+
+					//return d.winScore
+                }}
+				,{field:'gameCount', title: '局数/游戏时间(s)' ,align:'center',minWidth:130,templet: function(d){
+					return  d.gameCount +'<br />' + d.totalOnlineGameTime +'<br />';
+				}}
+				//,{field:'totalOnlineGameTime', title: '游戏时间(s)' ,align:'center',minWidth:100}
+				//,{field:'winRate', title: '胜率' ,align:'center',minWidth:60}
+				//,{field:'lineLevel', title: '线路' ,align:'center',width:60}
+				//,{field:'showLevel', title: 'vip' ,align:'center',width:60}
+				// ,{field:'status', title: '状态' ,align:'center',minWidth:60,templet:function (d) {
+				//         if (d.status == 1) {
+				//             return '<span class="layui-btn layui-btn-xs layui-btn-normal">正常</span>';
+				//         } else {
+				//             return '<span class="layui-btn layui-btn-xs layui-btn-danger">封停</span>';
+				//         }
+				//     }}
+				//,{field:'clientVer', title: 'cVer' ,align:'center',minWidth:60}
+				// ,{field:'resVer', title: 'rVer' ,align:'center',minWidth:60}
+				//,{field:'showExchange', title: '兑换' ,align:'center',width:60}
+				,{field:'', title: '注册ip/最后登录ip/手机型号' , align:'center', minWidth:200, templet: function (d){
+					return d.regInfo.ip + '|' + d.regInfo.address + '<br />' + d.lastLogin.ip + '|' + d.lastLogin.address + '<br />' + d.regInfoMobileType + '<br />';
+				}}
+				//,{field:'', title: '最后登录ip' , align:'center', minWidth:200, templet: function (d) {return d.lastLogin.ip+' | '+d.lastLogin.address;}}
+				// ,{field:'regInfo.time', title: '注册时间' ,align:'center',minWidth:170}
+				,{field:'regInfoTime', title: '注册时间' ,align:'center',minWidth:100,sort:true,templet:function (d) {
+                    var time = d.regInfoTime.split(/\s+/)
+                    var html = '<p class = "line"><span>'+time[0]+'</span></p>'
+                    html += '<p class = "line"><span>'+time[1]+'</span></p>'
+                    return html;
+                }}
+
+				// ,{field:'lastLogin.time', title: '最后登录时间' ,align:'center',minWidth:150}
+				,{field:'lastLoginTime', title: '最后登录时间' ,align:'center',minWidth:130,sort:true,templet:function (d) {
+					if(d.lastLoginTime == "/"){
+						var html = '<p class = "line"><span>/</span></p>'
+						html += '<p class = "line"><span>/</span></p>'
+						return html;
+					}else{
+						var time = d.lastLoginTime.split(/\s+/)
+						var html = '<p class = "line"><span>'+time[0]+'</span></p>'
+						html += '<p class = "line"><span>'+time[1]+'</span></p>'
+						return html;
+					}
+
+                }}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			autoSort: false,
+			url: tableUrl,
+			page: true ,
+			limit: 20,
+			cols: cols ,
+			skin: 'line',
+			toolbar: '#toolbar',
+			defaultToolbar: ['filter'],
+			height: 700,
+			// done: function(res, curr, count){
+			// 	let queryFormData = form.val("queryForm");
+			// }
+			done: function(res, curr, count){
+				let queryFormData = form.val("queryForm");
+				window.tableSummary({"submitUrl": '/player/playerFieldsSummary', "data": queryFormData, "selIds": 'scoreSum,roomCardSum,bankScoreSum'});
+			}
+		});
+
+		table.on('tool(listTable1)', function(obj){
+			if(obj.event === 'detail'){
+				console.log(obj);
+				window.agentdetail('/agent/agentDetail?promoterId='+obj.data['promoterId']+'&pid='+obj.data['pid'], {"width": '800px', "height": '600px'});
+			}
+			if(obj.event === 'viewReason'){
+				window.viewReason('/player/viewReason?userId='+obj.data['userId'], {"width": '780px', "height": '400px'});
+			}
+		});
+
+		table.on('toolbar(listTable1)', function(obj){
+			if(obj.event === 'reopenAccount'){
+				obj.value = 1;
+				window.batchReopenAccountFrozenAccount(obj, {"submitUrl": '/player/userStatus', "tableId": 'table1'});
+			} else if(obj.event === 'refresh'){
+				window.refresh('table1');
+			} else if(obj.event === 'frozenAccount'){
+				obj.value = 0;
+				//window.batchReopenAccountFrozenAccount(obj, {"submitUrl": '/player/userStatus', "tableId": 'table1'});
+				window.frozenAccountReason(obj, {"submitUrl": '/player/userStatusReason', "tableId": 'table1',"width": '780px', "height": '480px'});
+			}
+
+
+		});
+
+		table.on('edit(listTable1)', function (obj) {
+			window.editTableCell(obj, {"submitUrl": '/agent/switchAgent'});
+		});
+
+		table.on('sort(listTable1)', function(obj){
+			console.log(obj.field);
+			console.log(obj.type);
+			console.log(this);
+			let queryFormData = form.val("queryForm");
+			console.log(queryFormData);
+			table.reload('table1', {
+				initSort: obj
+				,where: $.extend(queryFormData, {field: obj.field, order: obj.type})
+			});
+		});
+
+		form.on('submit(query)', function(data){
+			//console.log(data.field);
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+		form.on('submit(add)', function(data){
+			//console.log(data.field);
+			window.add('/player/addPlayer', {"height": '600px'});
+			return false;
+		});
+		form.on('submit(export)', function(data){
+			let loading = layer.load();
+			$.ajax({
+				url: '/player/exportPlayer',
+				data: data.field,
+				type: 'post',
+				success:function(res){
+					layer.close(loading);
+					if(res.code == 0){
+						//window.open('/player/download?file='+res.file)
+						//window.open('http://47.243.92.221:8090/'+res.file);
+						window.open(res.file);
+					}else{
+						layer.msg(res.msg,{icon:2,time:1000});
+					}
+				}
+			})
+			return false;
+		});
+
+		form.on('switch(status)', function(obj){
+			//layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+			window.switch01(obj, {"submitUrl": '/admin/switchAdminUser', "field": 'status'});
+		});
+
+		laydate.render({
+			elem: '#dateValue',
+			type:'date',
+			range: '~',
+			format: 'yyyy-MM-dd',
+			max: 'laydate.now()',
+			value: '',
+		});
+	})
+</script>

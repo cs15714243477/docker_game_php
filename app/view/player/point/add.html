@@ -1,0 +1,103 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">会员ID</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="userId" id="userId" lay-verify="userId" autocomplete="off" placeholder="请输入会员ID,8位数的数字" class="layui-input" oninput="getUserInfo()" onporpertychange="getUserInfo()">
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">真实姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="trueName" id="trueName" autocomplete="off" value='' disabled="disabled" placeholder="输入会员ID后，自动显示" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">渠道ID</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="promoterId" id="promoterId" autocomplete="off" value='' disabled="disabled" placeholder="输入会员ID后，自动显示" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">当前金币</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="nowScore" id="nowScore" autocomplete="off" value='' disabled="disabled" placeholder="输入会员ID后，自动显示" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">排序</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="sort" id="sort" autocomplete="off" value='' class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">点控金额</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="cscore" id="cscore" autocomplete="off" value='' class="layui-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit lay-filter="save">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button type="reset" class="pear-btn pear-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+    layui.use(['form','jquery'],function(){
+        $ = layui.jquery;
+        let form = layui.form;
+
+        //form.verify()
+        form.on('submit(save)', function(data){
+            window.save({"submitUrl": '/player/addControlPoint', "data": data.field, "tableId": 'table1'});
+            return false;
+        });
+    })
+
+    function getUserInfo() {
+        $('#userId').val($('#userId').val().replace(/\s+/g,""));
+        let userId = $('#userId').val();
+        if ((userId.length === 8) || (userId.length === 6)) {
+            let index = layer.load(1, {shade: [0.1,'#fff'], time:15000});
+            $.ajax({
+                url:"/player/getPlayerInfo"
+                ,data: {"userId":userId}
+                ,type: "POST"
+                ,success: function(res){
+                    if (res.code == 0) {
+                        // $('#userName').val(res.data.userName);
+                        let nowScore = (res.data.score * 0.01).toFixed(2);
+                        let bankScore = (res.data.bankScore * 0.01).toFixed(2);
+                        $('#nowScore').val(nowScore);
+                        $('#bankScore').val(bankScore);
+                        $('#trueName').val(res.data.trueName);
+                        $('#promoterId').val(res.data.promoterId);
+                    } else {
+                        layer.close(index);
+                        layer.msg(res.msg, {offset: '15px',icon: 0,time: 1000});
+                        //$('#layui-form')[0].reset();
+                    }
+                    $('#rechargeMoney').val('');
+                    layer.close(index);
+                }
+            });
+        }
+    }
+</script>

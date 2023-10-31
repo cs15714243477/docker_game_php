@@ -1,0 +1,39 @@
+<script src="<?=$staticUrl ?>/static/crud.js"></script>
+<script src="<?=$staticUrl ?>/static/component/layui/layui.js"></script>
+<script src="<?=$staticUrl ?>/static/component/pear/pear.js"></script>
+<script>
+    var $;
+    var table;
+    var form;
+    var count;
+    layui.use(['jquery'],function () {
+        $ = layui.jquery;
+        //tips
+        $body = $('body');
+        $body.on('mouseenter', '*[lay-tips]', function(){
+            var othis = $(this);
+
+            if(othis.parent().hasClass('layui-nav-item') && !container.hasClass(SIDE_SHRINK)) return;
+
+            var tips = othis.attr('lay-tips')
+                ,offset = othis.attr('lay-offset')
+                ,direction = othis.attr('lay-direction')
+                ,tipswidth = othis.attr('lay-width')
+                ,index = layer.tips(tips, this, {
+                tips: [direction || 1, '#FFFFFF']
+                ,time: -1
+                ,area: tipswidth || 'auto'
+                ,success: function(layero, index){
+                    if(offset){
+                        layero.css('margin-left', offset + 'px');
+                    }
+                }
+            });
+            othis.data('index', index);
+        }).on('mouseleave', '*[lay-tips]', function(){
+            layer.close($(this).data('index'));
+        });
+    })
+</script>
+</body>
+</html>

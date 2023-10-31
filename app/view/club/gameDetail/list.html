@@ -1,0 +1,442 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+
+	.pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 600px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 0;
+		width: 100%;
+       height: 40px;
+       z-index: 1000;
+       background: white;
+    }
+
+	.layui-table-body .layui-table-cell{
+		height: 80px !important;
+		line-height: 27px !important;
+	}
+
+	.explain{
+		position: absolute;
+		right: 70px;
+		z-index: 10000;
+		top:120px;
+	}
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 250px">
+							<input type="text" name="gameInfoId" id="gameInfoId" autocomplete="off" placeholder="游戏编号" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="isSys" >
+								<?php
+								foreach($isSys as $k => $v) {
+								$selected = '';
+								//if($k==2) $selected='selected';
+								echo "<option value='{$k}' {$selected}>{$v}</option>";
+								}
+								?>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 150px">
+							<input type="number" name="userId" id="userId" autocomplete="off" placeholder="会员ID" class="layui-input" value="<?=$userId?>">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 160px">
+							<select name="gameId" id="gameId" lay-filter="gameId">
+								<option value="">选择游戏</option>
+								<?php
+									foreach($gameList as $k => $v) {
+										echo '<option value="'. $v['gameId'] .'">' . $v['gameId'] . '-' . $v['gameName'] . '</option>';
+									}
+								?>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 200px">
+							<select name="roomId" id="roomId" lay-search>
+								<option value="">选择房间</option>
+								<?php
+									foreach($gameList as $k => $v) {
+										foreach($v['rooms'] as $vv) {
+											echo '<option value="'. $vv['roomId'] .'">' . $vv['roomId'] . '-' . $vv['roomName'] . '</option>';
+										}
+									}
+								?>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 200px">
+							<select name="clubId" id="clubId" lay-search>
+								<option value="">所属俱乐部</option>
+								<?php
+									foreach($clubList as $k => $v) {
+										echo '<option value="'. $v['clubId'] .'">' . $v['clubId'] . '-' . $v['clubName'] . '</option>';
+								}
+								?>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 150px;">
+							<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input" value="<?=$startDate?>">
+						</div>
+						<div class="layui-input-inline" style="width: 5px">-</div>
+						<div class="layui-input-inline" style="width: 150px;">
+							<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input" value="<?=$endDate?>">
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="orderType" lay-search>
+								<?php
+									foreach($orderType as $k => $v) {
+										echo '<option value="'. $k .'">' . $v . '</option>';
+									}
+								?>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="layui-icon layui-icon-search"></i>
+							查询
+						</button>
+						<!--<button type="reset" class="pear-btn pear-btn-md">
+							<i class="layui-icon layui-icon-refresh"></i>
+							重置
+						</button>-->
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<div class="layui-row layui-col-space10">
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">会员输赢汇总</div>
+							<div class="count pear-text" id="winScoreSum"></div>
+						</div>
+					</div>
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">平台输赢汇总</div>
+							<div class="count pear-text" id="platformWinScoreSum"></div>
+						</div>
+					</div>
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">平台税收汇总</div>
+							<div class="count pear-text" id="revenueSum"></div>
+						</div>
+					</div>
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">平台营收汇总</div>
+							<div class="count pear-text" id="ptIncomeSum"></div>
+						</div>
+					</div>
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">代理税收汇总</div>
+							<div class="count pear-text" id="agentRevenueSum"></div>
+						</div>
+					</div>
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">有效投注汇总</div>
+							<div class="count pear-text" id="validBetSum"></div>
+						</div>
+					</div>
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">投注汇总</div>
+							<div class="count pear-text" id="allBetSum"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="layui-card">
+			<button type="button" class="pear-btn pear-btn-sm explain">
+				<i class="layui-icon layui-icon-help" style="font-size: 30px"  lay-width="500px" lay-tips="
+				<span style='color: #000000;'><b>输赢:</b> 会员得分 - 平台税收</span><br/><hr />
+				<span style='color: #000000;'><b>会员得分:</b> 会员下注的中奖得分（未中奖和中奖会相加减）</span><br/><hr />
+				<span style='color: #000000;'><b>游戏输赢:</b> 会员得分相反数，比如：会员得分是-2000，则游戏输赢是2000</span><br/><hr />
+				<span style='color: #000000;'><b>平台税收:</b> 会员每次娱乐的税收6%</span><br/><hr />
+				<span style='color: #000000;'><b>代理税收:</b> 平台抽水分给代理的钱</span><br/><hr />
+				<span style='color: #000000;'><b>平台营收:</b> 平台输赢 + 平台税收</span><br/><hr />
+				<span style='color: #000000;'><b>有效投注:</b> 有如下3种特殊情况 <br/> 1）百家乐只计算会员投注的30% <br/> 2）对打的情况则只计算对打金额之差为有效投注(如:红黑大战，押分200红，100黑有效押分则为200-100=100） <br/> 3）退回投注金额，则不会计算有效投注(如：百家乐开出和，退回庄，闲投注)</span><br/><hr />
+				<span style='color: #000000;'><b>会员投注汇总:</b> 会员投注之和</span><br/><hr />
+				<span style='color: #000000;'><b>会员有效投注汇总:</b> 会员有效投注之和</span><br/><hr />
+				"></i>
+			</button>
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+<?php include app_path() . "/view/public/footer.html"; ?>
+		<script src="<?=$staticUrl ?>/static/recharge.js"></script>
+<script>
+	dateOption = {"date1": '', "date2": ''};
+	let tableUrl = '/club/userGameDetail';
+	layui.use(['table','form','jquery','count'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		count = layui.count;
+		let form = layui.form;
+
+
+		var startDate = $("#date1").val();
+		var endDate = $("#date2").val();
+
+
+			//初始化日期控件
+			dateOption = {"date1": startDate, "date2": endDate};
+
+
+		let userId = $("#userId").val();
+		let querystring = "";
+		if(userId){
+			querystring = '?startDate='+startDate+'&endDate='+endDate+'&userId='+userId
+		}else{
+			querystring = '?startDate='+startDate+'&endDate='+endDate;
+		}
+
+		let cols = [
+			[
+				{field:'gameInfoId', title: '游戏记录编号' ,align:'center',width:210, templet: '#gameInfoIdTpl'}
+				//, {field: 'userId', title: '会员ID', align: 'center', minWidth: 100}
+				, {field: 'roomId', title: '会员ID/房间', align: 'left', minWidth: 170, templet: '#roomInfo'}
+				, {field: 'beforeScore', title: '上分/下分/输赢', align: 'left', minWidth: 140, templet: '#shangfenxiafen'}
+				, {field: 'allBet', title: '会员投注/有效投注/得分', minWidth: 320, align: 'left', templet: '#allBet'}
+				, {field: 'platformWinScore', title: '平台输赢', align: 'left', width: 90}
+                , {field: 'revenue', title: '平台税收', align: 'left', width: 90}
+				, {field: 'agentRevenue', title: '代理税收', align: 'left', width: 90}
+				, {
+				field: 'ptIncome', title: '平台营收', align: 'left', width: 90, templet: function (d) {
+					if (d.ptIncome < 0) {
+						return '<span style="color:red;font-weight: bold">' + d.ptIncome + '</span>';
+					} else {
+						return '<span style="color:#333;">' + d.ptIncome + '</span>';
+						}
+					}
+				}
+				, {field: 'clubName', title: '俱乐部/上级ID', align: 'left', minWidth: 150,templet:function (d) {
+                    var html = '<p><span>所属俱乐部:'+d.clubName+'</span></p>'
+                    html += '<p><span>直属上级ID:'+d.promoterId+'</span></p>'
+                    return html;
+                }}
+				/*, {field: 'promoterId', title: '直属上级ID', align: 'left', minWidth: 100}*/
+
+				, {field: 'endTime', title: '时间信息', align: 'left', minWidth: 200, templet: '#timeInfo'}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl + querystring,
+			page: true ,
+			cols: cols ,
+			skin: 'line',
+			height:650,
+			//toolbar: '#toolbar',
+			done: function(res, curr, count){
+				let queryFormData = form.val("queryForm");
+				//console.log(queryFormData);
+				window.tableSummary({"submitUrl": '/club/userGameDetailSummary', "data": queryFormData, "selIds": 'ptIncomeSum,revenueSum,platformWinScoreSum,winScoreSum,agentRevenueSum,validBetSum,allBetSum'});
+			}
+		});
+
+		form.on('submit(query)', function(data){
+			//console.log(data.field);
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+
+		form.on('select(gameId)', function (data) {
+			console.log(data);
+			var url = "/player/userGameDetailselected";
+			$.ajax({
+				type: "post",
+				url: url,
+				dataType: 'json',
+				data: {
+					'gameId': data.value,
+					'source': 'club',
+				},
+				success: function (e) {
+					/*成功*/
+					if (e.code == 0) {
+						$("#roomId").html("");
+						$('#roomId').append(new Option("选择房间", 0));//往下拉菜单里添加元素
+						$.each(e.data, function (i, v) {
+							console.log(v);
+							$('#roomId').append(new Option(v.roomId.toString()+"-"+v.roomName, v.roomId));//往下拉菜单里添加元素
+						});
+						var form = layui.form;
+						form.render();//菜单渲染 把内容加载进去
+					} else if(e.code == -1) {
+						$("#roomId").html("");
+						$('#roomId').append(new Option("选择房间", 0));//往下拉菜单里添加元素
+						var form = layui.form;
+						form.render();//菜单渲染 把内容加载进去
+					} else {
+						return false;
+					}
+				}
+			});
+		});
+
+	})
+	function showCard(obj) {
+		let id = $(obj).text();
+		let gameId = $(obj).attr('gameId');
+		let oid = $(obj).attr('oid');
+		let w = '600px';
+		let h = '500px';
+        if (gameId == 300 || gameId == 100 || gameId == 550) {
+            w = '1150px';
+            h = '800px';
+        }
+
+        if(gameId == 930){
+            w = '800px';
+        }
+
+        if(gameId == 920 || gameId == 860 || gameId == 210){
+            w = '720px';
+        }
+
+        if(gameId == 810 || gameId == 830 || gameId == 870 || gameId == 890){
+            w = '700px';
+        }
+
+        if(gameId == 950){
+            h = '600px';
+        }
+		window.agentdetail('/player/showCard?club=1&oid=' + oid, {"width": w, "height": h});
+	}
+</script>
+<!--		<script src="/static/laydateUserAnalysis.js"></script>-->
+		<script src="<?=$staticUrl ?>/static/laydateClubHis.js"></script>
+		<script type="text/html" id="gameInfoIdTpl">
+			{{#  if(d.gameInfoId == -1){ }}
+			合计
+			{{#  }else{ }}
+			<a href="javascript:;" onclick="showCard(this);" class="layui-table-link" gameId="{{d.gameId}}" oid="{{d._id}}">{{d.gameInfoId}}</a>
+			{{#  } }}
+
+		</script>
+		<script type="text/html" id="allBet">
+
+			{{#  if(d.allBet == -1){ }}
+			/
+			{{#  }else{ }}
+
+			{{ d.allBet }}
+			{{#  if(d.gameId == 900){ }}
+			[<span style="color:red;font-weight: bold">和:{{ d.he }}</span>&nbsp;&nbsp;<span style="color:green;font-weight: bold">龙:{{ d.long }}</span>&nbsp;&nbsp;<span style="color:orange;font-weight: bold">虎:{{ d.hu }}</span>]
+			{{#  } else if(d.gameId == 720){ }}
+			[<span style="color:red;font-weight: bold">顺:{{ d.shun }}</span>&nbsp;&nbsp;<span style="color:green;font-weight: bold">天:{{ d.tian }}</span>&nbsp;&nbsp;<span style="color:orange;font-weight: bold">地:{{ d.di }}</span>]
+			{{#  } else if(d.gameId == 210){ }}
+			[<span style="color:red;font-weight: bold">倍:{{ d.bei }}</span>&nbsp;&nbsp;<span style="color:green;font-weight: bold">黑:{{ d.hei }}</span>&nbsp;&nbsp;<span style="color:orange;font-weight: bold">红:{{ d.hong }}</span>]
+			{{#  } else if(d.gameId == 930 || d.gameId == 920){ }}
+			[<span style="color:red;font-weight: bold">天:{{ d.tian }}</span>&nbsp;&nbsp;<span style="color:green;font-weight: bold">地:{{ d.di }}</span>&nbsp;&nbsp;<span style="color:orange;font-weight: bold">玄:{{ d.xuan }}</span>&nbsp;&nbsp;<span style="color:purple;font-weight: bold">黄:{{ d.huang }}</span>]
+
+			{{#  } else if(d.gameId == 950){ }}
+			[
+			<span style="color:sienna;font-weight: bold">奔驰:{{ d.bens }}</span>&nbsp;&nbsp;
+			<span style="color:darkblue;font-weight: bold">宝马:{{ d.bmw }}</span>&nbsp;&nbsp;
+			<span style="color:black;font-weight: bold">大众:{{ d.audi }}</span>&nbsp;&nbsp;
+			<span style="color:green;font-weight: bold">阿尔法罗密欧:{{ d.jaguar }}</span>&nbsp;&nbsp;
+			<span style="color:orange;font-weight: bold">保时捷:{{ d.porsche }}</span>&nbsp;&nbsp;
+			<span style="color:blue;font-weight: bold">玛莎拉蒂:{{ d.maserati }}</span>&nbsp;&nbsp;
+			<span style="color:purple;font-weight: bold">兰博基尼:{{ d.lamborghini }}</span>&nbsp;&nbsp;
+			<span style="color:red;font-weight: bold">法拉利:{{ d.ferrari }}</span>
+			]
+			{{#  } }}
+			{{#  if(d.isBanker == 1){ }}
+			<span><img src="/cards/zhuang2.png" width="25px" height="25px"></span>
+			{{#  } }}
+
+			<br />
+			{{ d.validBet }}
+			<br />
+			{{ d.earnScore }}
+
+			{{#  } }}
+		</script>
+		<script type="text/html" id="shangfenxiafen">
+
+			{{#  if(d.beforeScore == -1){ }}
+			/
+			{{#  }else{ }}
+			上分:{{ d.beforeScore }}<br />下分:{{ d.score }}<br />
+			输赢:
+			{{#  if(d.winScore > 0){ }}
+			<span style="color:red;font-weight: bold">{{ d.winScore }}</span>
+			{{#  } else { }}
+			<span style="color:#333;">{{ d.winScore }}</span>
+			{{#  } }}
+			{{#  } }}
+
+
+
+
+
+		</script>
+		<script type="text/html" id="roomInfo">
+			{{ d.userId }}<br />
+			{{#  if(d.roomId == -1){ }}
+			/
+			{{#  }else{ }}
+			{{ d.gameName }}<br />{{ d.roomName }}
+			{{#  } }}
+		</script>
+		<script type="text/html" id="timeInfo">
+			{{#  if(d.endTime == -1){ }}
+			/
+			{{#  }else{ }}
+			进入:{{ d.startTime }}<br />结算:{{ d.endTime }}<br />时长:{{ d.playTime }}
+			{{#  } }}
+
+
+		</script>

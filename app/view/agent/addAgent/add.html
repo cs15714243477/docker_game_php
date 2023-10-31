@@ -1,0 +1,213 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body>
+<form class="layui-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <!--<div class="layui-card">
+                    <div class="layui-card-body">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">角色名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="promoterId" autocomplete="off"  placeholder="上级代理ID"  class="layui-input" maxlength="5">
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">开始ID:</label>
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="startId" autocomplete="off"  placeholder="开始ID"  class="layui-input" lay-filter="startId" value="<?=$startId?>" maxlength="5" readonly>
+                            </div>
+
+                            <div class="layui-inline">
+                                <label class="layui-form-label">结束ID:</label>
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="endId" autocomplete="off"  placeholder="结束ID"  class="layui-input" lay-filter="endId" maxlength="5">
+                            </div>
+
+                            <div class="layui-inline">
+                                <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit id="genBtn" lay-filter="save">生成代理</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <!--<div class="layui-card">
+                    <div class="layui-card-body">
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline" style="width: auto">
+                                上级代理ID必须真实存在且是5位数字，<br />开始ID 结束ID必须是5位数字且开始ID必须小于结束ID <br />因为生成代理链接较慢，建议一次生成50个代理
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <div class="layui-form-item">
+                            <div class="layui-input-inline" style="width: auto">
+                                队列长度： <?=$queueLen?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        批量打包&更新推广短链接
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">开始NO:</label>
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="startNO" autocomplete="off"  placeholder="开始NO"  class="layui-input"  maxlength="8" >
+                            </div>
+
+                            <div class="layui-inline">
+                                <label class="layui-form-label">结束NO:</label>
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="endNO" autocomplete="off"  placeholder="结束NO"  class="layui-input"  maxlength="8">
+                            </div>
+
+                            <div class="layui-inline">
+                                <input type="checkbox" name="apkshorturl[apk]" class="layui-input" title="打包">
+                                <input type="checkbox" name="apkshorturl[shorturl]" class="layui-input" title="更新短链接">
+                            </div>
+
+                            <div class="layui-inline">
+                                <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit id="genBtn2" lay-filter="save2">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--<div class="layui-card">
+                    <div class="layui-card-body">
+                        批量更新推广短链接
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">开始NO:</label>
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="startNO1" autocomplete="off"  placeholder="开始NO"  class="layui-input"  maxlength="8" >
+                            </div>
+
+                            <div class="layui-inline">
+                                <label class="layui-form-label">结束NO:</label>
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="endNO1" autocomplete="off"  placeholder="结束NO"  class="layui-input"  maxlength="8">
+                            </div>
+
+                            <div class="layui-inline">
+                                <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit id="genBtn6" lay-filter="save6">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        重新生成推广短链接
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">代理ID:</label>
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="promoterId2" autocomplete="off"  placeholder=""  class="layui-input"  maxlength="8" >
+                            </div>
+                            <div class="layui-inline">
+                                <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit id="genBtn3" lay-filter="save3">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        重新生成推广短链接并打包
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">代理ID:</label>
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="promoterId3" autocomplete="off"  placeholder=""  class="layui-input"  maxlength="8" >
+                            </div>
+                            <div class="layui-inline">
+                                <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit id="genBtn4" lay-filter="save4">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        解密代理加密字符
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">加密字符串:</label>
+                            </div>
+                            <div class="layui-inline">
+                                <input type="text" name="mark" autocomplete="off"  placeholder=""  class="layui-input" >
+                            </div>
+                            <div class="layui-inline">
+                                <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit id="genBtn5" lay-filter="save5">提交</button>
+                            </div>
+                            <div class="layui-inline">
+                                <span id="demark">结果显示在这里</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script src="<?=$staticUrl ?>/static/xxtea.js" type="text/javascript"></script>
+<script>
+    layui.use(['form','jquery'],function(){
+        $ = layui.jquery;
+        let form = layui.form;
+
+        //form.verify()
+        form.on('submit(save)', function(data){
+            $('#genBtn').addClass("layui-btn-disabled").attr("disabled",true);
+            window.save({"submitUrl": '/agent/addAgent', "data": data.field, "btn": 'genBtn'});
+            return false;
+        });
+        form.on('submit(save2)', function(data){
+            $('#genBtn2').addClass("layui-btn-disabled").attr("disabled",true);
+            window.save({"submitUrl": '/agent/batchBuildApk', "data": data.field, "btn": 'genBtn2'});
+            return false;
+        });
+        form.on('submit(save3)', function(data){
+            $('#genBtn3').addClass("layui-btn-disabled").attr("disabled",true);
+            window.save({"submitUrl": '/agent/refreshShortUrl', "data": data.field, "btn": 'genBtn3'});
+            return false;
+        });
+        form.on('submit(save4)', function(data){
+            $('#genBtn4').addClass("layui-btn-disabled").attr("disabled",true);
+            window.save({"submitUrl": '/agent/refreshShortUrlAndBatchBuildApk', "data": data.field, "btn": 'genBtn4'});
+            return false;
+        });
+        form.on('submit(save6)', function(data){
+            $('#genBtn6').addClass("layui-btn-disabled").attr("disabled",true);
+            window.save({"submitUrl": '/agent/batchRefreshShortUrl', "data": data.field, "btn": 'genBtn6'});
+            return false;
+        });
+
+        form.on('submit(save5)', function(data){
+            try {
+                let str = $("input[name='mark']").val();
+                let decrypt_data = XXTEA.decryptFromBase64(str, "");
+                $('#demark').html(decrypt_data);
+            }catch (e) {
+                console.log(e);
+                $('#demark').html('解析出错了');
+            }
+            return false;
+        });
+    })
+</script>

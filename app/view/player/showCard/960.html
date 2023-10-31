@@ -1,0 +1,45 @@
+<?php
+	if($gameId==960) {
+
+?>
+        <div class="layui-col-xs12 layui-col-sm12">
+            <div class="layui-status-img">
+                <span class="thick">
+                    开奖结果：<?=$card['point'] ?>点
+                </span>
+                <?php
+                    foreach($card['dice'] as $k => $v){
+                ?>
+                        <a href="javascript:;">
+                            <img src="<?=$staticUrl ?>/cards/sicbo/<?=$v ?>.png" width="27px" height="27px">
+                        </a>
+                <?php
+                    }
+                ?>
+                <?php if($card['isBigSmall'] == 1){ ?>
+                    <a href="javascript:;">
+                        <img src="<?=$staticUrl ?>/cards/sicbo/da.png" width="36px" height="36px">
+                    </a>
+                <?php }else{ ?>
+                    <a href="javascript:;">
+                        <img src="<?=$staticUrl ?>/cards/sicbo/xiao.png" width="36px" height="36px">
+                    </a>
+                <?php } ?>
+            </div>
+        </div>
+
+        <?php
+            foreach($card['cellScore'] as $k => $v){
+        ?>
+            <div class="layui-col-xs6 layui-col-sm6">
+                <div class="layui-status-img">
+                    <span class="thick">
+                        <?=$card['cellScoreText'][$k] ?> : <?=$v ?>
+                    </span>
+
+                </div>
+            </div>
+        <?php } ?>
+<?php
+	}
+?>

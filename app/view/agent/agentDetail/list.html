@@ -1,0 +1,76 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	a {color: #0000FF}
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table class="layui-table">
+					<colgroup>
+						<col width="150">
+						<col width="200">
+						<col>
+					</colgroup>
+					<thead>
+					<tr>
+						<th>上级ID</th>
+						<th>直属成员</th>
+						<th>团队成员</th>
+					</tr>
+					</thead>
+					<tbody>
+					<?php
+						foreach($data as $k => $val) {
+					?>
+					<tr>
+					<?php
+						if ($pid > 99999) {
+					?>
+						<td><a onclick="openNewTab(this)" lay-href="/player/playerInfo?userId=<?=$pid ?>" data-name="<?=$pid ?>" lay-text="ID:<?=$pid ?>" ><?=$pid ?></a></td>
+					<?php
+						}else{
+					?>
+						<td><?=$pid ?></td>
+					<?php
+						}
+					?>
+
+
+					<?php
+						if ($val['zhishu'] > 99999) {
+						?>
+						<td><a onclick="openNewTab(this)" lay-href="/player/playerInfo?userId=<?=$val['zhishu'] ?>" data-name="<?=$val['zhishu'] ?>" lay-text="ID:<?=$val['zhishu'] ?>" ><?=$val['zhishu'] ?></a></td>
+						<?php
+						}else{
+					?>
+						<td><?=$val['zhishu'] ?></td>
+						<?php
+						}
+					?>
+
+					<?php
+						if ($val['userId'] > 99999) {
+						?>
+						<td><a onclick="openNewTab(this)" lay-href="/player/playerInfo?userId=<?=$val['userId'] ?>" data-name="<?=$val['userId'] ?>" lay-text="ID:<?=$val['userId'] ?>" ><?=$val['userId'] ?></a></td>
+						<?php
+						}else{
+					?>
+						<td><?=$val['userId'] ?></td>
+						<?php
+						}
+					?>
+
+
+
+
+					</tr>
+					<?php
+						}
+					?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+
+<?php include app_path() . "/view/public/footer.html"; ?>

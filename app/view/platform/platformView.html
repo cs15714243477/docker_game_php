@@ -1,0 +1,74 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<body class="pear-container">
+<div class="layui-card">
+	<div class="layui-card-body">
+		<div class="layui-tab layui-tab-brief" lay-filter="platFormInfo">
+			<input id="show_plate" type="hidden" value="<?php echo session('userName')?>"/>
+			<ul class="layui-tab-title">
+				<li class="layui-this">今日概况</li>
+				<li>今天昨天</li>
+				<li>本月上月</li>
+				<li>用户规模</li>
+				<li>金币场营收规模</li>
+
+<!--				<li id="lidel" style="display: none">平台概况</li>-->
+			</ul>
+			<div class="layui-tab-content">
+				<div class="layui-tab-item layui-show tab0">
+					<table style="margin-top: 10px;" id="table0" lay-filter="listTable1"></table>
+				</div>
+				<div class="layui-tab-item tab1">
+					<table style="margin-top: 10px;" id="table1" lay-filter="listTable2"></table>
+				</div>
+				<div class="layui-tab-item tab2">
+					<table style="margin-top: 10px;" id="table2" lay-filter="listTable3"></table>
+				</div>
+				<div class="layui-tab-item tab3">
+					<table style="margin-top: 10px;" id="table3" lay-filter="listTable4"></table>
+				</div>
+				<div class="layui-tab-item tab4">
+					<table style="margin-top: 10px;" id="table4" lay-filter="listTable5"></table>
+				</div>
+<!--				<div class="layui-tab-item tab5">-->
+<!--					<table style="margin-top: 10px;" id="table5" lay-filter="listTable6"></table>-->
+<!--				</div>-->
+			</div>
+		</div>
+	</div>
+</div>
+
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script src="<?=$staticUrl ?>/static/highcharts.js"></script>
+<script src="<?=$staticUrl ?>/static/exporting.js"></script>
+<script src="<?=$staticUrl ?>/static/export-data.js"></script>
+<script>
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+		let element = layui.element;
+
+		let tempTabArr = new Array();
+		tempTabArr[0] = "platFormInfo";
+		tempTabArr[1] = "platFormInfo2";
+		tempTabArr[2] = "platFormInfo3";
+		tempTabArr[3] = "userScaleInfo";
+		tempTabArr[4] = "revenueScaleInfo";
+		tempTabArr[5] = "platFormInfo1";
+
+		openTabsPlatform(0, 'platFormInfo');
+		element.on('tab(platFormInfo)', function (data) {
+			let index = data.index;
+			openTabsPlatform(index,tempTabArr[index]);
+		});
+		let show_plate = $("#show_plate").val();
+		if(show_plate == "admin"){
+			$("#lidel").show();
+		}else{
+			$("#lidel").hide();
+		}
+	})
+	function openTabsPlatform(index, action) {
+		$('.tab' + index).load("/platform/"+action);
+	}
+</script>

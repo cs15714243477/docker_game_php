@@ -1,0 +1,175 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+<style>
+	.layui-form-label{
+		width: auto;
+		padding: 9px 2px;
+	}
+	.layui-form-item .layui-input-inline{
+		width: 100px;
+		margin-right: 0px;
+	}
+	.layui-table-cell {
+		height: auto !important;
+	}
+
+
+	.pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 680px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 5px;
+		width: 100%;
+       height: 40px;
+       z-index: 1000;
+       background: white;
+    }
+
+</style>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+
+					<div class="layui-form-item layui-inline">
+						<label class="layui-form-label">类型:</label>
+						<div class="layui-input-inline">
+							<select name="type" >
+								<?php
+								foreach($type as $k => $v) {
+								$selected = '';
+								echo "<option value='{$k}' {$selected}>{$v}</option>";
+								}
+								?>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<select name="isSys" >
+								<?php
+								foreach($isSys as $k => $v) {
+								$selected = '';
+								echo "<option value='{$k}' {$selected}>{$v}</option>";
+								}
+								?>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline">
+							<input type="text" name="startDate" id="date1" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-input-inline" style="width: 5px">-</div>
+						<div class="layui-input-inline">
+							<input type="text" name="endDate" id="date2" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 250px">
+							<input type="text" name="searchValue" autocomplete="off" placeholder="请输入会员ID" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-inline">
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+							<i class="pear-icon pear-icon-search"></i>
+							查询
+						</button>
+						<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="export">
+							<i class="pear-icon pear-icon-export"></i>
+							导出
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table1" lay-filter="listTable1"></table>
+			</div>
+		</div>
+
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let dateOption = {"date1": '', "date2": ''};
+	let tableUrl = '/friendsRoom/accountDetails';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+		let cols = [
+			[
+				{title:"会员ID", align:'center', minWidth:100,
+				templet: function (d) {
+					var ids = '<a onclick="openNewTab(this)" lay-href="/player/playerInfo?userId='+d.userId+'" data-name="'+d.userId+'" lay-text="ID:'+d.userId+'" style="color: red;font-weight: bold">'+d.userId+'</a><br />';
+					return ids;
+				}
+			}
+				,{field:'orderId', title: '订单号' ,align:'center',width:300}
+				,{field:'typeName', title: '类型' ,align:'center'}
+				,{field:'cardNum',title: '房卡数量' ,align:'center'}
+				,{field:'rewardNum',title: '赠送房卡数量/折扣' ,align:'center', templet: function(d){
+					if(d.type == 2){
+						if(d.rewardNum == 100 || d.rewardNum == 0){
+							return "不打折";
+						}else{
+							return d.rewardNum + "折";
+						}
+					}else{
+						return d.rewardNum;
+					}
+				}}
+				,{field:'afterRoomCard',title: '剩余房卡' ,align:'center'}
+				,{field:'createTime', title: '时间' ,align:'center'}
+				,{field:'remark',title: '备注' ,align:'center'}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl,
+			page: true ,
+			limit: 20,
+			cols: cols ,
+			skin: 'line',
+			height:730,
+			done: function(res, curr, count){
+				if(res.code == -1){
+					layer.msg(res.msg,{icon:2,time:1000});
+				}
+			}
+		});
+
+		form.on('submit(query)', function(data){
+			window.refresh('table1', {"data": data});
+			return false;
+		});
+		form.on('submit(export)', function(data){
+			let loading = layer.load();
+			$.ajax({
+				url: '/friendsRoom/exportAccountDetails',
+				data: data.field,
+				type: 'post',
+				success:function(res){
+					layer.close(loading);
+					if(res.code == 0){
+						window.open('/friendsRoom/download?file='+res.file);
+					}else{
+						layer.msg(res.msg,{icon:2,time:1000});
+					}
+				}
+			})
+			return false;
+		});
+	})
+</script>
+<script src="<?=$staticUrl ?>/static/laydateYmd.js"></script>

@@ -1,0 +1,187 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<div class="layui-tab layui-tab-brief">
+					<ul class="layui-tab-title">
+						<li class="layui-this">邮件列表</li>
+						<li>用户已删除邮件列表</li>
+					</ul>
+					<div class="layui-tab-content">
+						<div class="layui-tab-item layui-show">
+							<table style="margin-top: 10px;" id="table1" lay-filter="listTable1"></table>
+						</div>
+						<div class="layui-tab-item">
+							<form class="layui-form" action="" lay-filter="queryForm">
+								<div class="layui-form-item layui-inline">
+									<div class="layui-input-inline" style="width: 250px">
+										<input type="text" name="searchText" autocomplete="off" placeholder="请输入userId" class="layui-input">
+									</div>
+								</div>
+								<div class="layui-form-item layui-inline">
+									<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="query">
+										<i class="layui-icon layui-icon-search"></i>
+										查询
+									</button>
+								</div>
+							</form>
+							<table style="margin-top: 10px;" id="table2" lay-filter="listTable2"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<?php include app_path() . "/view/public/tpl_toolbar_add_batchRemove.html"; ?>
+		
+		<script type="text/html" id="bar">
+			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></button>
+			<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
+		</script>
+		<?php include app_path() . "/view/public/tpl_switch_status01.html"; ?>
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	let tableUrl1 = '/email/emailList';
+	let tableUrl2 = '/email/emailDelList';
+	layui.use(['table','form','jquery'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		let form = layui.form;
+
+		let cols1 = [
+			[
+				{type:'checkbox'}
+				, {field: 'Id', title: 'ID', align: 'center'}
+				, {field: 'title', title: '标题', align: 'center'}
+				, {field: 'userId', title: '用户ID', align: 'center',templet:function (d) {
+					if (d.userId == 0) {
+						return '<span>全体用户</span>';
+					} else {
+						return '<span>'+d.userId+'</span>';
+					}
+				}}
+				, {field: 'rewardScore', title: '赠送金币', align: 'center', templet:function (d) {
+					if (d.rewardScore == 0) {
+						return '<span>不赠送</span>';
+					} else {
+						return '<span>'+d.rewardScore+'金币</span>';
+					}
+				}}
+				,{field:'status', title: '状态' ,align:'center',templet:function (d) {
+					if (d.status == 0) {
+						return '<span>未读</span>';
+					} else if(d.status == 1){
+						return '<span>已读</span>';
+					}else {
+						return '<span>登录弹框</span>';
+					}
+				}}
+				, {field: 'sendTime', title: '发布时间', align: 'center'}
+				, {field: 'expireTime', title: '过期时间', align: 'center'}
+				, {fixed: 'right', title: "操作", align: 'center', toolbar: '#bar'}
+			]
+		]
+
+		let cols2 = [
+			[
+				{field: 'title', title: '标题', align: 'center'}
+				, {field: 'userId', title: '用户ID', align: 'center',templet:function (d) {
+					if (d.userId == 0) {
+						return '<span>全体用户</span>';
+					} else {
+						return '<span>'+d.userId+'</span>';
+					}
+				}}
+				, {field: 'rewardScore', title: '赠送金币', align: 'center', templet:function (d) {
+					if (d.rewardScore == 0) {
+						return '<span>不赠送</span>';
+					} else {
+						return '<span>'+d.rewardScore+'金币</span>';
+					}
+				}}
+				,{field:'status', title: '状态' ,align:'center',templet:function (d) {
+					if (d.status == 0) {
+						return '<span>未读</span>';
+					} else if(d.status == 1){
+						return '<span>已读</span>';
+					}else {
+						return '<span>登录弹框</span>';
+					}
+				}}
+				, {field: 'sendTime', title: '发布时间', align: 'center',}
+				, {field: 'expireTime', title: '过期时间', align: 'center',}
+			]
+		]
+
+		table.render({
+			elem: '#table1',
+			url: tableUrl1,
+			page: true ,
+			cols: cols1 ,
+			skin: 'line',
+			defaultToolbar: false,
+			toolbar: '#toolbar',
+            height:770
+		});
+
+		table.render({
+			elem: '#table2',
+			url: tableUrl2,
+			page: true ,
+			cols: cols2 ,
+			skin: 'line',
+			height:660
+		});
+
+
+		table.on('tool(listTable1)', function(obj){
+			if(obj.event === 'remove'){
+				window.remove(obj, {"_id": obj.data['_id'], "submitUrl": '/email/removeEmail'});
+			} else if(obj.event === 'edit'){
+				window.edit('/email/editEmail?_id='+obj.data._id, {"width": '600px',"height": '700px'});
+			}
+		});
+
+		table.on('toolbar(listTable1)', function(obj){
+			if(obj.event === 'add'){
+				window.add('/email/addEmail', {"width": '600px',"height": '700px'});
+			} else if(obj.event === 'refresh'){
+				window.refresh('table1');
+			} else if(obj.event === 'batchRemove'){
+				window.batchRemove(obj, {"submitUrl": '/email/removeEmail', "tableId": 'table1'});
+			}
+		});
+
+		form.on('submit(query)', function(data){
+			window.refresh('table2', {"data": data});
+			return false;
+		});
+
+	})
+
+</script>
+<style>
+    .pear-container{
+        position: fixed;
+        width:100%;
+    }
+
+    .layui-table-box{
+        height: 660px;
+    }
+
+    .layui-table-page{
+        position: fixed;
+        bottom: 5px;
+		width: 100%;
+       height: 40px;
+       z-index: 1000;
+       background: white;
+    }
+
+	.layui-table-body .layui-table-cell{
+		height: 37px !important;
+		line-height: 37px !important;
+	}
+</style>
+

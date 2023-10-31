@@ -1,0 +1,99 @@
+<?php include app_path() . "/view/public/header.html"; ?>
+	<body class="pear-container">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<div class="layui-tab layui-tab-card" lay-filter="demo">
+					<ul class="layui-tab-title">
+						<li class="layui-this">资料详情</li>
+						<li>金币变化</li>
+						<li>充值记录</li>
+						<li>奖励订单</li>
+						<li>提现记录</li>
+						<li>游戏记录</li>
+						<li>每日输赢</li>
+					</ul>
+					<div class="layui-tab-content">
+						<div class="layui-tab-item layui-show tab0"></div>
+						<div class="layui-tab-item tab1"></div>
+						<div class="layui-tab-item tab2"></div>
+						<div class="layui-tab-item tab3"></div>
+						<div class="layui-tab-item tab4"></div>
+						<div class="layui-tab-item tab5"></div>
+						<div class="layui-tab-item tab6"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<input type="hidden" id="userId" value="<?=$userId ?>">
+		<input type="hidden" id="groupId" value="<?=$groupId ?>">
+<?php include app_path() . "/view/public/footer.html"; ?>
+<script>
+	function openTabs(index, action, userId) {
+		$('.tab' + index).load("/player", {"act": action, "userId": userId});
+	}
+	layui.use(['table','form','jquery','element'],function () {
+		$ = layui.jquery;
+		let table = layui.table;
+		let form = layui.form;
+		let element = layui.element;
+
+		var isTab1;
+		var isTab2;
+		var isTab3;
+		var isTab4;
+		var isTab5;
+		var isTab6;
+		var isThis;
+		var userId = '<?=$userId ?>';
+		openTabs(0, 'playerDetails', userId);
+		element.on('tab(demo)', function (data) {
+			var index = data.index;
+			console.log('555');
+			switch (index) {
+				case 1:
+					if (isTab1 !== 1 && isThis !== index) {
+						isTab1 = 1;
+						isThis = index;
+						openTabs(index, 'playerScoreChange', userId);
+					}
+					break;
+				case 2:
+					if (isTab2 !== 1 && isThis !== index) {
+						isTab2 = 1;
+						isThis = index;
+						openTabs(index, 'playerRechargeRecord', userId);
+					}
+					break;
+				case 3:
+					if (isTab3 !== 1 && isThis !== index) {
+						isTab3 = 1;
+						isThis = index;
+						openTabs(index, 'playerRewardOrder', userId);
+					}
+					break;
+				case 4:
+					if (isTab4 !== 1 && isThis !== index) {
+						isTab4 = 1;
+						isThis = index;
+						openTabs(index, 'playerExchangeRecord', userId);
+					}
+					break;
+				case 5:
+					if (isTab5 !== 1 && isThis !== index) {
+						isTab5 = 1;
+						isThis = index;
+						openTabs(index, 'playerGameRecord', userId);
+					}
+					break;
+				case 6:
+					if (isTab6 !== 1 && isThis !== index) {
+						isTab6 = 1;
+						isThis = index;
+						openTabs(index, 'playerEverydayWinLose', userId);
+					}
+					break;
+			}
+		});
+
+	})
+</script>

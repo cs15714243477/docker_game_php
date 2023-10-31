@@ -1,0 +1,199 @@
+
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" action="" lay-filter="queryForm">
+
+					<div class="layui-form-item layui-inline">
+						<div class="layui-input-inline" style="width: 150px">
+							<input type="text" name="startDate" id="date7" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-input-inline" style="width: 5px">-</div>
+						<div class="layui-input-inline" style="width: 150px">
+							<input type="text" name="endDate" id="date8" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<div class="layui-row layui-col-space10">
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">提交金额汇总</div>
+							<div class="count pear-text" id="exchangeRequestMoneySum"></div>
+						</div>
+					</div>
+					<div class="layui-col-md2 layui-col-sm2 layui-col-xs2">
+						<div class="pear-card2">
+							<div class="title">实际付款汇总</div>
+							<div class="count pear-text" id="exchangePayMoneySum"></div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="table101" lay-filter="listTable101"></table>
+			</div>
+		</div>
+<script type="text/html" id="exchangeStatus">
+	{{#  if(d.status == 18){ }}
+	<span class="pear-btn pear-btn-xs" style="width: 100px;">订单《已汇款》</span>
+	{{#  } else if(d.status == 9) { }}
+	<span class="pear-btn pear-btn-xs pear-btn-danger" style="width: 140px;">该笔订单《驳回申请》</span>
+	{{#  } else if(d.status == 8) { }}
+	<span class="pear-btn pear-btn-xs" style="width: 100px;">等待审核</span>
+	{{#  } else if(d.status == 10) { }}
+	<span class="pear-btn pear-btn-xs" style="width: 100px;">等待汇款</span>
+	{{#  } else if(d.status == 30) { }}
+	<span class="pear-btn pear-btn-xs pear-btn-danger" style="width: 140px;">已取消</span>
+	{{#  } else if(d.status == -1) { }}
+	<span>/</span>
+	{{#  } else { }}
+	<span class="pear-btn pear-btn-xs pear-btn-disabled" style="width: 140px;">该笔订单《未知状态》</span>
+	{{#  } }}
+</script>
+<script type="text/html" id="withdrawType">
+	{{#  if(d.withdrawType == 1){ }}
+	<span style="font-weight: bold;color: blue">银行卡</span>
+	{{#  } else if(d.withdrawType == 2) { }}
+	<span style="font-weight: bold;color: blue">支付宝</span>
+	{{#  } else if(d.withdrawType == 3) { }}
+	<span style="font-weight: bold;color: blue">网银</span>
+	{{#  } else if(d.withdrawType == 4) { }}
+	<span style="font-weight: bold;color: blue">USDT</span>
+	{{#  } else { }}
+	{{#  } }}
+</script>
+<script type="text/html" id="cardNum">
+	{{#  if(d.withdrawType == 1){ }}
+	{{ d.bankCardNum }}
+	{{#  } else if(d.withdrawType == 2) { }}
+	{{ d.alipayAccount }}
+	{{#  } else if(d.withdrawType == 3) { }}
+	{{ d.bankCardNum }}
+	{{#  } else if(d.withdrawType == 4) { }}
+	{{ d.usdtAddress }}
+	{{#  } else { }}
+	{{#  } }}
+</script>
+<script>
+	dateOption = {"date1": 'date7', "date2": 'date8', "table": 'table101'};
+	layui.use(['table','form','jquery','count'],function () {
+		$ = layui.jquery;
+		table = layui.table;
+		count = layui.count;
+		let form = layui.form;
+
+		let cols = [
+			[
+				{field:'orderId', title: '订单号' ,align:'center', width:300}
+				,{field:'',title: '提现类型' ,align:'center', toolbar: '#withdrawType'}
+				,{field:'trueName', title: '开户姓名' ,align:'center'}
+				,{field:'bankCardNum', title: '银行卡号' ,align:'center',width:200, toolbar: '#cardNum'}
+				,{field:'requestMoney', title: '提交金额' ,align:'center',width:120}
+				,{field:'payMoney', title: '实际金额' ,align:'center',width:120}
+				,{title:'状态', align:'center', width:170, toolbar: '#exchangeStatus'}
+				,{field:'reason', title: '拒绝理由' ,align:'center'}
+				,{field:'createTime', title: '提交时间' ,align:'center',width:165}
+				,{field:'applyTime', title: '处理时间' ,align:'center',width:165}
+			]
+		]
+
+		table.render({
+			elem: '#table101',
+			url: '/player/playerExchangeRecord?userId='+userId,
+			page: true ,
+			limit: 20,
+			cols: cols ,
+			skin: 'line',
+			height:590,
+			//toolbar: '#toolbar',
+			done: function(res, curr, count){
+				let queryFormData = form.val("queryForm");
+				let tempData = {"userId": userId};
+				$.extend(tempData, queryFormData);
+				//console.log(tempData);
+				window.tableSummary({"submitUrl": '/player/playerExchangeRecordSummary', "data": tempData, "selIds": 'exchangeRequestMoneySum,exchangePayMoneySum'});
+			}
+		});
+
+		form.on('submit(query)', function(data){
+			//console.log(data.field);
+			window.refresh('table101', {"data": data});
+			return false;
+		});
+
+	})
+</script>
+<script src="<?=$staticUrl ?>/static/recharge.js"></script>
+		<script src="<?=$staticUrl ?>/static/laydateHisInfo.js"></script>
+<!--		<script>-->
+<!--			layui.use('laydate',function(){-->
+<!--				let laydate = layui.laydate;-->
+<!--				let initValue = new Date();-->
+<!--				laydate.render({-->
+<!--					elem: '#date7'-->
+<!--					, type: 'date'-->
+<!--					, format: 'yyyy-MM-dd'-->
+<!--					//, min: 'laydate.now()'-->
+<!--					, max: 'laydate.now()'-->
+<!--					, value: initValue-->
+<!--					, done: function (value) {-->
+<!--						let date1 = new Date(value).getTime();-->
+<!--						let date2 = new Date($('#date8').val()).getTime();-->
+<!--						if (date2 < date1) {-->
+<!--							layer.msg('结束时间不能小于开始时间');-->
+<!--							return;-->
+<!--						}-->
+<!--						table.reload('table101', {-->
+<!--							page: {curr: 1}-->
+<!--							, where: {"startDate": value, "endDate": $('#date8').val()}-->
+<!--						});-->
+<!--					}-->
+<!--				});-->
+<!--				laydate.render({-->
+<!--					elem: '#date8'-->
+<!--					, type: 'date'-->
+<!--					, format: 'yyyy-MM-dd'-->
+<!--					//, min: 'laydate.now()'-->
+<!--					//, max: +365-->
+<!--					, value: initValue-->
+<!--					, done: function (value) {-->
+<!--						let date2 = new Date(value).getTime();-->
+<!--						let date1 = new Date($('#date7').val()).getTime();-->
+<!--						if (date2 < date1) {-->
+<!--							layer.msg('结束时间不能小于开始时间');-->
+<!--							return;-->
+<!--						}-->
+<!--						table.reload('table101', {-->
+<!--							page: {curr: 1}-->
+<!--							, where: {"startDate": $('#date7').val(), "endDate": value}-->
+<!--						});-->
+<!--					}-->
+<!--				});-->
+<!--			})-->
+<!--		</script>-->
+
+		<style>
+			.pear-container{
+				position: fixed;
+				width:100%;
+			}
+
+			.layui-table-box{
+				height: 590px;
+			}
+
+			.layui-table-page{
+				position: fixed;
+				bottom: 0;
+				width: 100%;
+				height: 40px;
+				z-index: 1000;
+				background: white;
+			}
+		</style>
